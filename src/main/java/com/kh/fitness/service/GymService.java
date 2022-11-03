@@ -62,4 +62,9 @@ public class GymService {
     public List<Gym> findAll() {
         return gymRepository.findAll();
     }
+
+    public Optional<GymReadDto> findByName(String name) {
+        return gymRepository.findByName(name)
+                .map(gymReadDtoMapper::map);
+    }
 }

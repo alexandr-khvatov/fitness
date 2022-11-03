@@ -9,8 +9,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
+
+@Retention(RUNTIME)
+@Target(FIELD)
 @Constraint(validatedBy = EmailNotExistValidator.class)
 public @interface EmailNotExist {
     String message() default "{validation.email.already.exist}";
