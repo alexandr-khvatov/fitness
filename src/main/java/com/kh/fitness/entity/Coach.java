@@ -1,11 +1,18 @@
 package com.kh.fitness.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
+import static javax.persistence.FetchType.LAZY;
+
+@EqualsAndHashCode(exclude = {"trainings"})
+@ToString(exclude = {"trainings"})
 @Data
 @Entity
 public class Coach implements BaseEntity<Long> {
@@ -19,9 +26,14 @@ public class Coach implements BaseEntity<Long> {
     private String phone;
     private String email;
     private String specialization;
+    private String image;
+
     @Column(columnDefinition = "TEXT")
     private String description;
-    private String image;
-    @OneToMany
-    private List<Training> trainings;
+
+    @ManyToOne(optional = false, fetch = LAZY)
+    private Gym gym;
+
+    @OneToMany(mappedBy = "coach")
+    private Set<Training> trainings;
 }

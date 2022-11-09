@@ -10,27 +10,27 @@ import org.springframework.stereotype.Component;
 @Component
 public class GymCreateEditDtoMapper implements Mapper<GymCreateEditDto, Gym> {
     @Override
-    public Gym map(GymCreateEditDto from) {
-        return map(from, new Gym());
+    public Gym map(GymCreateEditDto f) {
+        return map(f, new Gym());
     }
 
     @Override
-    public Gym map(GymCreateEditDto from, Gym to) {
-        to.setName(from.getName());
-        to.setGymContacts(GymContacts.builder()
-                .address(from.getAddress())
-                .phone(from.getPhone())
-                .email(from.getEmail())
+    public Gym map(GymCreateEditDto f, Gym t) {
+        t.setName(f.getName());
+        t.setGymContacts(GymContacts.builder()
+                .address(f.getAddress())
+                .phone(f.getPhone())
+                .email(f.getEmail())
                 .build());
-        to.setWorkingHours(WorkingHours.builder()
-                .workingHoursOnWeekdays(from.getWorkingHoursOnWeekdays())
-                .workingHoursOnWeekends(from.getWorkingHoursOnWeekends())
+        t.setWorkingHours(WorkingHours.builder()
+                .workingHoursOnWeekdays(f.getWorkingHoursOnWeekdays())
+                .workingHoursOnWeekends(f.getWorkingHoursOnWeekends())
                 .build());
-        to.setGymSocialMedia(GymSocialMedia.builder()
-                .vkLink(from.getVkLink())
-                .tgLink(from.getTgLink())
-                .instLink(from.getInstLink())
+        t.setGymSocialMedia(GymSocialMedia.builder()
+                .vkLink(f.getVkLink())
+                .tgLink(f.getTgLink())
+                .instLink(f.getInstLink())
                 .build());
-        return to;
+        return t;
     }
 }

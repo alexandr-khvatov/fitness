@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 public class FreePassRequestCreateDtoMapper implements Mapper<FreePassRequestCreateDto, FreePassRequest> {
 
     @Override
-    public FreePassRequest map(FreePassRequestCreateDto from) {
-        return mapToEntity(from);
+    public FreePassRequest map(FreePassRequestCreateDto f) {
+        return mapToEntity(f);
     }
 
 

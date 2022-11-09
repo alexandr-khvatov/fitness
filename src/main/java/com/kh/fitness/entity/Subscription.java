@@ -4,6 +4,8 @@ import lombok.Data;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Data
 @Entity
 public class Subscription implements BaseEntity<Long> {
@@ -17,6 +19,9 @@ public class Subscription implements BaseEntity<Long> {
 
     @Enumerated(EnumType.STRING)
     private Period period;
+
+    @ManyToOne(fetch = LAZY)
+    private Gym gym;
 }
 
 enum Period {

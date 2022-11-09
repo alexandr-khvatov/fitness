@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component;
 public class UserCreatedAndTokenDtoMapper implements Mapper<UserCreatedDto, AccountCreatedAndTokenDto> {
 
     @Override
-    public AccountCreatedAndTokenDto map(UserCreatedDto from) {
+    public AccountCreatedAndTokenDto map(UserCreatedDto f) {
         return new AccountCreatedAndTokenDto(
-                from.getId(),
-                from.getFirstname(),
-                from.getPatronymic(),
-                from.getLastname(),
-                from.getEmail(),
-                from.getPhone(),
-                from.getBirthDate(),
-                from.getRoles(), null);
+                f.getId(),
+                f.getFirstname(),
+                f.getPatronymic(),
+                f.getLastname(),
+                f.getEmail(),
+                f.getPhone(),
+                f.getBirthDate(),
+                f.getRoles(), null);
     }
 }

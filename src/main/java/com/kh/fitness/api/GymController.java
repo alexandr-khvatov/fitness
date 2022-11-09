@@ -31,11 +31,6 @@ public class GymController {
         return gymService.findById(id);
     }
 
-    @GetMapping("/{name}")
-    public Optional<GymReadDto> findById(@PathVariable String name) {
-        return gymService.findByName(name);
-    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public GymReadDto create(@RequestBody GymCreateEditDto gym, Authentication authentication) {

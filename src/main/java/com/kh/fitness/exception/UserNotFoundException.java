@@ -1,6 +1,6 @@
 package com.kh.fitness.exception;
 
-public class UserNotFoundException extends RuntimeException {
+public class UserNotFoundException extends FitnessAppException {
     public static final String MESSAGE = "Пользователь не найден";
 
     public UserNotFoundException(Long id) {

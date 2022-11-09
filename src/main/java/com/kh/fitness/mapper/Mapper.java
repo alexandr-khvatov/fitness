@@ -1,9 +1,9 @@
 package com.kh.fitness.mapper;
 
 public interface Mapper<F, T> {
-    T map(F from);
+    T map(F f);
 
-    default T map(F from, T to) {
-        return to;
+    default T map(F f, T t) {
+        return t;
     }
 }

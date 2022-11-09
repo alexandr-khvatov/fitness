@@ -9,7 +9,7 @@ public class RoleReadMapper implements Mapper<RoleReadDto, Role> {
 
 
     @Override
-    public Role map(RoleReadDto from) {
+    public Role map(RoleReadDto f) {
         Role role = new Role();
         return role;
     }

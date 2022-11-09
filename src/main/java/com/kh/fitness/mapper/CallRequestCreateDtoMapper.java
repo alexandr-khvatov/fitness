@@ -8,16 +8,16 @@ import org.springframework.stereotype.Component;
 public class CallRequestCreateDtoMapper implements Mapper<CallRequestCreateDto, CallRequest> {
 
     @Override
-    public CallRequest map(CallRequestCreateDto from) {
-        return mapToEntity(from);
+    public CallRequest map(CallRequestCreateDto f) {
+        return mapToEntity(f);
     }
 
-    private CallRequest mapToEntity(CallRequestCreateDto from) {
+    private CallRequest mapToEntity(CallRequestCreateDto f) {
         return new CallRequest(
                 null,
-                from.getPhone(),
-                from.getFirstname(),
-                from.getLastname(),
+                f.getPhone(),
+                f.getFirstname(),
+                f.getLastname(),
                 true);
     }
 }

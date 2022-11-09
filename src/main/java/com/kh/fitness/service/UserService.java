@@ -1,14 +1,18 @@
 package com.kh.fitness.service;
 
 import com.kh.fitness.dto.account.AccountChangePasswordDto;
+import com.kh.fitness.dto.account.AccountEditDto;
 import com.kh.fitness.dto.user.UserCreateDto;
 import com.kh.fitness.dto.user.UserCreatedDto;
 import com.kh.fitness.dto.user.UserReadDto;
 import com.kh.fitness.dto.user.UserRegisterDto;
 import com.kh.fitness.entity.Roles;
 import com.kh.fitness.entity.User;
+import com.kh.fitness.exception.EmailAlreadyExistException;
 import com.kh.fitness.exception.PasswordMatchException;
+import com.kh.fitness.exception.PhoneAlreadyExistException;
 import com.kh.fitness.exception.UserNotFoundException;
+import com.kh.fitness.mapper.account.AccountEditDtoMapper;
 import com.kh.fitness.mapper.user.UserCreateEditMapper;
 import com.kh.fitness.mapper.user.UserCreatedDtoMapper;
 import com.kh.fitness.mapper.user.UserReadMapper;
@@ -33,6 +37,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -41,8 +46,10 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 @Validated
 public class UserService implements UserDetailsService {
-    public static final String POSSIBLE_CURRENT_NOT_EQUAL_CURRENT_PWD_MESSAGE = "Неверный пароль,для изменения пароля необходимо ввести текущий пароль";
-    public static final String CURRENT_EQUAL_NEW_PWD_MESSAGE = "Новый пароль совпадает со старым";
+    private static final String POSSIBLE_CURRENT_NOT_EQUAL_CURRENT_PWD_MESSAGE = "Неверный пароль,для изменения пароля необходимо ввести текущий пароль";
+    private static final String CURRENT_EQUAL_NEW_PWD_MESSAGE = "Новый пароль совпадает со старым";
+    private static final String EMAIL_ALREADY_EXIST_MESSAGE = "Пользователь c id: {} c email: {} уже существует";
+    private static final String PHONE_ALREADY_EXIST_MESSAGE = "Пользователь c id: {} c телефоном: {} уже существует";
 
     private final RoleService roleService;
     private final ImageService imageService;
@@ -53,7 +60,7 @@ public class UserService implements UserDetailsService {
     private final UserRegisterMapper userRegisterMapper;
     private final UserCreateEditMapper userCreateEditMapper;
     private final UserCreatedDtoMapper userCreatedDtoMapper;
-
+    private final AccountEditDtoMapper accountEditDtoMapper;
 
     private User setEncodedPassword(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -83,7 +90,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public void changePassword(@Valid AccountChangePasswordDto dto) {
+    public void changePassword(@Valid final AccountChangePasswordDto dto) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         userRepository.findByPhone(authentication.getName()).ifPresentOrElse(user -> {
             var currentPassword = user.getPassword();
@@ -107,10 +114,8 @@ public class UserService implements UserDetailsService {
     @Validated(DefaultAndNotExistComplete.class)
     public UserReadDto create(@Valid UserCreateDto userDto) {
         return Optional.of(userDto)
-                .map(dto -> {
-//                    uploadImage(dto.getImage());
-                    return userCreateEditMapper.map(dto);
-                })
+                .map(userCreateEditMapper::map)
+                .map(this::setEncodedPassword)
                 .map(userRepository::saveAndFlush)
                 .map(userReadMapper::map)
                 .orElseThrow();
@@ -129,11 +134,66 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public Optional<UserReadDto> update(Long id, UserCreateDto userDto) {
+    public Optional<UserReadDto> updateAccount(@Valid final AccountEditDto dto) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var phone = dto.getPhone();
+        var email = dto.getEmail();
+        return userRepository.findByPhone(authentication.getName())
+                .map(user -> {
+                    // check the existence of other users with this phone
+                    userRepository.findByPhone(phone)
+                            .map(User::getId)
+                            .filter(id -> !Objects.equals(id, user.getId()))
+                            .map(id -> {
+                                log.error(PHONE_ALREADY_EXIST_MESSAGE, id, phone);
+                                throw new PhoneAlreadyExistException(phone);
+                            });
+                    // check the existence of other users with this email
+                    userRepository.findByEmailIgnoreCase(email)
+                            .map(User::getId)
+                            .filter(id -> !Objects.equals(id, user.getId()))
+                            .map(id -> {
+                                log.error(EMAIL_ALREADY_EXIST_MESSAGE, id, email);
+                                throw new EmailAlreadyExistException(email);
+                            });
+
+                    return accountEditDtoMapper.map(dto, user);
+                })
+                .map(userRepository::saveAndFlush)
+                .map(userReadMapper::map);
+    }
+
+    @Transactional
+    public Optional<UserReadDto> update(Long id, UserCreateDto dto) {
+//        return userRepository.findById(id)
+//                .map(entity -> {
+////                    uploadImage(userDto.getImage());
+//                    return userCreateEditMapper.map(userDto, entity);
+//                })
+//                .map(userRepository::saveAndFlush)
+//                .map(userReadMapper::map);
+        var phone = dto.getPhone();
+        var email = dto.getEmail();
         return userRepository.findById(id)
-                .map(entity -> {
-//                    uploadImage(userDto.getImage());
-                    return userCreateEditMapper.map(userDto, entity);
+                .map(user -> {
+                    // check the existence of other users with this phone
+                    userRepository.findByPhone(phone)
+                            .map(User::getId)
+                            .filter(userId -> !Objects.equals(userId, user.getId()))
+                            .map(userId -> {
+                                log.error(PHONE_ALREADY_EXIST_MESSAGE, userId, phone);
+                                throw new PhoneAlreadyExistException(phone);
+                            });
+                    // check the existence of other users with this email
+                    userRepository.findByEmailIgnoreCase(email)
+                            .map(User::getId)
+                            .filter(userId -> !Objects.equals(userId, user.getId()))
+                            .map(userId -> {
+                                log.error(EMAIL_ALREADY_EXIST_MESSAGE, id, email);
+                                throw new EmailAlreadyExistException(email);
+                            });
+
+                    return userCreateEditMapper.map(dto, user);
                 })
                 .map(userRepository::saveAndFlush)
                 .map(userReadMapper::map);

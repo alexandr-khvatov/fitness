@@ -1,9 +1,10 @@
 package com.kh.fitness.dto.user;
 
 import com.kh.fitness.validation.EmailNotExist;
+import com.kh.fitness.validation.Password;
+import com.kh.fitness.validation.Phone;
 import com.kh.fitness.validation.PhoneNotExist;
 import com.kh.fitness.validation.group.CheckNotExistAfter;
-import com.kh.fitness.validation.Phone;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -33,6 +34,7 @@ public class UserCreateDto {
     String lastname;
 
     @NotBlank
+    @Password
     String password;
 
     @Phone

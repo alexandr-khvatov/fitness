@@ -7,18 +7,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class GymReadDtoMapper implements Mapper<Gym, GymReadDto> {
     @Override
-    public GymReadDto map(Gym from) {
+    public GymReadDto map(Gym f) {
         return GymReadDto.builder()
-                .id(from.getId())
-                .name(from.getName())
-                .address(from.getGymContacts().getAddress())
-                .phone(from.getGymContacts().getPhone())
-                .email(from.getGymContacts().getEmail())
-                .vkLink(from.getGymSocialMedia().getVkLink())
-                .tgLink(from.getGymSocialMedia().getTgLink())
-                .instLink(from.getGymSocialMedia().getInstLink())
-                .workingHoursOnWeekdays(from.getWorkingHours().getWorkingHoursOnWeekdays())
-                .workingHoursOnWeekends(from.getWorkingHours().getWorkingHoursOnWeekends())
+                .id(f.getId())
+                .name(f.getName())
+                .address(f.getGymContacts().getAddress())
+                .phone(f.getGymContacts().getPhone())
+                .email(f.getGymContacts().getEmail())
+                .vkLink(f.getGymSocialMedia().getVkLink())
+                .tgLink(f.getGymSocialMedia().getTgLink())
+                .instLink(f.getGymSocialMedia().getInstLink())
+                .workingHoursOnWeekdays(f.getWorkingHours().getWorkingHoursOnWeekdays())
+                .workingHoursOnWeekends(f.getWorkingHours().getWorkingHoursOnWeekends())
                 .build();
     }
 }

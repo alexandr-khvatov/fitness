@@ -83,6 +83,9 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(urlConfig -> urlConfig
+                        .mvcMatchers("/**").permitAll()
+                        .mvcMatchers(PathUtils.API_V1 + "/gyms/**").permitAll()
+                        .mvcMatchers(PathUtils.API_V1 + "/coaches/**").permitAll()
                         .mvcMatchers(PathUtils.API_V1 + "/auth/**").permitAll()
                         .mvcMatchers(PathUtils.API_V1 + "/accounts").permitAll()
                         .mvcMatchers("/built/**", "/main.css").permitAll()

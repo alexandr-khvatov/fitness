@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserRegisterMapper implements Mapper<UserRegisterDto, User> {
     @Override
-    public User map(UserRegisterDto object) {
+    public User map(UserRegisterDto f) {
         User user = new User();
-        copy(object, user);
+        copy(f, user);
         return user;
     }
 

@@ -1,7 +1,7 @@
 package com.kh.fitness.api.handler;
 
 import com.kh.fitness.apierror.ApiError;
-import com.kh.fitness.exception.PasswordMatchException;
+import com.kh.fitness.exception.FitnessAppException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -31,8 +31,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RestControllerAdvice(basePackages = "com.kh.fitness.api")
 public class ApiControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(PasswordMatchException.class)
-    protected ResponseEntity<Object> handleInconsistentEditException(PasswordMatchException e) {
+    @ExceptionHandler(FitnessAppException.class)
+    protected ResponseEntity<Object> handleInconsistentEditException(FitnessAppException e) {
         return buildResponseEntity(new ApiError(BAD_REQUEST, e.getMessage(), e));
     }
 

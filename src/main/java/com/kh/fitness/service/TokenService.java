@@ -3,11 +3,14 @@ package com.kh.fitness.service;
 import com.kh.fitness.config.SecurityConfig;
 import com.kh.fitness.dto.LoginDto;
 import com.kh.fitness.dto.TokenDto;
+import com.kh.fitness.exception.UserNotFoundException;
+import com.kh.fitness.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -24,10 +27,9 @@ import java.util.stream.Collectors;
 @Validated
 public class TokenService {
     public static final String ISSUER = "self";
-
     private final JwtEncoder encoder;
-
     private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
 
     public TokenDto authentication(@Valid LoginDto dto) {
         Authentication authentication = authenticationManager
@@ -38,6 +40,26 @@ public class TokenService {
         return generateToken(authentication);
     }
 
+    // TODO нужно сделать так, чтобы старые токены удалялись(стали невалидными)
+    public TokenDto updateToken(Long id) {
+        var maybeUser = userRepository.findById(id);
+        if (maybeUser.isPresent()) {
+            var nowAuthorities = SecurityContextHolder.getContext()
+                    .getAuthentication()
+                    .getAuthorities();
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    maybeUser.get().getPhone(),
+                    maybeUser.get().getPassword(),
+                    nowAuthorities
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return generateToken(authentication);
+        } else {
+            throw new UserNotFoundException(id);
+        }
+    }
+
+    // TODO пофиксить баг к авторити добавляется префикс "ROLE_" несколько раз --->  "ROLE_ROLE_CUSTOMER"
     private TokenDto generateToken(Authentication authentication) {
         Instant now = Instant.now();
         String scope = authentication.getAuthorities().stream()

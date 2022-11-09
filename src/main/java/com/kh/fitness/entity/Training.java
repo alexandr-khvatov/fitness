@@ -3,13 +3,19 @@ package com.kh.fitness.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.*;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+import static javax.persistence.EnumType.*;
+import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
 
 @Data
 @Entity
 public class Training implements BaseEntity<Long> {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     private String name;
@@ -18,6 +24,14 @@ public class Training implements BaseEntity<Long> {
 
     private LocalTime endTime;
 
-    @Enumerated(value = EnumType.ORDINAL)
+    @Enumerated(value = ORDINAL)
     private DayOfWeek dayOfWeek;
+
+    private LocalDate date;
+
+    @ManyToOne(optional = false)
+    private Coach coach;
+
+    @ManyToOne(fetch = LAZY)
+    private Gym gym;
 }
