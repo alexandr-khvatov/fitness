@@ -37,10 +37,11 @@ public class GymService {
     }
 
     @Transactional
-    public Optional<Gym> update(Long id, GymCreateEditDto updateGym) {
+    public Optional<GymReadDto> update(Long id, GymCreateEditDto updateGym) {
         return gymRepository.findById(id)
                 .map(entity -> gymCreateEditDtoMapper.map(updateGym, entity))
-                .map(gymRepository::saveAndFlush);
+                .map(gymRepository::saveAndFlush)
+                .map(gymReadDtoMapper::map);
     }
 
     @Transactional

@@ -1,9 +1,12 @@
 package com.kh.fitness.mapper.user;
 
 import com.kh.fitness.dto.user.UserReadDto;
+import com.kh.fitness.entity.Role;
 import com.kh.fitness.entity.User;
 import com.kh.fitness.mapper.Mapper;
 import org.springframework.stereotype.Component;
+
+import static java.util.stream.Collectors.toSet;
 
 @Component
 public class UserReadMapper implements Mapper<User, UserReadDto> {
@@ -16,6 +19,9 @@ public class UserReadMapper implements Mapper<User, UserReadDto> {
                 f.getLastname(),
                 f.getEmail(),
                 f.getPhone(),
-                f.getBirthDate());
+                f.getBirthDate(),
+                f.getRoles().stream()
+                        .map(Role::getId)
+                        .collect(toSet()));
     }
 }

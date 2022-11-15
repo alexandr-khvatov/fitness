@@ -38,4 +38,13 @@ public class ImageService {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean removeImage(String imagePath) {
+        Path fullImagePath = Path.of(bucket, imagePath);
+        try {
+            return Files.deleteIfExists(fullImagePath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

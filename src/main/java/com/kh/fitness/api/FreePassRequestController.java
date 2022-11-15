@@ -1,30 +1,43 @@
 package com.kh.fitness.api;
 
-import com.kh.fitness.dto.FreePassRequestCreateDto;
-import com.kh.fitness.entity.FreePassRequest;
-import com.kh.fitness.service.FreePassRequestService;
 import com.kh.fitness.api.util.PathUtils;
+import com.kh.fitness.dto.coach.CoachReadDto;
+import com.kh.fitness.dto.free_pass.FreePassReadDto;
+import com.kh.fitness.dto.free_pass.FreePassRequestCreateDto;
+import com.kh.fitness.entity.FreePass;
+import com.kh.fitness.service.FreePassService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping(PathUtils.API_V1 + "/free-pass")
 @RequiredArgsConstructor
 public class FreePassRequestController {
-    private final FreePassRequestService freePassRequestService;
+    private final FreePassService freePassRequestService;
 
     @GetMapping("/{id}")
-    public Optional<FreePassRequest> findById(@PathVariable Long id) {
+    public Optional<FreePass> findById(@PathVariable Long id) {
         return freePassRequestService.findById(id);
     }
 
+    @GetMapping
+    public List<FreePassReadDto> findAllByGymId(@RequestParam Long gymId) {
+        return freePassRequestService.findAllByGymId(gymId);
+    }
+
     @PostMapping
-    public FreePassRequestCreateDto create(@RequestBody FreePassRequestCreateDto dto) {
-        return freePassRequestService.create(dto);
+    public FreePassReadDto create(@RequestBody Long gymId, @RequestBody FreePassRequestCreateDto dto) {
+        return freePassRequestService.create(gymId, dto);
+    }
+
+    @PutMapping("/{id}")
+    public Optional<FreePassReadDto> update(@PathVariable Long id) {
+        return freePassRequestService.updateFieldIsDone(id);
     }
 
     @DeleteMapping("/{id}")

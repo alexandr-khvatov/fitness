@@ -1,8 +1,11 @@
 package com.kh.fitness.dto.user;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -15,4 +18,5 @@ public class UserReadDto {
     String email;
     String phone;
     LocalDate birthDate;
+    Set<Long> roles;
 }

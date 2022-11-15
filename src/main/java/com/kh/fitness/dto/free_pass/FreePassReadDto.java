@@ -1,13 +1,19 @@
-package com.kh.fitness.dto;
+package com.kh.fitness.dto.free_pass;
 
 import com.kh.fitness.validation.Phone;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-@Value
-public class FreePassRequestCreateDto {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class FreePassReadDto {
+    Long id;
+
     @NotBlank
     String firstname;
 
@@ -18,5 +24,7 @@ public class FreePassRequestCreateDto {
 
     @Email
     String email;
+
+    Boolean isDone;
 }
 

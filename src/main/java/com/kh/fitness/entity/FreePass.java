@@ -7,12 +7,14 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-public class FreePassRequest extends AuditingEntity<Long> {
+public class FreePass extends AuditingEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,5 +31,9 @@ public class FreePassRequest extends AuditingEntity<Long> {
     private String email;
 
     @Column(nullable = false)
-    private Boolean isActive;
+    private Boolean isDone;
+
+    @ManyToOne(optional = false, fetch = LAZY)
+    @JoinColumn(name = "gym_id")
+    private Gym gym;
 }

@@ -38,7 +38,7 @@ public class GymController {
     }
 
     @PutMapping("/{id}")
-    public Optional<Gym> update(@PathVariable Long id, @RequestBody GymCreateEditDto gym) {
+    public Optional<GymReadDto> update(@PathVariable Long id, @RequestBody GymCreateEditDto gym) {
         return gymService.update(id, gym);
     }
 

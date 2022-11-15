@@ -30,10 +30,10 @@ public class UserController {
     private final RoleService roleService;
     private final AuthenticationManager authenticationManager;
 
-//    @GetMapping("/{phone}")
-//    public Optional<UserReadDto> getUserByUsername(@PathVariable String phone) {
-//        return userService.findByUsername(phone);
-//    }
+    @GetMapping("/search")
+    public Optional<UserReadDto> getUserByUsername(@RequestParam String username) {
+        return userService.findByUsername(username);
+    }
 
     @GetMapping("/{id}")
     public Optional<UserReadDto> getById(@PathVariable Long id) {

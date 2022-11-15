@@ -75,3 +75,4 @@ public class TokenService {
         return new TokenDto(this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue());
     }
 }
+// TODO прикрутить userId к токену
