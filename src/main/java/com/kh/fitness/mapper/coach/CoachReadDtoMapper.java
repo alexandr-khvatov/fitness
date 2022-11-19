@@ -18,7 +18,7 @@ public class CoachReadDtoMapper implements Mapper<Coach, CoachReadDto> {
                 .phone(f.getPhone())
                 .email(f.getEmail())
                 .specialization(f.getSpecialization())
-                .image(f.getImage())
+                .image(f.getImage() != null ? "http://localhost:8080/api/v1/coaches/" + f.getId() + "/avatar" : null)
                 .description(f.getDescription())
                 .build();
     }

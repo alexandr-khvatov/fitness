@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
@@ -39,5 +40,6 @@ public class CoachEditDto {
 
     private String description;
 
+    @NotNull
     private Long gymId;
 }

@@ -45,6 +45,11 @@ public class UserController {
         return userService.findAll();
     }
 
+    @GetMapping("/roles")
+    public List<UserReadDto> findAllWithRoleName(@RequestParam String name) {
+        return userService.findAllWithRoleName(name);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public UserReadDto create(@RequestBody UserCreateDto user) {
@@ -55,6 +60,13 @@ public class UserController {
     public UserReadDto update(@PathVariable("id") Long id,
                               @RequestBody UserCreateDto user) {
         return userService.update(id, user)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @PutMapping("mng/{id}")
+    public UserReadDto updateWithoutPassword(@PathVariable("id") Long id,
+                              @RequestBody UserCreateDto user) {
+        return userService.updateWithoutPassword(id, user)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 

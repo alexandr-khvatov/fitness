@@ -31,6 +31,19 @@ public class CoachEditMapper implements Mapper<CoachEditDto, Coach> {
         return coach;
     }
 
+    public Coach map(CoachEditDto f,Coach t){
+        t.setFirstname(f.getFirstname());
+        t.setPatronymic(f.getPatronymic());
+        t.setLastname(f.getLastname());
+        t.setBirthDate(f.getBirthDate());
+        t.setPhone(f.getPhone());
+        t.setEmail(f.getEmail());
+        t.setSpecialization(f.getSpecialization());
+        t.setDescription(f.getDescription());
+        t.setGym(getGym(f.getGymId()));
+        return t;
+    }
+
     public Gym getGym(Long gymId) {
         return Optional.ofNullable(gymId)
                 .flatMap(gymRepository::findById)

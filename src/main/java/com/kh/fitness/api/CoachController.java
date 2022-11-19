@@ -28,7 +28,7 @@ public class CoachController {
     private final CoachService coachService;
 
     @GetMapping("/{id}")
-    public Optional<Coach> findById(@PathVariable Long id) {
+    public Optional<CoachReadDto> findById(@PathVariable Long id) {
         return coachService.findById(id);
     }
 

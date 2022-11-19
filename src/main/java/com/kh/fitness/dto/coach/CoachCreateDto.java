@@ -1,6 +1,9 @@
 package com.kh.fitness.dto.coach;
 
+import com.kh.fitness.validation.EmailNotExist;
 import com.kh.fitness.validation.Phone;
+import com.kh.fitness.validation.PhoneNotExist;
+import com.kh.fitness.validation.group.CheckNotExistAfter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,9 +33,11 @@ public class CoachCreateDto {
     private LocalDate birthDate;
 
     @Phone
+    @PhoneNotExist(groups = CheckNotExistAfter.class)
     private String phone;
 
     @Email
+    @EmailNotExist(groups = CheckNotExistAfter.class)
     private String email;
 
     @NotBlank

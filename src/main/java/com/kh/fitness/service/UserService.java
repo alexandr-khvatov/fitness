@@ -13,10 +13,7 @@ import com.kh.fitness.exception.PasswordMatchException;
 import com.kh.fitness.exception.PhoneAlreadyExistException;
 import com.kh.fitness.exception.UserNotFoundException;
 import com.kh.fitness.mapper.account.AccountEditDtoMapper;
-import com.kh.fitness.mapper.user.UserCreateEditMapper;
-import com.kh.fitness.mapper.user.UserCreatedDtoMapper;
-import com.kh.fitness.mapper.user.UserReadMapper;
-import com.kh.fitness.mapper.user.UserRegisterMapper;
+import com.kh.fitness.mapper.user.*;
 import com.kh.fitness.repository.UserRepository;
 import com.kh.fitness.validation.sequence.DefaultAndNotExistComplete;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +56,7 @@ public class UserService implements UserDetailsService {
     private final UserReadMapper userReadMapper;
     private final UserRegisterMapper userRegisterMapper;
     private final UserCreateEditMapper userCreateEditMapper;
+    private final UserEditWithoutPasswordMapper userEditWithoutPasswordMapper;
     private final UserCreatedDtoMapper userCreatedDtoMapper;
     private final AccountEditDtoMapper accountEditDtoMapper;
 
@@ -164,6 +162,42 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
+    public Optional<UserReadDto> updateWithoutPassword(Long id, UserCreateDto dto) {
+//        return userRepository.findById(id)
+//                .map(entity -> {
+////                    uploadImage(userDto.getImage());
+//                    return userCreateEditMapper.map(userDto, entity);
+//                })
+//                .map(userRepository::saveAndFlush)
+//                .map(userReadMapper::map);
+        var phone = dto.getPhone();
+        var email = dto.getEmail();
+        return userRepository.findById(id)
+                .map(user -> {
+                    // check the existence of other users with this phone
+                    userRepository.findByPhone(phone)
+                            .map(User::getId)
+                            .filter(userId -> !Objects.equals(userId, user.getId()))
+                            .map(userId -> {
+                                log.error(PHONE_ALREADY_EXIST_MESSAGE, userId, phone);
+                                throw new PhoneAlreadyExistException(phone);
+                            });
+                    // check the existence of other users with this email
+                    userRepository.findByEmailIgnoreCase(email)
+                            .map(User::getId)
+                            .filter(userId -> !Objects.equals(userId, user.getId()))
+                            .map(userId -> {
+                                log.error(EMAIL_ALREADY_EXIST_MESSAGE, id, email);
+                                throw new EmailAlreadyExistException(email);
+                            });
+
+                    return userEditWithoutPasswordMapper.map(dto, user);
+                })
+                .map(userRepository::saveAndFlush)
+                .map(userReadMapper::map);
+    }
+
+    @Transactional
     public Optional<UserReadDto> update(Long id, UserCreateDto dto) {
 //        return userRepository.findById(id)
 //                .map(entity -> {
@@ -229,6 +263,11 @@ public class UserService implements UserDetailsService {
 
     public List<UserReadDto> findAll() {
         return userRepository.findAll().stream()
+                .map(x -> new UserReadMapper().map(x))
+                .toList();
+    }
+    public List<UserReadDto> findAllWithRoleName(String name) {
+        return userRepository.findAllWithRoleName(name).stream()
                 .map(x -> new UserReadMapper().map(x))
                 .toList();
     }
