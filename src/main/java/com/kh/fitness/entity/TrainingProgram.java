@@ -7,6 +7,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.util.Set;
 
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -26,7 +27,7 @@ public class TrainingProgram implements BaseEntity<Long> {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @OneToMany(mappedBy = "trainingProgram")
+    @OneToMany(mappedBy = "trainingProgram",cascade = ALL)
     private Set<SubTrainingProgram> subTrainingPrograms;
 
     @ManyToOne(optional = false, fetch = LAZY)

@@ -1,6 +1,6 @@
 package com.kh.fitness.dto.trainingProgram;
 
-import com.kh.fitness.dto.subTrainingProgram.SubTrainingProgramReadDto;
+import com.kh.fitness.dto.subTrainingProgram.SubProgramReadDto;
 import lombok.*;
 
 import java.util.List;
@@ -10,11 +10,11 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TrainingProgramReadDto {
+public class ProgramReadWithSubProgramsDto {
     private Long id;
     private String name;
     private String overview;
     private String image;
     private String description;
-    private List<SubTrainingProgramReadDto> subTrainings;
+    private List<SubProgramReadDto> subTrainings;
 }

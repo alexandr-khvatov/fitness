@@ -1,9 +1,8 @@
 package com.kh.fitness.api;
 
 import com.kh.fitness.api.util.PathUtils;
-import com.kh.fitness.dto.coach.CoachReadDto;
 import com.kh.fitness.dto.free_pass.FreePassReadDto;
-import com.kh.fitness.dto.free_pass.FreePassRequestCreateDto;
+import com.kh.fitness.dto.free_pass.FreePassCreateDto;
 import com.kh.fitness.entity.FreePass;
 import com.kh.fitness.service.FreePassService;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +30,8 @@ public class FreePassRequestController {
     }
 
     @PostMapping
-    public FreePassReadDto create(@RequestBody Long gymId, @RequestBody FreePassRequestCreateDto dto) {
-        return freePassRequestService.create(gymId, dto);
+    public FreePassReadDto create(@RequestBody FreePassCreateDto dto) {
+        return freePassRequestService.create(dto);
     }
 
     @PutMapping("/{id}")

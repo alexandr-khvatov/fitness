@@ -1,17 +1,16 @@
 package com.kh.fitness.service;
 
 import com.kh.fitness.dto.free_pass.FreePassReadDto;
-import com.kh.fitness.dto.free_pass.FreePassRequestCreateDto;
+import com.kh.fitness.dto.free_pass.FreePassCreateDto;
 import com.kh.fitness.entity.FreePass;
 import com.kh.fitness.mapper.free_pass.FreePassReadDtoMapper;
-import com.kh.fitness.mapper.free_pass.FreePassRequestCreateDtoMapper;
+import com.kh.fitness.mapper.free_pass.FreePassCreateMapper;
 import com.kh.fitness.repository.FreePassRepository;
 import com.kh.fitness.repository.GymRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +21,7 @@ public class FreePassService {
     private final FreePassRepository freePassRepository;
     private final GymRepository gymRepository;
     private final FreePassReadDtoMapper freePassReadDtoMapper;
-    private final FreePassRequestCreateDtoMapper freePassRequestCreateDtoMapper;
+    private final FreePassCreateMapper freePassCreateMapper;
 
     public Optional<FreePass> findById(Long id) {
         return freePassRepository.findById(id);
@@ -34,14 +33,9 @@ public class FreePassService {
     }
 
     @Transactional
-    public FreePassReadDto create(Long gymId, FreePassRequestCreateDto dto) {
-        var mayBeGym = gymRepository.findById(gymId).orElseThrow(() -> new EntityNotFoundException("Entity Gym with id: " + gymId));
+    public FreePassReadDto create(FreePassCreateDto dto) {
         return Optional.of(dto)
-                .map(freePassRequestCreateDtoMapper::map)
-                .map(freePass -> {
-                    freePass.setGym(mayBeGym);
-                    return freePass;
-                })
+                .map(freePassCreateMapper::map)
                 .map(freePassRepository::saveAndFlush)
                 .map(freePassReadDtoMapper::map)
                 .orElseThrow();
