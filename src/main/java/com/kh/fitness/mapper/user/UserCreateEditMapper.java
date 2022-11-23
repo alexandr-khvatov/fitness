@@ -46,7 +46,7 @@ public class UserCreateEditMapper implements Mapper<UserCreateDto, User> {
         user.setPassword(o.getPassword());
 
         var maybeRoles = rolesResolver(o.getRoles());
-        if (!(maybeRoles.isEmpty() || maybeRoles.size() != o.getRoles().size())) {
+        if (!maybeRoles.isEmpty()) {
             user.setRoles(maybeRoles);
         } else {
             log.error("Role set is empty or cannot be resolved, for creating user: {},list of roles id that cannot be resolved: {}", user, o.getRoles());
@@ -64,6 +64,9 @@ public class UserCreateEditMapper implements Mapper<UserCreateDto, User> {
     }
 
     private Set<Role> rolesResolver(Set<Long> roles) {
+        if(roles.contains(1L) || roles.contains(2L)){
+            roles.add(3L);
+        }
         return roleRepository.findAll().stream()
                 .filter(role -> roles.contains(role.getId()))
                 .collect(toSet());

@@ -35,8 +35,14 @@ FROM users;
 INSERT INTO users_role (user_id, role_id)
 VALUES ((SELECT id FROM users WHERE email = 'admin@gmail.com'),
         (SELECT id FROM role WHERE UPPER(name) = UPPER('ADMIN'))),
+       ((SELECT id FROM users WHERE email = 'admin@gmail.com'),
+        (SELECT id FROM role WHERE UPPER(name) = UPPER('CUSTOMER'))),
+
        ((SELECT id FROM users WHERE email = 'manager@gmail.com'),
         (SELECT id FROM role WHERE UPPER(name) = UPPER('MANAGER'))),
+       ((SELECT id FROM users WHERE email = 'manager@gmail.com'),
+        (SELECT id FROM role WHERE UPPER(name) = UPPER('CUSTOMER'))),
+
        ((SELECT id FROM users WHERE email = 'customer@gmail.com'),
         (SELECT id FROM role WHERE UPPER(name) = UPPER('CUSTOMER')));
 
@@ -151,16 +157,16 @@ VALUES ('1 месяц', 1, '1 месяц', '3500'),
        ('12 месяц', 1, '12 месяц', '23300');
 
 
-INSERT INTO free_pass (gym_id,email, firstname, lastname, phone, is_done)
-VALUES (1,'test@gmail.com', 'Иван', 'Иванов', '+79990009999', FALSE),
-       (1,'test1@gmail.com', 'Алексей', 'Иванов', '+79991009999', FALSE),
-       (1,'test21@gmail.com', 'Алексей', 'Иванов', '+79992009999', FALSE),
-       (1,'test31@gmail.com', 'Алексей', 'Иванов', '+79993009999', FALSE),
-       (1,'test41@gmail.com', 'Алексей', 'Иванов', '+79994009999', FALSE),
-       (1,'test51@gmail.com', 'Алексей', 'Иванов', '+79995009999', FALSE),
-       (1,'test61@gmail.com', 'Алексей', 'Иванов', '+79996009999', FALSE),
-       (1,'test71@gmail.com', 'Алексей', 'Иванов', '+79997009999', FALSE),
-       (1,'test81@gmail.com', 'Алексей', 'Иванов', '+79998009999', FALSE),
-       (1,'test2@gmail.com', 'Игнат', 'Иванов', '+79990109999', FALSE);
+INSERT INTO free_pass (gym_id, email, firstname, lastname, phone, is_done)
+VALUES (1, 'test@gmail.com', 'Иван', 'Иванов', '+79990009999', FALSE),
+       (1, 'test1@gmail.com', 'Алексей', 'Иванов', '+79991009999', FALSE),
+       (1, 'test21@gmail.com', 'Алексей', 'Иванов', '+79992009999', FALSE),
+       (1, 'test31@gmail.com', 'Алексей', 'Иванов', '+79993009999', FALSE),
+       (1, 'test41@gmail.com', 'Алексей', 'Иванов', '+79994009999', FALSE),
+       (1, 'test51@gmail.com', 'Алексей', 'Иванов', '+79995009999', FALSE),
+       (1, 'test61@gmail.com', 'Алексей', 'Иванов', '+79996009999', FALSE),
+       (1, 'test71@gmail.com', 'Алексей', 'Иванов', '+79997009999', FALSE),
+       (1, 'test81@gmail.com', 'Алексей', 'Иванов', '+79998009999', FALSE),
+       (1, 'test2@gmail.com', 'Игнат', 'Иванов', '+79990109999', FALSE);
 
 
