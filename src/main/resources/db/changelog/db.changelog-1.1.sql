@@ -1,3 +1,6 @@
+--liquibase formatted sql
+
+--changeset kh:1
 INSERT INTO gym (name, address, email, phone, working_hours_on_weekdays, working_hours_on_weekends, inst_link, tg_link,
                  vk_link)
 VALUES ('СТАРТ.ПОЛИТЕХ',

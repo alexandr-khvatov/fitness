@@ -12,14 +12,11 @@ spring:
     properties.hibernate:
       show_sql: true
       format_sql: true
-      hbm2ddl.auto: update
-#        update create
-
+      hbm2ddl.auto: validate
   mvc:
     view:
       prefix: /WEB-INF/jsp/
       suffix: .jsp
-
   messages:
     basename: messages
 
@@ -45,7 +42,9 @@ spring:
 #  public-key: classpath:certs/public.pem
 
 client.origin: http://localhost:3000
-
+app:
+  image:
+    bucket: /files/image
 logging:
   level:
     root: WARN
@@ -58,7 +57,6 @@ logging:
             CommonsRequestLoggingFilter: TRACE
         security:
           oauth2: TRACE
-
 
 springdoc:
   swagger-ui:
