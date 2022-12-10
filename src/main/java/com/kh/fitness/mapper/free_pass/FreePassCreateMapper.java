@@ -33,6 +33,9 @@ public class FreePassCreateMapper implements Mapper<FreePassCreateDto, FreePass>
         freePass.setPhone(from.getPhone());
         freePass.setEmail(from.getEmail());
         freePass.setIsDone(false);
+        freePass.setDate(from.getDate());
+        freePass.setStartTime(from.getStart());
+        freePass.setEndTime(from.getEnd());
         freePass.setGym(getGym(from.getGymId()));
         return freePass;
     }

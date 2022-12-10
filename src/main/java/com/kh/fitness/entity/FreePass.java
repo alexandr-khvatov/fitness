@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import static javax.persistence.FetchType.LAZY;
 
 @Data
@@ -32,6 +35,11 @@ public class FreePass extends AuditingEntity<Long> {
 
     @Column(nullable = false)
     private Boolean isDone;
+
+    private LocalDate date;
+
+    private LocalTime startTime;
+    private LocalTime endTime;
 
     @ManyToOne(optional = false, fetch = LAZY)
     @JoinColumn(name = "gym_id")

@@ -38,6 +38,11 @@ public class SubProgramService {
         return subProgramRepository.findById(id).map(subProgramReadMapper::map);
     }
 
+    public List<SubProgramReadDto> findAll() {
+        return subProgramRepository.findAll().stream()
+                .map(subProgramReadMapper::map).toList();
+    }
+
     public List<SubProgramReadDto> findAllByProgramId(Long programId) {
         return subProgramRepository.findAllByTrainingProgramId(programId).stream()
                 .map(subProgramReadMapper::map).toList();

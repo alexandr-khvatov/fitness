@@ -32,6 +32,12 @@ public class SubProgramController {
         return subProgramService.findById(id);
     }
 
+    /* TODO VERY BAD end point*/
+    @GetMapping("/all")
+    public List<SubProgramReadDto> findAll() {
+        return subProgramService.findAll();
+    }
+
     @GetMapping
     public List<SubProgramReadDto> findAllByProgramId(@RequestParam Long programId) {
         return subProgramService.findAllByProgramId(programId);

@@ -141,14 +141,18 @@ VALUES ('Pump', 1, 'overview1', 'description1', NULL),
        ('Belly PRO', 6, 'overview6', 'description6', NULL),
        ('Zumba', 6, 'overview6', 'description6', NULL);
 
-INSERT INTO training (gym_id, coach_id, name, start_time, end_time, day_of_week)
-VALUES (1, 1, 'Yoga', '10:00', '11:00', '1'),
-       (1, 1, 'Tabata', '10:00', '11:00', '2'),
-       (1, 1, 'Stretch', '10:00', '11:00', '3'),
-       (1, 1, 'Yoga', '10:00', '11:00', '4'),
-       (1, 1, 'Body Sculpt', '10:00', '11:00', '5'),
-       (1, 1, 'Belly Dance', '10:00', '11:00', '6'),
-       (1, 1, 'Pilates', '10:00', '11:00', '7');
+INSERT INTO room (gym_id,name)
+VALUES ('1','Большой зал'),
+       ('1','Малый зал');
+
+INSERT INTO training (gym_id, coach_id,room_id,sub_training_program_id, name, start_time, end_time, day_of_week,total_seats,taken_seats)
+VALUES (1, 1,'1','1', 'Yoga', '09:00:00', '10:00:00', '1','25','0'),
+       (1, 1,'1','1', 'Tabata', '10:00:00', '11:10:00', '2','25','0'),
+       (1, 1,'1','1', 'Stretch', '11:00:00', '12:10:00', '3','25','0'),
+       (1, 1,'2','1', 'Yoga', '12:00:00', '13:10:00', '4','25','0'),
+       (1, 1,'2','1', 'Body Sculpt', '13:00:00', '14:10:00', '5','25','0'),
+       (1, 1,'2','1', 'Belly Dance', '14:00:00', '15:10:00', '6','25','0'),
+       (1, 1,'2','1', 'Pilates', '15:00:00', '16:10:00', '0','25','0');
 
 INSERT INTO subscription (name, gym_id, period, price)
 VALUES ('1 месяц', 1, '1 месяц', '3500'),
@@ -157,16 +161,16 @@ VALUES ('1 месяц', 1, '1 месяц', '3500'),
        ('12 месяц', 1, '12 месяц', '23300');
 
 
-INSERT INTO free_pass (gym_id, email, firstname, lastname, phone, is_done)
-VALUES (1, 'test@gmail.com', 'Иван', 'Иванов', '+79990009999', FALSE),
-       (1, 'test1@gmail.com', 'Алексей', 'Иванов', '+79991009999', FALSE),
-       (1, 'test21@gmail.com', 'Алексей', 'Иванов', '+79992009999', FALSE),
-       (1, 'test31@gmail.com', 'Алексей', 'Иванов', '+79993009999', FALSE),
-       (1, 'test41@gmail.com', 'Алексей', 'Иванов', '+79994009999', FALSE),
-       (1, 'test51@gmail.com', 'Алексей', 'Иванов', '+79995009999', FALSE),
-       (1, 'test61@gmail.com', 'Алексей', 'Иванов', '+79996009999', FALSE),
-       (1, 'test71@gmail.com', 'Алексей', 'Иванов', '+79997009999', FALSE),
-       (1, 'test81@gmail.com', 'Алексей', 'Иванов', '+79998009999', FALSE),
-       (1, 'test2@gmail.com', 'Игнат', 'Иванов', '+79990109999', FALSE);
+INSERT INTO free_pass (gym_id,date,start_time,end_time, email, firstname, lastname, phone, is_done)
+VALUES (1,'2022-12-13','19:00:00','20:00:00', 'test@gmail.com', 'Иван', 'Иванов', '+79990009999', FALSE),
+       (1,'2022-12-13','19:00:00','20:00:00', 'test1@gmail.com', 'Алексей', 'Иванов', '+79991009999', FALSE),
+       (1,'2022-12-13','19:00:00','20:00:00', 'test21@gmail.com', 'Алексей', 'Иванов', '+79992009999', FALSE),
+       (1,'2022-12-13','19:00:00','20:00:00', 'test31@gmail.com', 'Алексей', 'Иванов', '+79993009999', FALSE),
+       (1,'2022-12-13','19:00:00','20:00:00', 'test41@gmail.com', 'Алексей', 'Иванов', '+79994009999', FALSE),
+       (1,'2022-12-13','19:00:00','20:00:00', 'test51@gmail.com', 'Алексей', 'Иванов', '+79995009999', FALSE),
+       (1,'2022-12-13','19:00:00','20:00:00', 'test61@gmail.com', 'Алексей', 'Иванов', '+79996009999', FALSE),
+       (1,'2022-12-13','19:00:00','20:00:00', 'test71@gmail.com', 'Алексей', 'Иванов', '+79997009999', FALSE),
+       (1,'2022-12-13','19:00:00','20:00:00', 'test81@gmail.com', 'Алексей', 'Иванов', '+79998009999', FALSE),
+       (1,'2022-12-13','19:00:00','20:00:00', 'test2@gmail.com', 'Игнат', 'Иванов', '+79990109999', FALSE);
 
 

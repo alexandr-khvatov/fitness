@@ -33,7 +33,10 @@ public class FreePassReadDtoMapper implements Mapper<FreePass, FreePassReadDto> 
                 from.getLastname(),
                 from.getPhone(),
                 from.getEmail(),
-                from.getIsDone()
+                from.getIsDone(),
+                from.getDate(),
+                from.getStartTime(),
+                from.getEndTime()
         );
     }
 }

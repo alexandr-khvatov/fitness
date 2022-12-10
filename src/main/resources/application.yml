@@ -1,4 +1,6 @@
 spring:
+  liquibase:
+    enabled: true # true false
   datasource:
     url: jdbc:postgresql://localhost:5432/fitness
     username: app_user
@@ -13,6 +15,7 @@ spring:
       show_sql: true
       format_sql: true
       hbm2ddl.auto: validate
+  #      validate update
   mvc:
     view:
       prefix: /WEB-INF/jsp/
@@ -29,6 +32,18 @@ spring:
     mode: HTML
     prefix: classpath:/templates/
     suffix: .html
+
+  mail:
+    host: smtp.gmail.com
+    username: khvatov6399@gmail.com
+    password: byvlmxfxebfibxdr
+    port: '587'
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: 'true'
+          auth: 'true'
 
   profiles:
     active: prod

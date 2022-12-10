@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @NoArgsConstructor
@@ -26,4 +28,8 @@ public class FreePassCreateDto {
 
     @NotNull
     Long gymId;
+
+    LocalDate date;
+    LocalTime start;
+    LocalTime end;
 }

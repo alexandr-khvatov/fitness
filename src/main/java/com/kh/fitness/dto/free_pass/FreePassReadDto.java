@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
@@ -26,5 +28,9 @@ public class FreePassReadDto {
     String email;
 
     Boolean isDone;
+
+    LocalDate date;
+    LocalTime start;
+    LocalTime end;
 }
 
