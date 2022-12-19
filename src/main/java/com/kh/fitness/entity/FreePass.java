@@ -44,4 +44,7 @@ public class FreePass extends AuditingEntity<Long> {
     @ManyToOne(optional = false, fetch = LAZY)
     @JoinColumn(name = "gym_id")
     private Gym gym;
+
+    @ManyToOne( fetch = LAZY)
+    private Training training;
 }

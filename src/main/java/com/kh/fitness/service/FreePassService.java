@@ -1,17 +1,23 @@
 package com.kh.fitness.service;
 
 import com.kh.fitness.dto.free_pass.FreePassCreateDto;
+import com.kh.fitness.dto.free_pass.FreePassEditTrainingDto;
 import com.kh.fitness.dto.free_pass.FreePassReadDto;
-import com.kh.fitness.entity.FreePass;
+import com.kh.fitness.exception.EmailAlreadyExistException;
+import com.kh.fitness.exception.NegativeDataException;
+import com.kh.fitness.exception.PhoneAlreadyExistException;
 import com.kh.fitness.mapper.free_pass.FreePassCreateMapper;
+import com.kh.fitness.mapper.free_pass.FreePassEditTrainingMapper;
 import com.kh.fitness.mapper.free_pass.FreePassReadDtoMapper;
 import com.kh.fitness.repository.FreePassRepository;
 import com.kh.fitness.repository.GymRepository;
+import com.kh.fitness.repository.TrainingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -23,12 +29,14 @@ public class FreePassService {
     private final EmailService emailService;
     private final TrainingService trainingService;
     private final GymRepository gymRepository;
+    private final TrainingRepository trainingRepository;
     private final FreePassRepository freePassRepository;
     private final FreePassReadDtoMapper freePassReadDtoMapper;
     private final FreePassCreateMapper freePassCreateMapper;
+    private final FreePassEditTrainingMapper freePassEditTrainingMapper;
 
-    public Optional<FreePass> findById(Long id) {
-        return freePassRepository.findById(id);
+    public Optional<FreePassReadDto> findById(Long id) {
+        return freePassRepository.findById(id).map(freePassReadDtoMapper::map);
     }
 
     public List<FreePassReadDto> findAllByGymId(Long gymId) {
@@ -50,8 +58,25 @@ public class FreePassService {
                              (isRange(t.getStart(), t.getEnd(), dto.getStart()))).findAny();
 
         var freePass = Optional.<FreePassReadDto>empty();
-        StringBuilder message = new StringBuilder("Расписание занятий! " + "http://localhost:3000/schedule ");
+        StringBuilder message = new StringBuilder();
         if (training.isPresent()) {
+
+
+            // check the existence of other freePass with this phone
+            if (!Optional.ofNullable(dto.getPhone())
+                    .map(freePassRepository::existsUserByPhone)
+                    .map(exist -> !exist)
+                    .orElse(false)) {
+                throw new PhoneAlreadyExistException("Обращение уже обработывается!",new Object());
+            }
+            // check the existence of other freePass with this email
+            if (!Optional.ofNullable(dto.getEmail())
+                    .map(freePassRepository::existsUserByEmail)
+                    .map(exist -> !exist)
+                    .orElse(false)) {
+                throw new EmailAlreadyExistException("Обращение уже обработывается!",new Object());
+            }
+
             freePass = Optional.of(dto)
                     .map(freePassCreateMapper::map)
                     .map(freePassRepository::saveAndFlush)
@@ -66,7 +91,8 @@ public class FreePassService {
         } else {
             message.append("К сожалению в выбранное вами время в клубе нет занятий. Мы выслали вам расписание");
         }
-        emailService.sendSimpleEmail("khvatov64@yandex.ru", "ПРОБНОЕ ЗАНЯТИЕ ", message.toString());
+        message.append("Расписание занятий! " + "http://localhost:3000/schedule ");
+        emailService.sendSimpleEmail(dto.getEmail(), "ПРОБНОЕ ЗАНЯТИЕ ", message.toString());
         return freePass.get();
     }
 
@@ -79,6 +105,33 @@ public class FreePassService {
                 })
                 .map(freePassRepository::saveAndFlush)
                 .map(freePassReadDtoMapper::map);
+    }
+
+    boolean isWithinRange(LocalDateTime testDate) {
+        return !(testDate.isBefore(LocalDateTime.now()) || testDate.isAfter(LocalDateTime.now()));
+    }
+
+    @Transactional
+    public Optional<FreePassReadDto> changeTraining(Long id, FreePassEditTrainingDto dto) {
+        var newTraining = trainingRepository.findById(dto.getTrainingId()).orElseThrow();
+        var newDateTime = LocalDateTime.of(dto.getDate(), newTraining.getStartTime());
+        if (!newDateTime.isAfter(LocalDateTime.now())) {
+            throw new NegativeDataException("Неверная дата");
+        }
+        var maybe = freePassRepository.findById(id)
+                .map(entity -> freePassEditTrainingMapper.map(dto, entity))
+                .map(freePassRepository::saveAndFlush)
+                .map(freePassReadDtoMapper::map).orElseThrow();
+        StringBuilder message = new StringBuilder();
+        message.append("Ваше пробное занятие перенесено :")
+                .append(newTraining.getSubTrainingProgram().getName())
+                .append(" Время: ")
+                .append(newTraining.getStartTime())
+                .append("-")
+                .append(newTraining.getEndTime())
+                .append(" " + dto.getDate());
+        emailService.sendSimpleEmail(maybe.getEmail(), "ПРОБНОЕ ЗАНЯТИЕ ", message.toString());
+        return Optional.ofNullable(maybe);
     }
 
     @Transactional

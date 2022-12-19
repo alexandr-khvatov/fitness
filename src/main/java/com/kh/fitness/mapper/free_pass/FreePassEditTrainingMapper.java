@@ -1,6 +1,7 @@
 package com.kh.fitness.mapper.free_pass;
 
 import com.kh.fitness.dto.free_pass.FreePassCreateDto;
+import com.kh.fitness.dto.free_pass.FreePassEditTrainingDto;
 import com.kh.fitness.entity.FreePass;
 import com.kh.fitness.entity.Gym;
 import com.kh.fitness.entity.Training;
@@ -15,32 +16,34 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class FreePassCreateMapper implements Mapper<FreePassCreateDto, FreePass> {
+public class FreePassEditTrainingMapper implements Mapper<FreePassEditTrainingDto, FreePass> {
 
     private final TrainingRepository trainingRepository;
     private final GymRepository gymRepository;
     @Override
-    public FreePass map(FreePassCreateDto f) {
+    public FreePass map(FreePassEditTrainingDto f) {
         return mapToEntity(f);
     }
 
 
-//    public FreePassCreateDto map(FreePass from) {
-//        return mapToDto(from);
-//    }
+    public FreePass map(FreePassEditTrainingDto from,FreePass to) {
+        to.setTraining(getTraining(from.getTrainingId()));
+        to.setDate(from.getDate());
+        return to;
+    }
 
-    private FreePass mapToEntity(FreePassCreateDto from) {
+    private FreePass mapToEntity(FreePassEditTrainingDto from) {
         var freePass = new FreePass();
-        freePass.setFirstname(from.getFirstName());
-        freePass.setLastname(from.getLastName());
-        freePass.setPhone(from.getPhone());
-        freePass.setEmail(from.getEmail());
-        freePass.setIsDone(false);
-        freePass.setDate(from.getDate());
-        freePass.setStartTime(from.getStart());
-        freePass.setEndTime(from.getEnd());
-        freePass.setGym(getGym(from.getGymId()));
-        freePass.setTraining(getTraining(from.getTrainingId()));
+//        freePass.setFirstname(from.getFirstName());
+//        freePass.setLastname(from.getLastName());
+//        freePass.setPhone(from.getPhone());
+//        freePass.setEmail(from.getEmail());
+//        freePass.setIsDone(false);
+//        freePass.setDate(from.getDate());
+//        freePass.setStartTime(from.getStart());
+//        freePass.setEndTime(from.getEnd());
+//        freePass.setGym(getGym(from.getGymId()));
+//        freePass.setTraining(getTraining(from.getTrainingId()));
         return freePass;
     }
 

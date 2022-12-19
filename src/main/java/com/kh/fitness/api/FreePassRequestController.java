@@ -1,6 +1,7 @@
 package com.kh.fitness.api;
 
 import com.kh.fitness.api.util.PathUtils;
+import com.kh.fitness.dto.free_pass.FreePassEditTrainingDto;
 import com.kh.fitness.dto.free_pass.FreePassReadDto;
 import com.kh.fitness.dto.free_pass.FreePassCreateDto;
 import com.kh.fitness.entity.FreePass;
@@ -20,7 +21,7 @@ public class FreePassRequestController {
     private final FreePassService freePassRequestService;
 
     @GetMapping("/{id}")
-    public Optional<FreePass> findById(@PathVariable Long id) {
+    public Optional<FreePassReadDto> findById(@PathVariable Long id) {
         return freePassRequestService.findById(id);
     }
 
@@ -37,6 +38,11 @@ public class FreePassRequestController {
     @PutMapping("/{id}")
     public Optional<FreePassReadDto> update(@PathVariable Long id) {
         return freePassRequestService.updateFieldIsDone(id);
+    }
+
+    @PutMapping("/change/{id}")
+    public Optional<FreePassReadDto> changeTraining(@PathVariable Long id,@RequestBody FreePassEditTrainingDto dto) {
+        return freePassRequestService.changeTraining(id,dto);
     }
 
     @DeleteMapping("/{id}")

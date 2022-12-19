@@ -29,6 +29,9 @@ public class FreePassCreateDto {
     @NotNull
     Long gymId;
 
+    @NotNull
+    Long trainingId;
+
     LocalDate date;
     LocalTime start;
     LocalTime end;
