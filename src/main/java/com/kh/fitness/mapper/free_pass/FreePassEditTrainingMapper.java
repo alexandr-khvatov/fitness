@@ -27,8 +27,12 @@ public class FreePassEditTrainingMapper implements Mapper<FreePassEditTrainingDt
 
 
     public FreePass map(FreePassEditTrainingDto from,FreePass to) {
-        to.setTraining(getTraining(from.getTrainingId()));
+        var training=getTraining(from.getTrainingId());
+        to.setTraining(training);
         to.setDate(from.getDate());
+        to.setStartTime(training.getStartTime());
+        to.setEndTime(training.getEndTime());
+        to.setTrainingName(training.getSubTrainingProgram().getName());
         return to;
     }
 

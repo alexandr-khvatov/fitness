@@ -13,6 +13,15 @@ VALUES ('СТАРТ.ПОЛИТЕХ',
         'https://tg.com/start',
         'https://vk.com/start');
 
+INSERT INTO gym_opening_hour_info (gym_id,day_of_week,start_time,end_time,is_open)
+VALUES (1,0,'8:00:00','21:00:00',TRUE),
+       (1,1,'8:00:00','21:00:00',TRUE),
+       (1,2,'8:00:00','21:00:00',TRUE),
+       (1,3,'8:00:00','21:00:00',TRUE),
+       (1,4,'8:00:00','21:00:00',TRUE),
+       (1,5,'8:00:00','21:00:00',TRUE),
+       (1,6,'8:00:00','21:00:00',TRUE);
+
 INSERT INTO role (name)
 VALUES (UPPER('ADMIN')),
        (UPPER('MANAGER')),

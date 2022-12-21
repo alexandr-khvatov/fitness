@@ -5,15 +5,16 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import static javax.persistence.CascadeType.ALL;
-import static javax.persistence.GenerationType.*;
+import static javax.persistence.GenerationType.IDENTITY;
 
-@ToString(exclude = {"coaches","trainingPrograms","subscriptions"})
+@ToString(exclude = {"coaches", "trainingPrograms", "subscriptions"})
 @EqualsAndHashCode(of = "name")
 @Entity
 @Data
@@ -28,6 +29,13 @@ public class Gym implements BaseEntity<Long> {
     private GymContacts gymContacts;
     private WorkingHours workingHours;
     private GymSocialMedia gymSocialMedia;
+
+    private LocalTime minStartTime;
+    private LocalTime maxEndTime;
+
+    @ElementCollection
+    @CollectionTable(name = "gym_opening_hour_info")
+    private List<GymOpeningHourInfo> openingHours = new ArrayList<>();
 
     @OneToMany(mappedBy = "gym", cascade = ALL)
     private Set<Coach> coaches = new HashSet<>();

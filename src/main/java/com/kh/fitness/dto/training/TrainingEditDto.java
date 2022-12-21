@@ -1,7 +1,9 @@
 package com.kh.fitness.dto.training;
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -13,7 +15,11 @@ import java.time.LocalTime;
 public class TrainingEditDto {
     private Long id;
     private String name;
+    @DateTimeFormat(pattern = "HH:mm:ss")
+    @NotNull
     private LocalTime start;
+    @DateTimeFormat(pattern = "HH:mm:ss")
+    @NotNull
     private LocalTime end;
     private Integer dayOfWeek;
     private LocalDateTime date;

@@ -5,6 +5,7 @@ import com.kh.fitness.dto.trainingProgram.ProgramEditDto;
 import com.kh.fitness.dto.trainingProgram.ProgramReadDto;
 import com.kh.fitness.dto.trainingProgram.ProgramReadWithSubProgramsDto;
 import com.kh.fitness.entity.TrainingProgram;
+import com.kh.fitness.exception.UnableToDeleteObjectContainsNestedObjects;
 import com.kh.fitness.mapper.trainingProgram.ProgramCreateMapper;
 import com.kh.fitness.mapper.trainingProgram.ProgramEditMapper;
 import com.kh.fitness.mapper.trainingProgram.ProgramReadMapper;
@@ -99,13 +100,17 @@ public class ProgramService {
 
     @Transactional
     public Boolean delete(Long id) {
-        return programRepository.findById(id)
-                .map(entity -> {
-                    programRepository.delete(entity);
-                    programRepository.flush();
-                    return true;
-                })
-                .orElse(false);
+        try {
+            return programRepository.findById(id)
+                    .map(entity -> {
+                        programRepository.delete(entity);
+                        programRepository.flush();
+                        return true;
+                    })
+                    .orElse(false);
+        } catch (Exception e) {
+            throw new UnableToDeleteObjectContainsNestedObjects("Не возможно удалить, имеются вложенные тренеровки");
+        }
     }
 
     @SneakyThrows

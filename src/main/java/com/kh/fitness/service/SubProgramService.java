@@ -4,6 +4,7 @@ import com.kh.fitness.dto.subTrainingProgram.SubProgramCreateDto;
 import com.kh.fitness.dto.subTrainingProgram.SubProgramEditDto;
 import com.kh.fitness.dto.subTrainingProgram.SubProgramReadDto;
 import com.kh.fitness.entity.SubTrainingProgram;
+import com.kh.fitness.exception.UnableToDeleteObjectContainsNestedObjects;
 import com.kh.fitness.mapper.subTrainingProgram.SubProgramCreateMapper;
 import com.kh.fitness.mapper.subTrainingProgram.SubProgramEditMapper;
 import com.kh.fitness.mapper.subTrainingProgram.SubProgramReadMapper;
@@ -101,13 +102,17 @@ public class SubProgramService {
 
     @Transactional
     public Boolean delete(Long id) {
-        return subProgramRepository.findById(id)
-                .map(entity -> {
-                    subProgramRepository.delete(entity);
-                    subProgramRepository.flush();
-                    return true;
-                })
-                .orElse(false);
+        try {
+            return subProgramRepository.findById(id)
+                    .map(entity -> {
+                        subProgramRepository.delete(entity);
+                        subProgramRepository.flush();
+                        return true;
+                    })
+                    .orElse(false);
+        } catch (Exception e) {
+            throw new UnableToDeleteObjectContainsNestedObjects("Не возможно удалить, программа закреплена за тренеровкой");
+        }
     }
 
     @SneakyThrows

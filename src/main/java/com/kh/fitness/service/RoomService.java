@@ -3,6 +3,7 @@ package com.kh.fitness.service;
 import com.kh.fitness.dto.room.RoomCreateDto;
 import com.kh.fitness.dto.room.RoomEditDto;
 import com.kh.fitness.dto.room.RoomReadDto;
+import com.kh.fitness.exception.UnableToDeleteObjectContainsNestedObjects;
 import com.kh.fitness.mapper.room.RoomCreateMapper;
 import com.kh.fitness.mapper.room.RoomEditMapper;
 import com.kh.fitness.mapper.room.RoomReadMapper;
@@ -51,12 +52,16 @@ public class RoomService {
     }
 
     public Boolean delete(Long id) {
-        return roomRepository.findById(id)
-                .map(entity -> {
-                    roomRepository.delete(entity);
-                    roomRepository.flush();
-                    return true;
-                })
-                .orElse(false);
+        try {
+            return roomRepository.findById(id)
+                    .map(entity -> {
+                        roomRepository.delete(entity);
+                        roomRepository.flush();
+                        return true;
+                    })
+                    .orElse(false);
+        } catch (Exception e) {
+            throw new UnableToDeleteObjectContainsNestedObjects("Не возможно удалить, зал закреплен за тренеровкой");
+        }
     }
 }

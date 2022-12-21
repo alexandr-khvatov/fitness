@@ -1,6 +1,8 @@
 package com.kh.fitness.api;
 
+import com.kh.fitness.dto.GymHours;
 import com.kh.fitness.dto.gym.GymCreateEditDto;
+import com.kh.fitness.dto.gym.GymOpeningHourInfoDto;
 import com.kh.fitness.dto.gym.GymReadDto;
 import com.kh.fitness.entity.Gym;
 import com.kh.fitness.service.GymService;
@@ -40,6 +42,11 @@ public class GymController {
     @PutMapping("/{id}")
     public Optional<GymReadDto> update(@PathVariable Long id, @RequestBody GymCreateEditDto gym) {
         return gymService.update(id, gym);
+    }
+
+    @PutMapping("/{id}/open_hours")
+    public Optional<GymReadDto> updateOpeningHours(@PathVariable Long id, @RequestBody GymHours openingHours) {
+        return gymService.updateOpeningHours(id,openingHours);
     }
 
     @DeleteMapping("/{id}")

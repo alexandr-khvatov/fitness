@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface FreePassRepository extends JpaRepository<FreePass, Long> {
   public  List<FreePass> findAllByGymIdOrderByIsDone(Long gymId);
+  public  List<FreePass> findAllByTrainingId(Long trainingId);
   boolean existsUserByEmail(String email);
 
   boolean existsUserByPhone(String phone);

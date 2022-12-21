@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -41,10 +40,12 @@ public class FreePass extends AuditingEntity<Long> {
     private LocalTime startTime;
     private LocalTime endTime;
 
+    private String trainingName;
+
     @ManyToOne(optional = false, fetch = LAZY)
     @JoinColumn(name = "gym_id")
     private Gym gym;
 
-    @ManyToOne( fetch = LAZY)
+    @ManyToOne(fetch = LAZY)
     private Training training;
 }

@@ -6,6 +6,7 @@ import com.kh.fitness.dto.free_pass.FreePassReadDto;
 import com.kh.fitness.exception.EmailAlreadyExistException;
 import com.kh.fitness.exception.NegativeDataException;
 import com.kh.fitness.exception.PhoneAlreadyExistException;
+import com.kh.fitness.exception.UnableToDeleteObjectContainsNestedObjects;
 import com.kh.fitness.mapper.free_pass.FreePassCreateMapper;
 import com.kh.fitness.mapper.free_pass.FreePassEditTrainingMapper;
 import com.kh.fitness.mapper.free_pass.FreePassReadDtoMapper;
@@ -67,14 +68,14 @@ public class FreePassService {
                     .map(freePassRepository::existsUserByPhone)
                     .map(exist -> !exist)
                     .orElse(false)) {
-                throw new PhoneAlreadyExistException("Обращение уже обработывается!",new Object());
+                throw new PhoneAlreadyExistException("Обращение уже обработывается!", new Object());
             }
             // check the existence of other freePass with this email
             if (!Optional.ofNullable(dto.getEmail())
                     .map(freePassRepository::existsUserByEmail)
                     .map(exist -> !exist)
                     .orElse(false)) {
-                throw new EmailAlreadyExistException("Обращение уже обработывается!",new Object());
+                throw new EmailAlreadyExistException("Обращение уже обработывается!", new Object());
             }
 
             freePass = Optional.of(dto)
@@ -136,12 +137,16 @@ public class FreePassService {
 
     @Transactional
     public Boolean delete(Long id) {
-        return freePassRepository.findById(id)
-                .map(entity -> {
-                    freePassRepository.delete(entity);
-                    freePassRepository.flush();
-                    return true;
-                })
-                .orElse(false);
+        try {
+            return freePassRepository.findById(id)
+                    .map(entity -> {
+                        freePassRepository.delete(entity);
+                        freePassRepository.flush();
+                        return true;
+                    })
+                    .orElse(false);
+        } catch (Exception e) {
+            throw new UnableToDeleteObjectContainsNestedObjects("Не возможно удалить, тренер закреплен за тренеровкой");
+        }
     }
 }

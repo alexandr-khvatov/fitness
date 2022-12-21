@@ -45,6 +45,7 @@ public class FreePassReadDtoMapper implements Mapper<FreePass, FreePassReadDto> 
                     from.getEndTime(),
                     null,
                     null,
+                    from.getTrainingName(),
                     null
             );
         }
@@ -60,6 +61,7 @@ public class FreePassReadDtoMapper implements Mapper<FreePass, FreePassReadDto> 
                 from.getEndTime(),
                 from.getTraining().getGym().getId(),
                 from.getTraining().getId(),
+                from.getTrainingName(),
                 trainingReadMapper.map(from.getTraining())
         );
     }

@@ -7,6 +7,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.EnumType.ORDINAL;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;

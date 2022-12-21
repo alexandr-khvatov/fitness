@@ -38,4 +38,5 @@ public class GymCreateEditDto {
 
     @NotBlank
     private String workingHoursOnWeekends;
+
 }

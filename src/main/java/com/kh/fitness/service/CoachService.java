@@ -4,9 +4,9 @@ import com.kh.fitness.dto.coach.CoachCreateDto;
 import com.kh.fitness.dto.coach.CoachEditDto;
 import com.kh.fitness.dto.coach.CoachReadDto;
 import com.kh.fitness.entity.Coach;
-import com.kh.fitness.entity.User;
 import com.kh.fitness.exception.EmailAlreadyExistException;
 import com.kh.fitness.exception.PhoneAlreadyExistException;
+import com.kh.fitness.exception.UnableToDeleteObjectContainsNestedObjects;
 import com.kh.fitness.mapper.coach.CoachCreateMapper;
 import com.kh.fitness.mapper.coach.CoachEditMapper;
 import com.kh.fitness.mapper.coach.CoachReadDtoMapper;
@@ -77,7 +77,7 @@ public class CoachService {
     @Transactional
     public Optional<CoachReadDto> update(Long id, @Valid CoachEditDto coach) {
         return coachRepository.findById(id)
-                .map(entity ->{
+                .map(entity -> {
                     var phone = coach.getPhone();
                     var email = coach.getEmail();
                     // check the existence of other coach with this phone
@@ -98,7 +98,7 @@ public class CoachService {
                             });
 
                     return coachEditMapper.map(coach, entity);
-                } )
+                })
                 .map(coachRepository::saveAndFlush)
                 .map(coachReadDtoMapper::map);
     }
@@ -106,7 +106,7 @@ public class CoachService {
     @Transactional
     public CoachReadDto updateAvatar(Long id, MultipartFile image) {
         var entity = coachRepository.findById(id).orElseThrow();
-        var imageForRemoval=entity.getImage();
+        var imageForRemoval = entity.getImage();
         var imageName = uploadImage(image);
         imageName.ifPresent(entity::setImage);
         coachRepository.saveAndFlush(entity);
@@ -124,13 +124,18 @@ public class CoachService {
 
     @Transactional
     public Boolean delete(Long id) {
-        return coachRepository.findById(id)
-                .map(entity -> {
-                    coachRepository.delete(entity);
-                    coachRepository.flush();
-                    return true;
-                })
-                .orElse(false);
+
+        try {
+            return coachRepository.findById(id)
+                    .map(entity -> {
+                        coachRepository.delete(entity);
+                        coachRepository.flush();
+                        return true;
+                    })
+                    .orElse(false);
+        } catch (Exception e) {
+            throw new UnableToDeleteObjectContainsNestedObjects("Не возможно удалить, тренер закреплен за тренеровкой");
+        }
     }
 
     @SneakyThrows
@@ -146,8 +151,8 @@ public class CoachService {
 
     /**
      * Calls a method to remove an image
-     * @param imagePath
-     *  the path to the file to delete
+     *
+     * @param imagePath the path to the file to delete
      * @return {@code true} if image deleted successfully; <br/>
      * {@code false}  image {@code imagePath} is null or the file could not be deleted because it did not exist
      */

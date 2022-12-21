@@ -31,6 +31,7 @@ public class FreePassCreateMapper implements Mapper<FreePassCreateDto, FreePass>
 
     private FreePass mapToEntity(FreePassCreateDto from) {
         var freePass = new FreePass();
+        var training=getTraining(from.getTrainingId());
         freePass.setFirstname(from.getFirstName());
         freePass.setLastname(from.getLastName());
         freePass.setPhone(from.getPhone());
@@ -40,7 +41,8 @@ public class FreePassCreateMapper implements Mapper<FreePassCreateDto, FreePass>
         freePass.setStartTime(from.getStart());
         freePass.setEndTime(from.getEnd());
         freePass.setGym(getGym(from.getGymId()));
-        freePass.setTraining(getTraining(from.getTrainingId()));
+        freePass.setTraining(training);
+        freePass.setTrainingName(training.getSubTrainingProgram().getName());
         return freePass;
     }
 

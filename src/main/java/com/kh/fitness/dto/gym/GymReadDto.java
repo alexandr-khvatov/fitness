@@ -2,6 +2,9 @@ package com.kh.fitness.dto.gym;
 
 import lombok.*;
 
+import java.time.LocalTime;
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -18,4 +21,7 @@ public class GymReadDto {
     private String instLink;
     private String workingHoursOnWeekdays;
     private String workingHoursOnWeekends;
+    private LocalTime minStartTime;
+    private LocalTime maxEndTime;
+    private List<GymOpeningHourInfoDto> openingHours;
 }
