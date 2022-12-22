@@ -30,7 +30,7 @@ public class TestEmailController {
         try {
             emailService.sendSimpleEmail(email, "Welcome", "This is a welcome email for your!!");
         } catch (MailException mailException) {
-            log.error("Error while sending out email..{}", mailException.getStackTrace());
+            log.error("Error while sending out email..{}", mailException);
             return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -44,7 +44,7 @@ public class TestEmailController {
             emailService.sendEmailWithAttachment(email, "Order Confirmation", "Thanks for your recent order",
                     "classpath:purchase_order.pdf");
         } catch (MessagingException | FileNotFoundException mailException) {
-            log.error("Error while sending out email..{}", mailException.getStackTrace());
+            log.error("Error while sending out email..{}", mailException);
             return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
