@@ -18,8 +18,6 @@ public class GymReadDtoMapper implements Mapper<Gym, GymReadDto> {
                 .vkLink(f.getGymSocialMedia().getVkLink())
                 .tgLink(f.getGymSocialMedia().getTgLink())
                 .instLink(f.getGymSocialMedia().getInstLink())
-                .workingHoursOnWeekdays(f.getWorkingHours().getWorkingHoursOnWeekdays())
-                .workingHoursOnWeekends(f.getWorkingHours().getWorkingHoursOnWeekends())
                 .minStartTime(f.getMinStartTime())
                 .maxEndTime(f.getMaxEndTime())
                 .openingHours(f.getOpeningHours().stream().map(x -> GymOpeningHourInfoDto.builder()

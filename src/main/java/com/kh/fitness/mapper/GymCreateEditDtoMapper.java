@@ -22,10 +22,6 @@ public class GymCreateEditDtoMapper implements Mapper<GymCreateEditDto, Gym> {
                 .phone(f.getPhone())
                 .email(f.getEmail())
                 .build());
-        t.setWorkingHours(WorkingHours.builder()
-                .workingHoursOnWeekdays(f.getWorkingHoursOnWeekdays())
-                .workingHoursOnWeekends(f.getWorkingHoursOnWeekends())
-                .build());
         t.setGymSocialMedia(GymSocialMedia.builder()
                 .vkLink(f.getVkLink())
                 .tgLink(f.getTgLink())

@@ -33,10 +33,10 @@ public class GymCreateEditDto {
     @URL
     private String instLink;
 
-    @NotBlank
-    private String workingHoursOnWeekdays;
-
-    @NotBlank
-    private String workingHoursOnWeekends;
+//    @NotBlank
+//    private String workingHoursOnWeekdays;
+//
+//    @NotBlank
+//    private String workingHoursOnWeekends;
 
 }

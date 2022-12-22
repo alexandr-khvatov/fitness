@@ -27,7 +27,6 @@ public class Gym implements BaseEntity<Long> {
     private String name;
 
     private GymContacts gymContacts;
-    private WorkingHours workingHours;
     private GymSocialMedia gymSocialMedia;
 
     private LocalTime minStartTime;

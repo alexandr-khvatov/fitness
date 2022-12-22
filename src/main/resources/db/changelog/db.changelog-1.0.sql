@@ -31,9 +31,7 @@ CREATE TABLE gym
     max_end_time              TIME,
     name                      VARCHAR(255)
         CONSTRAINT uk_rsoaa6kkpd3bt0cubbqhm4uo9
-            UNIQUE,
-    working_hours_on_weekdays VARCHAR(255),
-    working_hours_on_weekends VARCHAR(255)
+            UNIQUE
 );
 
 CREATE TABLE gym_opening_hour_info

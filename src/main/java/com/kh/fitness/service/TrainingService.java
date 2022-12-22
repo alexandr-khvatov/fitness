@@ -9,7 +9,7 @@ import com.kh.fitness.mapper.training.TrainingCreateMapper;
 import com.kh.fitness.mapper.training.TrainingEditMapper;
 import com.kh.fitness.mapper.training.TrainingReadMapper;
 import com.kh.fitness.repository.FreePassRepository;
-import com.kh.fitness.repository.SubProgramRepository;
+import com.kh.fitness.repository.GymRepository;
 import com.kh.fitness.repository.TrainingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class TrainingService {
     private final TrainingCreateMapper trainingCreateMapper;
     private final TrainingEditMapper trainingEditMapper;
     private final FreePassRepository freePassRepository;
-    private final SubProgramRepository subProgramRepository;
+    private final GymRepository gymRepository;
 
     public Optional<TrainingReadDto> findById(Long id) {
         return trainingRepository.findById(id)
@@ -46,6 +46,21 @@ public class TrainingService {
         if (!training.getStart().isBefore(training.getEnd())) {
             throw new IncorrectRange("Неверный диапазон времени");
         }
+
+        var gym = gymRepository.findById(1L).orElseThrow();
+        var workingDays = gym.getOpeningHours();
+        var day = workingDays.stream().filter(x -> x.getDayOfWeek().getValue() == training.getDayOfWeek()).findFirst();
+        if (day.isPresent()) {
+            var dayPresent = day.get();
+            if (Boolean.FALSE.equals(dayPresent.getIsOpen())) {
+                throw new IncorrectRange("Не рабочий день!");
+            }
+            if (!(training.getStart().compareTo(dayPresent.getStartTime()) >= 0 &&
+                  training.getEnd().compareTo(dayPresent.getEndTime()) <= 0)) {
+                throw new IncorrectRange("Неверный диапазон времени, режим работы в этот день: " + dayPresent.getStartTime() + "-" + dayPresent.getEndTime());
+            }
+        }
+
         return Optional.of(training)
                 .map(trainingCreateMapper::map)
                 .map(trainingRepository::saveAndFlush)
@@ -58,9 +73,19 @@ public class TrainingService {
         if (!training.getStart().isBefore(training.getEnd())) {
             throw new IncorrectRange("Неверный диапазон времени");
         }
-//        var maybeSubTraining = subProgramRepository.findById(training.getSubProgramId()).orElseThrow();
-//        var message = new StringBuilder();
-//        var maybeTraining = trainingRepository.findById(id).orElseThrow();
+        var gym = gymRepository.findById(1L).orElseThrow();
+        var workingDays = gym.getOpeningHours();
+        var day = workingDays.stream().filter(x -> x.getDayOfWeek().getValue() == training.getDayOfWeek()).findFirst();
+        if (day.isPresent()) {
+            var dayPresent = day.get();
+            if (Boolean.FALSE.equals(dayPresent.getIsOpen())) {
+                throw new IncorrectRange("Не рабочий день!");
+            }
+            if (!(training.getStart().compareTo(dayPresent.getStartTime()) >= 0 &&
+                  training.getEnd().compareTo(dayPresent.getEndTime()) <= 0)) {
+                throw new IncorrectRange("Неверный диапазон времени, режим работы в этот день: " + dayPresent.getStartTime() + "-" + dayPresent.getEndTime());
+            }
+        }
         var freePass = freePassRepository.findAllByTrainingId(id).stream()
                 .filter(t -> LocalDateTime.of(t.getDate(), t.getEndTime()).isAfter(LocalDateTime.now()) && !t.getIsDone())
                 .count();
