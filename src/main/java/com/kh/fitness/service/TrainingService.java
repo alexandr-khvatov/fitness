@@ -34,12 +34,12 @@ public class TrainingService {
 
     public Optional<TrainingReadDto> findById(Long id) {
         return trainingRepository.findById(id)
-                .map(trainingReadMapper::map);
+                .map(trainingReadMapper::toDto);
     }
 
     public List<TrainingReadDto> findAllByGymId(Long gymId) {
         return trainingRepository.findAllByGymId(gymId).stream()
-                .map(trainingReadMapper::map).toList();
+                .map(trainingReadMapper::toDto).toList();
     }
 
     public TrainingReadDto create(TrainingCreateDto training) {
@@ -62,9 +62,9 @@ public class TrainingService {
         }
 
         return Optional.of(training)
-                .map(trainingCreateMapper::map)
+                .map(trainingCreateMapper::toEntity)
                 .map(trainingRepository::saveAndFlush)
-                .map(trainingReadMapper::map)
+                .map(trainingReadMapper::toDto)
                 .orElseThrow();
     }
 
@@ -95,9 +95,9 @@ public class TrainingService {
 
 
         return trainingRepository.findById(id)
-                .map(entity -> trainingEditMapper.map(training, entity))
+                .map(entity -> trainingEditMapper.updateEntity(training, entity))
                 .map(trainingRepository::saveAndFlush)
-                .map(trainingReadMapper::map);
+                .map(trainingReadMapper::toDto);
     }
 
     public Boolean delete(Long id) {

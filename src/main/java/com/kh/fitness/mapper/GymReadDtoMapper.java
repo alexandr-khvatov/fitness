@@ -3,30 +3,32 @@ package com.kh.fitness.mapper;
 import com.kh.fitness.dto.gym.GymOpeningHourInfoDto;
 import com.kh.fitness.dto.gym.GymReadDto;
 import com.kh.fitness.entity.Gym;
-import org.springframework.stereotype.Component;
+import com.kh.fitness.entity.GymOpeningHourInfo;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-public class GymReadDtoMapper implements Mapper<Gym, GymReadDto> {
-    @Override
-    public GymReadDto map(Gym f) {
-        return GymReadDto.builder()
-                .id(f.getId())
-                .name(f.getName())
-                .address(f.getGymContacts().getAddress())
-                .phone(f.getGymContacts().getPhone())
-                .email(f.getGymContacts().getEmail())
-                .vkLink(f.getGymSocialMedia().getVkLink())
-                .tgLink(f.getGymSocialMedia().getTgLink())
-                .instLink(f.getGymSocialMedia().getInstLink())
-                .minStartTime(f.getMinStartTime())
-                .maxEndTime(f.getMaxEndTime())
-                .openingHours(f.getOpeningHours().stream().map(x -> GymOpeningHourInfoDto.builder()
-                                .dayOfWeek(x.getDayOfWeek().getValue())
-                                .startTime(x.getStartTime())
-                                .endTime(x.getEndTime())
-                                .isOpen(x.getIsOpen())
-                                .build())
-                        .toList())
-                .build();
+import java.util.List;
+
+@Mapper
+public interface GymReadDtoMapper {
+    @Mapping(target = "openingHours", expression = "java(openingHours(s.getOpeningHours()))")
+    @Mapping(target = "address", source = "gymContacts.address")
+    @Mapping(target = "phone", source = "gymContacts.phone")
+    @Mapping(target = "email", source = "gymContacts.email")
+    @Mapping(target = "vkLink", source = "gymSocialMedia.vkLink")
+    @Mapping(target = "tgLink", source = "gymSocialMedia.tgLink")
+    @Mapping(target = "instLink", source = "gymSocialMedia.instLink")
+    @Mapping(target = "workingHoursOnWeekdays", ignore = true)
+    @Mapping(target = "workingHoursOnWeekends", ignore = true)
+    GymReadDto toDto(Gym s);
+
+    default List<GymOpeningHourInfoDto> openingHours(List<GymOpeningHourInfo> openingHours) {
+        return openingHours.stream().map(x -> GymOpeningHourInfoDto.builder()
+                        .dayOfWeek(x.getDayOfWeek().getValue())
+                        .startTime(x.getStartTime())
+                        .endTime(x.getEndTime())
+                        .isOpen(x.getIsOpen())
+                        .build())
+                .toList();
     }
 }

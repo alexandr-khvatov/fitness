@@ -1,20 +1,37 @@
 package com.kh.fitness.mapper.trainingProgram;
 
+import com.kh.fitness.dto.coach.CoachCreateDto;
 import com.kh.fitness.dto.trainingProgram.ProgramCreateDto;
-import com.kh.fitness.entity.Gym;
+import com.kh.fitness.entity.SubTrainingProgram;
 import com.kh.fitness.entity.TrainingProgram;
-import com.kh.fitness.mapper.Mapper;
-import com.kh.fitness.repository.GymRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import com.kh.fitness.mapper.util.resolvers.GymMapperResolver;
+import com.kh.fitness.mapper.util.resolvers.TrainingProgramMapperResolver;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static java.util.function.Predicate.not;
 
-@Component
+@Mapper(uses = {GymMapperResolver.class, TrainingProgramMapperResolver.class})
+public abstract class ProgramCreateMapper {
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "image", ignore = true)
+    @Mapping(target = "subTrainingPrograms", ignore = true)
+    @Mapping(target = "gym", source = "gymId")
+    public abstract TrainingProgram toEntity(ProgramCreateDto f);
+
+    @AfterMapping
+    protected void setImageName(ProgramCreateDto source, @MappingTarget TrainingProgram trainingProgram) {
+        Optional.ofNullable(source.getImage())
+                .filter(not(MultipartFile::isEmpty))
+                .ifPresent(image -> trainingProgram.setImage(image.getOriginalFilename()));
+    }
+}
+/*@Component
 @RequiredArgsConstructor
 public class ProgramCreateMapper implements Mapper<ProgramCreateDto, TrainingProgram> {
     private final GymRepository gymRepository;
@@ -39,4 +56,4 @@ public class ProgramCreateMapper implements Mapper<ProgramCreateDto, TrainingPro
                 .flatMap(gymRepository::findById)
                 .orElseThrow(() -> new EntityNotFoundException("Entity Gym not found with id: " + gymId));
     }
-}
+}*/

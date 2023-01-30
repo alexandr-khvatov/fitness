@@ -37,12 +37,12 @@ public class FreePassService {
     private final FreePassEditTrainingMapper freePassEditTrainingMapper;
 
     public Optional<FreePassReadDto> findById(Long id) {
-        return freePassRepository.findById(id).map(freePassReadDtoMapper::map);
+        return freePassRepository.findById(id).map(freePassReadDtoMapper::toDto);
     }
 
     public List<FreePassReadDto> findAllByGymId(Long gymId) {
         return freePassRepository.findAllByGymIdOrderByIsDone(gymId).stream()
-                .map(freePassReadDtoMapper::map).toList();
+                .map(freePassReadDtoMapper::toDto).toList();
     }
 
     private Boolean isRange(LocalTime start, LocalTime end, LocalTime target) {
@@ -79,9 +79,9 @@ public class FreePassService {
             }
 
             freePass = Optional.of(dto)
-                    .map(freePassCreateMapper::map)
+                    .map(freePassCreateMapper::toEntity)
                     .map(freePassRepository::saveAndFlush)
-                    .map(freePassReadDtoMapper::map);
+                    .map(freePassReadDtoMapper::toDto);
             message.append("Вы записаны на занятие :")
                     .append(training.get().getSubProgram())
                     .append(" Время: ")
@@ -105,7 +105,7 @@ public class FreePassService {
                     return entity;
                 })
                 .map(freePassRepository::saveAndFlush)
-                .map(freePassReadDtoMapper::map);
+                .map(freePassReadDtoMapper::toDto);
     }
 
     boolean isWithinRange(LocalDateTime testDate) {
@@ -120,9 +120,9 @@ public class FreePassService {
             throw new NegativeDataException("Неверная дата");
         }
         var maybe = freePassRepository.findById(id)
-                .map(entity -> freePassEditTrainingMapper.map(dto, entity))
+                .map(entity -> freePassEditTrainingMapper.updateEntity(dto, entity))
                 .map(freePassRepository::saveAndFlush)
-                .map(freePassReadDtoMapper::map).orElseThrow();
+                .map(freePassReadDtoMapper::toDto).orElseThrow();
         StringBuilder message = new StringBuilder();
         message.append("Ваше пробное занятие перенесено :")
                 .append(newTraining.getSubTrainingProgram().getName())

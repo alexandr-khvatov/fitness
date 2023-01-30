@@ -1,14 +1,13 @@
 package com.kh.fitness.api;
 
+import com.kh.fitness.dto.account.AccountEditDto;
 import com.kh.fitness.dto.user.UserCreateDto;
 import com.kh.fitness.dto.user.UserReadDto;
-import com.kh.fitness.service.RoleService;
 import com.kh.fitness.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,8 +26,6 @@ import static org.springframework.http.ResponseEntity.notFound;
 public class UserController {
 
     private final UserService userService;
-    private final RoleService roleService;
-    private final AuthenticationManager authenticationManager;
 
     @GetMapping("/search")
     public Optional<UserReadDto> getUserByUsername(@RequestParam String username) {
@@ -58,14 +55,14 @@ public class UserController {
 
     @PutMapping("/{id}")
     public UserReadDto update(@PathVariable("id") Long id,
-                              @RequestBody UserCreateDto user) {
+                              @RequestBody AccountEditDto user) {
         return userService.update(id, user)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping("mng/{id}")
     public UserReadDto updateWithoutPassword(@PathVariable("id") Long id,
-                              @RequestBody UserCreateDto user) {
+                                             @RequestBody AccountEditDto user) {
         return userService.updateWithoutPassword(id, user)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }

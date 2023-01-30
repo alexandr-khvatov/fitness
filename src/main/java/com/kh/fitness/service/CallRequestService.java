@@ -21,7 +21,7 @@ public class CallRequestService {
 
     public CallRequest create(CallRequestCreateDto requestFreePass) {
         return Optional.of(requestFreePass)
-                .map(callRequestCreateDtoMapper::map)
+                .map(callRequestCreateDtoMapper::toEntity)
                 .map(callRequestRepository::saveAndFlush)
                 .orElseThrow();
     }

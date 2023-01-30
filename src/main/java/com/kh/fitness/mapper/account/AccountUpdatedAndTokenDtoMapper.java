@@ -2,10 +2,16 @@ package com.kh.fitness.mapper.account;
 
 import com.kh.fitness.dto.account.AccountUpdatedAndTokenDto;
 import com.kh.fitness.dto.user.UserReadDto;
-import com.kh.fitness.mapper.Mapper;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
+@Mapper
+public interface AccountUpdatedAndTokenDtoMapper {
+    @Mapping(target = "token", ignore = true)
+    AccountUpdatedAndTokenDto toDto(UserReadDto s);
+}
+
+/*@Component
 public class AccountUpdatedAndTokenDtoMapper implements Mapper<UserReadDto, AccountUpdatedAndTokenDto> {
 
     @Override
@@ -20,4 +26,4 @@ public class AccountUpdatedAndTokenDtoMapper implements Mapper<UserReadDto, Acco
                 f.getBirthDate(),
                 null);
     }
-}
+}*/

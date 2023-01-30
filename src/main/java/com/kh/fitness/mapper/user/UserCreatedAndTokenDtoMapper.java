@@ -2,12 +2,14 @@ package com.kh.fitness.mapper.user;
 
 import com.kh.fitness.dto.account.AccountCreatedAndTokenDto;
 import com.kh.fitness.dto.user.UserCreatedDto;
-import com.kh.fitness.mapper.Mapper;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 
-@Component
+@Mapper
+public interface UserCreatedAndTokenDtoMapper {
+    AccountCreatedAndTokenDto toDto(UserCreatedDto s);
+}
+/*@Component
 public class UserCreatedAndTokenDtoMapper implements Mapper<UserCreatedDto, AccountCreatedAndTokenDto> {
-
     @Override
     public AccountCreatedAndTokenDto map(UserCreatedDto f) {
         return new AccountCreatedAndTokenDto(
@@ -18,6 +20,7 @@ public class UserCreatedAndTokenDtoMapper implements Mapper<UserCreatedDto, Acco
                 f.getEmail(),
                 f.getPhone(),
                 f.getBirthDate(),
-                f.getRoles(), null);
+                f.getRoles(),
+                null);
     }
-}
+}*/

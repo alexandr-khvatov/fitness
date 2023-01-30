@@ -37,7 +37,7 @@ public class RoomService {
 
     public RoomReadDto create(RoomCreateDto room) {
         return Optional.of(room)
-                .map(roomCreateMapper::map)
+                .map(roomCreateMapper::toEntity)
                 .map(roomRepository::saveAndFlush)
                 .map(roomReadMapper::map)
                 .orElseThrow();
@@ -46,7 +46,7 @@ public class RoomService {
     @Transactional
     public Optional<RoomReadDto> update(Long id, @Valid RoomEditDto room) {
         return roomRepository.findById(id)
-                .map(entity -> roomEditMapper.map(room, entity))
+                .map(entity -> roomEditMapper.updateEntity(room, entity))
                 .map(roomRepository::saveAndFlush)
                 .map(roomReadMapper::map);
     }

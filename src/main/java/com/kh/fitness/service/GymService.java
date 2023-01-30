@@ -42,18 +42,18 @@ public class GymService {
     @PreAuthorize("hasAuthority('ADMIN')")
     public GymReadDto create(@Valid GymCreateEditDto gym) {
         return Optional.of(gym)
-                .map(gymCreateEditDtoMapper::map)
+                .map(gymCreateEditDtoMapper::toEntity)
                 .map(gymRepository::save)
-                .map(gymReadDtoMapper::map)
+                .map(gymReadDtoMapper::toDto)
                 .orElseThrow();
     }
 
     @Transactional
     public Optional<GymReadDto> update(Long id, GymCreateEditDto updateGym) {
         return gymRepository.findById(id)
-                .map(entity -> gymCreateEditDtoMapper.map(updateGym, entity))
+                .map(entity -> gymCreateEditDtoMapper.updateGym(updateGym, entity))
                 .map(gymRepository::saveAndFlush)
-                .map(gymReadDtoMapper::map);
+                .map(gymReadDtoMapper::toDto);
     }
 
     @Transactional
@@ -119,7 +119,7 @@ public class GymService {
         maxEndTime.ifPresent(maybeGym::setMaxEndTime);
 
         var savedGym = gymRepository.saveAndFlush(maybeGym);
-        return Optional.of(gymReadDtoMapper.map(savedGym));
+        return Optional.of(gymReadDtoMapper.toDto(savedGym));
     }
 
     @Transactional
@@ -135,7 +135,7 @@ public class GymService {
 
     public Optional<GymReadDto> findById(Long id) {
         return gymRepository.findById(id)
-                .map(gymReadDtoMapper::map);
+                .map(gymReadDtoMapper::toDto);
     }
 
     public List<Gym> findAll() {
@@ -144,6 +144,6 @@ public class GymService {
 
     public Optional<GymReadDto> findByName(String name) {
         return gymRepository.findByName(name)
-                .map(gymReadDtoMapper::map);
+                .map(gymReadDtoMapper::toDto);
     }
 }

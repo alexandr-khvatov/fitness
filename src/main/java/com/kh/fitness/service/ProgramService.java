@@ -9,7 +9,6 @@ import com.kh.fitness.exception.UnableToDeleteObjectContainsNestedObjects;
 import com.kh.fitness.mapper.trainingProgram.ProgramCreateMapper;
 import com.kh.fitness.mapper.trainingProgram.ProgramEditMapper;
 import com.kh.fitness.mapper.trainingProgram.ProgramReadMapper;
-import com.kh.fitness.mapper.trainingProgram.ProgramReadWithSubProgramsMapper;
 import com.kh.fitness.repository.ProgramRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -35,16 +34,15 @@ public class ProgramService {
 
     private final ProgramEditMapper programEditMapper;
     private final ProgramCreateMapper programCreateMapper;
-    private final ProgramReadWithSubProgramsMapper programReadWithSubProgramsMapper;
     private final ProgramReadMapper programReadMapper;
 
     public Optional<ProgramReadWithSubProgramsDto> findById(Long id) {
-        return programRepository.findById(id).map(programReadWithSubProgramsMapper::map);
+        return programRepository.findById(id).map(programReadMapper::toDtoWithSubPrograms);
     }
 
     public List<ProgramReadWithSubProgramsDto> findAllByGymId(Long gymId) {
         return programRepository.findAllByGymId(gymId).stream()
-                .map(programReadWithSubProgramsMapper::map).toList();
+                .map(programReadMapper::toDtoWithSubPrograms).toList();
     }
 
     public Optional<byte[]> findAvatar(Long id) {
@@ -59,12 +57,12 @@ public class ProgramService {
         return Optional.of(program)
                 .map(dto -> {
                     var imageName = uploadImage(dto.getImage());
-                    TrainingProgram map = programCreateMapper.map(dto);
+                    TrainingProgram map = programCreateMapper.toEntity(dto);
                     imageName.ifPresent(map::setImage);
                     return map;
                 })
                 .map(programRepository::saveAndFlush)
-                .map(programReadMapper::map)
+                .map(programReadMapper::toDto)
                 .orElseThrow();
     }
 
@@ -73,10 +71,10 @@ public class ProgramService {
         return programRepository.findById(id)
                 .map(entity -> {
 
-                    return programEditMapper.map(program, entity);
+                    return programEditMapper.updateEntity(program, entity);
                 })
                 .map(programRepository::saveAndFlush)
-                .map(programReadMapper::map);
+                .map(programReadMapper::toDto);
     }
 
     @Transactional
@@ -87,7 +85,7 @@ public class ProgramService {
         imageName.ifPresent(entity::setImage);
         programRepository.saveAndFlush(entity);
         removeImage(imageForRemoval);
-        return programReadMapper.map(entity);
+        return programReadMapper.toDto(entity);
     }
 
     @Transactional

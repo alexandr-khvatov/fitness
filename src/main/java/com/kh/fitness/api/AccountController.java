@@ -46,7 +46,7 @@ public class AccountController {
     public AccountUpdatedAndTokenDto update(@RequestBody AccountEditDto dto, Authentication authentication) {
         return userService.updateAccount(dto)
                 .map(updatedUser -> {
-                    var userAndAccessToken = accountUpdatedAndTokenDtoMapper.map(updatedUser);
+                    var userAndAccessToken = accountUpdatedAndTokenDtoMapper.toDto(updatedUser);
                     // create new token if change username(phone) and return
                     if (!Objects.equals(authentication.getName(), updatedUser.getPhone())) {
                         var accessToken = tokenService.updateToken(updatedUser.getId());
@@ -63,7 +63,7 @@ public class AccountController {
     }
 
     private AccountCreatedAndTokenDto setTokenForUser(UserCreatedDto user, String token) {
-        var userWithoutToken = userCreatedAndTokenDtoMapper.map(user);
+        var userWithoutToken = userCreatedAndTokenDtoMapper.toDto(user);
         userWithoutToken.setToken(token);
         return userWithoutToken;
     }

@@ -44,12 +44,12 @@ public class CoachService {
     private final CoachReadDtoMapper coachReadDtoMapper;
 
     public Optional<CoachReadDto> findById(Long id) {
-        return coachRepository.findById(id).map(coachReadDtoMapper::map);
+        return coachRepository.findById(id).map(coachReadDtoMapper::toDto);
     }
 
     public List<CoachReadDto> findAllByGymId(Long gymId) {
         return coachRepository.findAllByGymId(gymId).stream()
-                .map(coachReadDtoMapper::map).toList();
+                .map(coachReadDtoMapper::toDto).toList();
     }
 
     public Optional<byte[]> findAvatar(Long id) {
@@ -65,12 +65,12 @@ public class CoachService {
         return Optional.of(coach)
                 .map(dto -> {
                     var imageName = uploadImage(dto.getImage());
-                    Coach map = coachCreateMapper.map(dto);
+                    Coach map = coachCreateMapper.toEntity(dto);
                     imageName.ifPresent(map::setImage);
                     return map;
                 })
                 .map(coachRepository::saveAndFlush)
-                .map(coachReadDtoMapper::map)
+                .map(coachReadDtoMapper::toDto)
                 .orElseThrow();
     }
 
@@ -97,10 +97,10 @@ public class CoachService {
                                 throw new EmailAlreadyExistException(email);
                             });
 
-                    return coachEditMapper.map(coach, entity);
+                    return coachEditMapper.updateCoach(coach, entity);
                 })
                 .map(coachRepository::saveAndFlush)
-                .map(coachReadDtoMapper::map);
+                .map(coachReadDtoMapper::toDto);
     }
 
     @Transactional
@@ -111,7 +111,7 @@ public class CoachService {
         imageName.ifPresent(entity::setImage);
         coachRepository.saveAndFlush(entity);
         removeImage(imageForRemoval);
-        return coachReadDtoMapper.map(entity);
+        return coachReadDtoMapper.toDto(entity);
     }
 
     @Transactional

@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface GymRepository extends JpaRepository<Gym, Long> {
     List<Gym> findAll();
 
+    @Override
     Optional<Gym> findById(Long id);
 
     Optional<Gym> findByName(String name);

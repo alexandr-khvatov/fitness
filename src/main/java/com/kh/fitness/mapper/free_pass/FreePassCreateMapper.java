@@ -2,18 +2,42 @@ package com.kh.fitness.mapper.free_pass;
 
 import com.kh.fitness.dto.free_pass.FreePassCreateDto;
 import com.kh.fitness.entity.FreePass;
-import com.kh.fitness.entity.Gym;
-import com.kh.fitness.entity.Training;
-import com.kh.fitness.mapper.Mapper;
-import com.kh.fitness.repository.GymRepository;
-import com.kh.fitness.repository.TrainingRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import com.kh.fitness.mapper.util.resolvers.GymMapperResolver;
+import com.kh.fitness.mapper.util.resolvers.TrainingMapperResolver;
+import org.mapstruct.InheritConfiguration;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.Optional;
+@Mapper(uses = {GymMapperResolver.class, TrainingMapperResolver.class})
+public interface FreePassCreateMapper {
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "modifiedAt", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "modifiedBy", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "firstname", ignore = true)
+    @Mapping(target = "lastname", ignore = true)
+    @Mapping(target = "phone", ignore = true)
+    @Mapping(target = "email", ignore = true)
+    @Mapping(target = "startTime", ignore = true)
+    @Mapping(target = "endTime", ignore = true)
+    @Mapping(target = "trainingName", ignore = true)
+    @Mapping(target = "isDone", constant = "false")
+    @Mapping(target = "gym", source = "gymId")
+    @Mapping(target = "training", source = "trainingId")
+    FreePass toEntity(FreePassCreateDto f);
 
-@Component
+    @InheritConfiguration
+    @Mapping(target = "firstName", source = "firstname")
+    @Mapping(target = "lastName", source = "lastname")
+    @Mapping(target = "gymId", source = "gym.id")
+    @Mapping(target = "trainingId", source = "training.id")
+    @Mapping(target = "start", source = "startTime")
+    @Mapping(target = "end", source = "endTime")
+    FreePassCreateDto toDto(FreePass from);
+}
+
+/*@Component
 @RequiredArgsConstructor
 public class FreePassCreateMapper implements Mapper<FreePassCreateDto, FreePass> {
 
@@ -66,4 +90,4 @@ public class FreePassCreateMapper implements Mapper<FreePassCreateDto, FreePass>
                 .flatMap(gymRepository::findById)
                 .orElseThrow(() -> new EntityNotFoundException("Entity Gym not found with id: " + gymId));
     }
-}
+}*/

@@ -1,17 +1,19 @@
 package com.kh.fitness.mapper.room;
 
 import com.kh.fitness.dto.room.RoomCreateDto;
-import com.kh.fitness.entity.Gym;
 import com.kh.fitness.entity.Room;
-import com.kh.fitness.mapper.Mapper;
-import com.kh.fitness.repository.GymRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import com.kh.fitness.mapper.util.resolvers.GymMapperResolver;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.Optional;
+@Mapper(uses = {GymMapperResolver.class})
+public interface RoomCreateMapper {
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "gym", source = "gymId")
+    Room toEntity(RoomCreateDto s);
+}
 
-@Component
+/*@Component
 @RequiredArgsConstructor
 public class RoomCreateMapper implements Mapper<RoomCreateDto, Room> {
     private final GymRepository gymRepository;
@@ -31,4 +33,4 @@ public class RoomCreateMapper implements Mapper<RoomCreateDto, Room> {
                 .flatMap(gymRepository::findById)
                 .orElseThrow(() -> new EntityNotFoundException("Entity Gym not found with id: " + gymId));
     }
-}
+}*/

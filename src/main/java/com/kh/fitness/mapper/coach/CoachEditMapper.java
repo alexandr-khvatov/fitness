@@ -3,15 +3,28 @@ package com.kh.fitness.mapper.coach;
 import com.kh.fitness.dto.coach.CoachEditDto;
 import com.kh.fitness.entity.Coach;
 import com.kh.fitness.entity.Gym;
-import com.kh.fitness.mapper.Mapper;
+import com.kh.fitness.mapper.util.resolvers.GymMapperResolver;
 import com.kh.fitness.repository.GymRepository;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.InheritConfiguration;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
-
-@RequiredArgsConstructor
+@Mapper(uses= GymMapperResolver.class)
+public interface CoachEditMapper {
+    @Mapping(target = "id",ignore = true)
+    @Mapping(target = "trainings",ignore = true)
+    @Mapping(target = "image",ignore = true)
+    @Mapping(target = "gym",source = "gymId")
+    Coach toEntity(CoachEditDto s);
+    @InheritConfiguration
+    Coach updateCoach(CoachEditDto s, @MappingTarget Coach t);
+}
+/*@RequiredArgsConstructor
 @Component
 public class CoachEditMapper implements Mapper<CoachEditDto, Coach> {
     private final GymRepository gymRepository;
@@ -49,4 +62,4 @@ public class CoachEditMapper implements Mapper<CoachEditDto, Coach> {
                 .flatMap(gymRepository::findById)
                 .orElseThrow(() -> new EntityNotFoundException("Entity Gym not found with id: " + gymId));
     }
-}
+}*/

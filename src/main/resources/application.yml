@@ -35,8 +35,8 @@ spring:
 
   mail:
     host: smtp.gmail.com
-    username: khvatov6399@gmail.com
-    password: byvlmxfxebfibxdr
+    username: username@gmail.com
+    password: XXXXXXXXXXXXXXXXXX
     port: '587'
     properties:
       mail:
@@ -48,15 +48,8 @@ spring:
   profiles:
     active: prod
 
-#jwt:
-#  expiration: 360000
-#  secret: MyStrongSecret
-#
-#rsa:
-#  private-key: classpath:certs/private.pem
-#  public-key: classpath:certs/public.pem
-
 client.origin: http://localhost:3000
+
 app:
   image:
     bucket: /files/image

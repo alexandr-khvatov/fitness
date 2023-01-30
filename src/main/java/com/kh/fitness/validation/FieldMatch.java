@@ -15,7 +15,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Constraint(validatedBy = FieldMatchValidator.class)
 public @interface FieldMatch {
-    String message() default "Поля должны совпадать";
+    String message() default "Fields do not match";
 
     Class<?>[] groups() default {};
 

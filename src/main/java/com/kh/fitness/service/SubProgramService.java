@@ -60,8 +60,8 @@ public class SubProgramService {
     public SubProgramReadDto create(@Valid SubProgramCreateDto subProgram) {
         return Optional.of(subProgram)
                 .map(dto -> {
-                    var imageName = uploadImage(dto.getImage());
-                    SubTrainingProgram map = subProgramCreateMapper.map(dto);
+                    var imageName = imageService.uploadImage(dto.getImage());
+                    SubTrainingProgram map = subProgramCreateMapper.toEntity(dto);
                     imageName.ifPresent(map::setImage);
                     return map;
                 })
@@ -73,10 +73,7 @@ public class SubProgramService {
     @Transactional
     public Optional<SubProgramReadDto> update(Long id, @Valid SubProgramEditDto subProgram) {
         return subProgramRepository.findById(id)
-                .map(entity -> {
-
-                    return subProgramEditMapper.map(subProgram, entity);
-                })
+                .map(entity -> subProgramEditMapper.updateEntity(subProgram, entity))
                 .map(subProgramRepository::saveAndFlush)
                 .map(subProgramReadMapper::map);
     }
@@ -85,7 +82,7 @@ public class SubProgramService {
     public SubProgramReadDto updateAvatar(Long id, MultipartFile image) {
         var entity = subProgramRepository.findById(id).orElseThrow();
         var imageForRemoval = entity.getImage();
-        var imageName = uploadImage(image);
+        var imageName = imageService.uploadImage(image);
         imageName.ifPresent(entity::setImage);
         subProgramRepository.saveAndFlush(entity);
         removeImage(imageForRemoval);
@@ -113,17 +110,6 @@ public class SubProgramService {
         } catch (Exception e) {
             throw new UnableToDeleteObjectContainsNestedObjects("Не возможно удалить, программа закреплена за тренеровкой");
         }
-    }
-
-    @SneakyThrows
-    private Optional<String> uploadImage(MultipartFile image) {
-        if (image != null && !image.isEmpty()) {
-            // только для .fileExtension
-            final String IMAGE_NAME = UUID.randomUUID() + "." + StringUtils.getFilenameExtension(image.getOriginalFilename());
-            imageService.upload(IMAGE_NAME, image.getInputStream());
-            return Optional.of(IMAGE_NAME);
-        }
-        return Optional.empty();
     }
 
     /**
