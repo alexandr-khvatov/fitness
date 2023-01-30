@@ -27,7 +27,7 @@ $ git clone https://github.com/alexandr-khvatov/fitness.git
 $ cd fitness
 
 # Build
-$ ./gradlew build
+$ ./gradlew bootJar
 
 # Run the app
 $ java -jar build/libs/*-SNAPSHOT.jar
@@ -40,7 +40,7 @@ Docker instructions:
 $ git clone https://github.com/alexandr-khvatov/fitness.git
 
 # Build
-$ ./gradlew build
+$ ./gradlew bootJar
 
 # Build Docker Image
 $ docker build --build-arg JAR_FILE=build/libs/*.jar -t fitness-backend .
