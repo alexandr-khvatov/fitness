@@ -1,8 +1,14 @@
-FROM openjdk:17-jdk-alpine
+FROM openjdk:17-alpine as builder
 MAINTAINER kh.com
-ARG JAR_FILE=target/libs/fitness-*-SNAPSHOT.jar
-COPY ${JAR_FILE} app.jar
+WORKDIR /app
+COPY .gradle/ .gradle
+COPY . .
+RUN ./gradlew bootJar
+
+FROM openjdk:17-alpine
+WORKDIR /app
+COPY --from=builder /app/build/libs/*.jar /app/*.jar
 RUN mkdir -p files/image
 VOLUME /files/image
-ENTRYPOINT ["java","-jar","/app.jar"]
 EXPOSE 8080
+ENTRYPOINT ["java","-jar","/*.jar"]

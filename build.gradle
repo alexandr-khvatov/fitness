@@ -4,8 +4,9 @@ plugins {
     id 'java'
 }
 
-group = 'com.kh'
-version = '0.0.1-SNAPSHOT'
+group 'com.kh'
+version '0.0.1-SNAPSHOT'
+
 springBoot {
     mainClass = 'com.kh.fitness.FitnessApplication'
 }
@@ -44,30 +45,29 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 
-    testCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    testCompileOnly 'org.projectlombok:lombok'
+
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
 compileJava.options.encoding = 'UTF-8'
 compileJava {
     options.compilerArgs += [
-//            '-Amapstruct.suppressGeneratorTimestamp=true',
-//            '-Amapstruct.suppressGeneratorVersionInfoComment=true',
-//            '-Amapstruct.verbose=true',
             '-Amapstruct.defaultComponentModel=spring',
             '-Amapstruct.defaultInjectionStrategy=constructor'
     ]
 }
 
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
 tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+    options.encoding 'UTF-8'
 }
