@@ -1,7 +1,6 @@
 FROM openjdk:17-alpine as builder
 MAINTAINER kh.com
 WORKDIR /app
-COPY .gradle/ .gradle
 COPY . .
 RUN ./gradlew bootJar
 
