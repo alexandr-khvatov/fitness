@@ -1,0 +1,28 @@
+version: "4.1"
+services:
+  server:
+    build:
+      context: .
+    container_name: "${API_CONTAINER_NAME}"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/fitness
+    volumes:
+      - ./fitness-image:/files/image
+    ports:
+      - "${API_PORT}:8080"
+    depends_on:
+      - db
+    restart: always
+  db:
+    image: "postgres:${DB_POSTGRES_VERSION}"
+    container_name: "${NAME_DB_CONTAINER}"
+    environment:
+      POSTGRES_DB: "${DB_NAME}"
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./fitness-db:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT}:5432"
+    restart: unless-stopped
