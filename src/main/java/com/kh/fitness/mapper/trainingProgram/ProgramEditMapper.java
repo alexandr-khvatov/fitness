@@ -20,33 +20,3 @@ public interface ProgramEditMapper {
     TrainingProgram updateEntity(ProgramEditDto s, @MappingTarget TrainingProgram t);
 
 }
-//@Component
-//@RequiredArgsConstructor
-//public class ProgramEditMapper implements Mapper<ProgramEditDto, TrainingProgram> {
-//    private final GymRepository gymRepository;
-//
-//    @Override
-//    public TrainingProgram map(ProgramEditDto f) {
-//        var program = new TrainingProgram();
-//        copy(f, program);
-//        return program;
-//    }
-//
-//    public TrainingProgram map(ProgramEditDto f, TrainingProgram t) {
-//        copy(f, t);
-//        return t;
-//    }
-//
-//    public Gym getGym(Long gymId) {
-//        return Optional.ofNullable(gymId)
-//                .flatMap(gymRepository::findById)
-//                .orElseThrow(() -> new EntityNotFoundException("Entity Gym not found with id: " + gymId));
-//    }
-//
-//    private void copy(ProgramEditDto f, TrainingProgram t) {
-//        t.setName(f.getName());
-//        t.setOverview(f.getOverview());
-//        t.setDescription(f.getDescription());
-//        t.setGym(getGym(f.getGymId()));
-//    }
-//}

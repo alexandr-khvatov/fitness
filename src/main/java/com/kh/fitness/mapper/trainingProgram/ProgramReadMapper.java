@@ -21,17 +21,3 @@ public interface ProgramReadMapper {
         return s.getImage() != null ? "http://localhost:8080/api/v1/sub-programs/" + s.getId() + "/avatar" : null;
     }
 }
-/*@Component
-@RequiredArgsConstructor
-public class ProgramReadMapper implements Mapper<TrainingProgram, ProgramReadDto> {
-
-    public ProgramReadDto map(TrainingProgram f) {
-        return ProgramReadDto.builder()
-                .id(f.getId())
-                .name(f.getName())
-                .overview(f.getOverview())
-                .image(f.getImage() != null ? "http://localhost:8080/api/v1/programs/" + f.getId() + "/avatar" : null)
-                .description(f.getDescription())
-                .build();
-    }
-}*/

@@ -10,20 +10,3 @@ public interface AccountUpdatedAndTokenDtoMapper {
     @Mapping(target = "token", ignore = true)
     AccountUpdatedAndTokenDto toDto(UserReadDto s);
 }
-
-/*@Component
-public class AccountUpdatedAndTokenDtoMapper implements Mapper<UserReadDto, AccountUpdatedAndTokenDto> {
-
-    @Override
-    public AccountUpdatedAndTokenDto map(UserReadDto f) {
-        return new AccountUpdatedAndTokenDto(
-                f.getId(),
-                f.getFirstname(),
-                f.getPatronymic(),
-                f.getLastname(),
-                f.getEmail(),
-                f.getPhone(),
-                f.getBirthDate(),
-                null);
-    }
-}*/

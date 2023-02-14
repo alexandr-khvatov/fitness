@@ -12,25 +12,3 @@ public interface RoomCreateMapper {
     @Mapping(target = "gym", source = "gymId")
     Room toEntity(RoomCreateDto s);
 }
-
-/*@Component
-@RequiredArgsConstructor
-public class RoomCreateMapper implements Mapper<RoomCreateDto, Room> {
-    private final GymRepository gymRepository;
-    public Room map(RoomCreateDto f) {
-        var room = new Room();
-        copy(f, room);
-        return room;
-    }
-
-    private void copy(RoomCreateDto f, Room t) {
-        t.setName(f.getName());
-        t.setGym(getGym(f.getGymId()));
-    }
-
-    public Gym getGym(Long gymId) {
-        return Optional.ofNullable(gymId)
-                .flatMap(gymRepository::findById)
-                .orElseThrow(() -> new EntityNotFoundException("Entity Gym not found with id: " + gymId));
-    }
-}*/

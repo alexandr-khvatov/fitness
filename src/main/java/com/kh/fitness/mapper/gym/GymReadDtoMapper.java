@@ -1,4 +1,4 @@
-package com.kh.fitness.mapper;
+package com.kh.fitness.mapper.gym;
 
 import com.kh.fitness.dto.gym.GymOpeningHourInfoDto;
 import com.kh.fitness.dto.gym.GymReadDto;

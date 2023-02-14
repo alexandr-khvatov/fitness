@@ -15,20 +15,3 @@ public interface CallRequestCreateDtoMapper {
     @Mapping(target = "isActive", constant = "true")
     CallRequest toEntity(CallRequestCreateDto source);
 }
-//@Component
-//public class CallRequestCreateDtoMapper implements Mapper<CallRequestCreateDto, CallRequest> {
-//
-//    @Override
-//    public CallRequest map(CallRequestCreateDto f) {
-//        return mapToEntity(f);
-//    }
-//
-//    private CallRequest mapToEntity(CallRequestCreateDto f) {
-//        return new CallRequest(
-//                null,
-//                f.getPhone(),
-//                f.getFirstname(),
-//                f.getLastname(),
-//                true);
-//    }
-//}

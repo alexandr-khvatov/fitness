@@ -14,24 +14,3 @@ public interface UserRegisterMapper {
     @Mapping(target = "authorities",ignore = true)
     User toEntity(UserRegisterDto s);
 }
-/*
-@Component
-@RequiredArgsConstructor
-public class UserRegisterMapper implements Mapper<UserRegisterDto, User> {
-    @Override
-    public User map(UserRegisterDto f) {
-        User user = new User();
-        copy(f, user);
-        return user;
-    }
-
-    private void copy(UserRegisterDto o, User user) {
-        user.setEmail(o.getEmail());
-        user.setPhone(o.getPhone());
-        user.setFirstname(o.getFirstname());
-        user.setPatronymic(o.getPatronymic());
-        user.setLastname(o.getLastname());
-        user.setBirthDate(o.getBirthDate());
-        user.setPassword(o.getPassword());
-    }
-}*/
