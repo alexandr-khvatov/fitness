@@ -1,6 +1,6 @@
 package com.kh.fitness.mapper;
 
-import com.kh.fitness.dto.CallRequestCreateDto;
+import com.kh.fitness.dto.callRequest.CallRequestCreateDto;
 import com.kh.fitness.entity.CallRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
