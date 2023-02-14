@@ -1,7 +1,7 @@
 package com.kh.fitness.service;
 
-import com.kh.fitness.dto.LoginDto;
-import com.kh.fitness.dto.TokenDto;
+import com.kh.fitness.dto.account.LoginDto;
+import com.kh.fitness.dto.account.TokenDto;
 
 import javax.validation.Valid;
 

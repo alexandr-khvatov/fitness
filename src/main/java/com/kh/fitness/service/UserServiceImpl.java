@@ -39,9 +39,9 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Validated
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final RoleService roleService;
     private final ImageService imageService;

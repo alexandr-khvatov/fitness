@@ -1,8 +1,8 @@
 package com.kh.fitness.service;
 
 import com.kh.fitness.config.SecurityConfig;
-import com.kh.fitness.dto.LoginDto;
-import com.kh.fitness.dto.TokenDto;
+import com.kh.fitness.dto.account.LoginDto;
+import com.kh.fitness.dto.account.TokenDto;
 import com.kh.fitness.exception.UserNotFoundException;
 import com.kh.fitness.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,8 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.joining;
 
 @Service
 @RequiredArgsConstructor
@@ -35,8 +36,9 @@ public class TokenServiceImpl implements TokenService {
     public TokenDto authentication(@Valid LoginDto dto) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(
-                        dto.getUsername(),
-                        dto.getPassword())
+                                dto.getUsername(),
+                                dto.getPassword()
+                        )
                 );
         return generateToken(authentication);
     }
@@ -66,7 +68,7 @@ public class TokenServiceImpl implements TokenService {
         Instant now = Instant.now();
         String scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
+                .collect(joining(" "));
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer(ISSUER)
                 .issuedAt(now)

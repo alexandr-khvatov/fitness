@@ -49,7 +49,8 @@ public class CoachService {
 
     public List<CoachReadDto> findAllByGymId(Long gymId) {
         return coachRepository.findAllByGymId(gymId).stream()
-                .map(coachReadDtoMapper::toDto).toList();
+                .map(coachReadDtoMapper::toDto)
+                .toList();
     }
 
     public Optional<byte[]> findAvatar(Long id) {
