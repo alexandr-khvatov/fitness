@@ -22,14 +22,13 @@ class ValidationsConstraintPasswordTest {
     private static ValidatorFactory factory;
 
     @RequiredArgsConstructor
-    static class Invalid {
+    static class CheckFieldValidation {
         @Password
         private final String password;
     }
 
     @BeforeEach
     void setUp() {
-//        Locale.setDefault(Locale.ENGLISH);  //expecting english error messages
         factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }
@@ -41,7 +40,7 @@ class ValidationsConstraintPasswordTest {
 
     @Test
     void checkMessageAndPropertyPathAndSizeConstraintIsEqual_1() {
-        Set<ConstraintViolation<Invalid>> violations = validator.validate(new Invalid("password1"));
+        Set<ConstraintViolation<CheckFieldValidation>> violations = validator.validate(new CheckFieldValidation("password1"));
 
         boolean hasExpectedPropertyPath = violations.stream()
                 .map(ConstraintViolation::getPropertyPath)
@@ -60,7 +59,7 @@ class ValidationsConstraintPasswordTest {
     @ParameterizedTest
     @MethodSource(value = "getArgForValidPasswordTest")
     void validPasswordTest(String pwd) {
-        Set<ConstraintViolation<Invalid>> violations = validator.validate(new Invalid(pwd));
+        Set<ConstraintViolation<CheckFieldValidation>> violations = validator.validate(new CheckFieldValidation(pwd));
         assertThat(violations).isEmpty();
     }
 
@@ -84,8 +83,8 @@ class ValidationsConstraintPasswordTest {
     @ParameterizedTest
     @MethodSource(value = "getArgForForInvalidPasswordTest")
     void invalidPasswordTest(String pwd) {
-        Set<ConstraintViolation<Invalid>> violations = validator.validate(new Invalid(pwd));
-assertThat(violations).hasSize(1);
+        Set<ConstraintViolation<CheckFieldValidation>> violations = validator.validate(new CheckFieldValidation(pwd));
+        assertThat(violations).hasSize(1);
     }
 
     static Stream<Arguments> getArgForForInvalidPasswordTest() {
