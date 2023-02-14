@@ -1,4 +1,4 @@
-package com.kh.fitness.dto;
+package com.kh.fitness.dto.callRequest;
 
 import com.kh.fitness.validation.Phone;
 import lombok.Value;

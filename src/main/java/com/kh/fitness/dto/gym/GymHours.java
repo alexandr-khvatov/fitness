@@ -1,4 +1,4 @@
-package com.kh.fitness.dto;
+package com.kh.fitness.dto.gym;
 
 import com.kh.fitness.dto.gym.GymOpeningHourInfoDto;
 import lombok.*;

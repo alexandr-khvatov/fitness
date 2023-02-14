@@ -11,6 +11,7 @@ import java.time.LocalTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class GymOpeningHourInfoDto {
     private Integer dayOfWeek;
     @NotEmpty

@@ -1,4 +1,4 @@
-package com.kh.fitness.dto;
+package com.kh.fitness.dto.account;
 
 import com.kh.fitness.validation.Password;
 import com.kh.fitness.validation.Phone;
