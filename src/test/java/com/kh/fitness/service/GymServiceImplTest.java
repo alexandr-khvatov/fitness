@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class GymServiceImplTest {
@@ -36,43 +36,62 @@ class GymServiceImplTest {
     @InjectMocks
     private GymServiceImpl gymService;
 
-    @Test
-    void findById() {
-        var gym = getGym();
-        GymReadDto gymDto = getGymReadDto();
-        doReturn(gymDto).when(gymReadDtoMapper).toDto(gym);
-        doReturn(Optional.of(gym)).when(gymRepository).findById(anyLong());
+    private static final Long GYM_ID = 1L;
 
+    @Test
+    void findById_shouldReturnGym_whenExist() {
+        var gym = getGymWithId();
+        GymReadDto gymDto = getGymReadDto();
+
+        doReturn(gymDto).when(gymReadDtoMapper).toDto(gym);
+        doReturn(Optional.of(gym)).when(gymRepository).findById(GYM_ID);
+        Optional<GymReadDto> actualResult = gymService.findById(GYM_ID);
+
+        assertThat(actualResult).isPresent().isEqualTo(Optional.of(gymDto));
+        verify(gymRepository).findById(any());
+        verify(gymReadDtoMapper).toDto(any());
+    }
+
+    @Test
+    void findById_shouldReturnEmptyOptional_whenMissing() {
+        doReturn(Optional.empty()).when(gymRepository).findById(anyLong());
         Optional<GymReadDto> actualResult = gymService.findById(anyLong());
 
-        assertThat(actualResult).isNotNull().isEqualTo(Optional.of(gymDto));
-        verify(gymRepository).findById(anyLong());
+        assertThat(actualResult).isEmpty();
+        verify(gymRepository, times(1)).findById(any());
+        verify(gymReadDtoMapper, times(0)).toDto(any());
     }
 
     @Test
     void create() {
-        var gym = getGym();
+        var gym = getGymWithoutId();
         var gymCreateEditDto = getGymCreateEditDto();
-        doReturn(gym).when(gymCreateEditDtoMapper).toEntity(gymCreateEditDto);
         var savedGym = getGymWithId();
-        doReturn(savedGym).when(gymRepository).save(gym);
-        GymReadDto gymDto = getGymReadDto();
-        doReturn(gymDto).when(gymReadDtoMapper).toDto(savedGym);
+        var gymDto = getGymReadDto();
 
+        doReturn(gym).when(gymCreateEditDtoMapper).toEntity(gymCreateEditDto);
+        doReturn(savedGym).when(gymRepository).save(gym);
+        doReturn(gymDto).when(gymReadDtoMapper).toDto(savedGym);
         GymReadDto actualResult = gymService.create(gymCreateEditDto);
 
         assertThat(actualResult).isNotNull().isEqualTo(gymDto);
-        verify(gymRepository).save(gym);
+        verify(gymCreateEditDtoMapper).toEntity(any());
+        verify(gymRepository).save(any());
+        verify(gymReadDtoMapper).toDto(any());
     }
 
-    private Gym getGym() {
-        return new Gym();
+    private Gym getGymWithoutId() {
+        return Gym.builder()
+                .id(null)
+                .name("GYM Java without id")
+                .build();
     }
 
     private Gym getGymWithId() {
-        Gym gym = new Gym();
-        gym.setId(1111L);
-        return gym;
+        return Gym.builder()
+                .id(GYM_ID)
+                .name("GYM Java with id")
+                .build();
     }
 
     private GymReadDto getGymReadDto() {
@@ -84,8 +103,8 @@ class GymServiceImplTest {
                 .isOpen(true)
                 .build());
         return GymReadDto.builder()
-                .id(111L)
-                .name("Gym")
+                .id(GYM_ID)
+                .name("GYM Java with id")
                 .address("City")
                 .phone("88005553535")
                 .email("test@email.com")
@@ -102,7 +121,7 @@ class GymServiceImplTest {
 
     private GymCreateEditDto getGymCreateEditDto() {
         return GymCreateEditDto.builder()
-                .name("Gym")
+                .name("GYM Java without id")
                 .address("City")
                 .phone("88005553535")
                 .email("test@email.com")

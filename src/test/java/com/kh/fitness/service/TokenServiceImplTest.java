@@ -35,26 +35,26 @@ class TokenServiceImplTest {
 
     @Test
     void authenticationSuccess() {
-        var stubAuthenticated = new UsernamePasswordAuthenticationToken("dummy", "dummy");
-        doReturn(stubAuthenticated).when(authenticationManager).authenticate(any());
-
+        var loginDto = new LoginDto("dummy", "dummy");
+        var stubAuthenticated = new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
         String stubToken = "dummy MY SECRET TOKEN";
         Jwt stubJwt = new Jwt(stubToken, Instant.now(), Instant.MAX, Map.of("dummy", "headers"), Map.of("dummy", "claims"));
+
+        doReturn(stubAuthenticated).when(authenticationManager).authenticate(stubAuthenticated);
         doReturn(stubJwt).when(encoder).encode(any());
 
-        var actualResult = tokenService.authentication(new LoginDto("dummy", "dummy"));
-
+        var actualResult = tokenService.authentication(loginDto);
 
         TokenDto expectedResult = new TokenDto(stubToken);
-        assertThat(actualResult).isEqualTo(expectedResult);
+        assertThat(actualResult).isNotNull().isEqualTo(expectedResult);
+        verify(authenticationManager).authenticate(any());
         verify(encoder).encode(any());
     }
 
     @Test
     void authenticationFail() {
         doThrow(BadCredentialsException.class).when(authenticationManager).authenticate(any());
-        assertThrows(BadCredentialsException.class, () -> tokenService.authentication(new LoginDto("dummy", "dummy")));
+        assertThrows(BadCredentialsException.class, () -> tokenService.authentication(any()));
         verifyNoInteractions(encoder);
     }
-
 }
