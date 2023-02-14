@@ -1,8 +1,6 @@
 package com.kh.fitness.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalTime;
@@ -16,8 +14,11 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @ToString(exclude = {"coaches", "trainingPrograms", "subscriptions"})
 @EqualsAndHashCode(of = "name")
-@Entity
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
 public class Gym implements BaseEntity<Long> {
     @Id
     @GeneratedValue(strategy = IDENTITY)

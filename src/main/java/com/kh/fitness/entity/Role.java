@@ -1,21 +1,26 @@
 package com.kh.fitness.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Data
-//@EqualsAndHashCode(exclude = "users")
-//@ToString(exclude = "users")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Role implements GrantedAuthority, BaseEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-//    @ManyToMany(mappedBy = "roles")
-//    private Set<User> users = new HashSet<>();
 
     @Override
     public String getAuthority() {
