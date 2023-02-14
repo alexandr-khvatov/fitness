@@ -1,11 +1,9 @@
 package com.kh.fitness.api;
 
-import com.kh.fitness.dto.GymHours;
+import com.kh.fitness.dto.gym.GymHours;
 import com.kh.fitness.dto.gym.GymCreateEditDto;
-import com.kh.fitness.dto.gym.GymOpeningHourInfoDto;
 import com.kh.fitness.dto.gym.GymReadDto;
-import com.kh.fitness.entity.Gym;
-import com.kh.fitness.service.GymService;
+import com.kh.fitness.service.GymServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -21,10 +19,10 @@ import static com.kh.fitness.api.util.PathUtils.API_V1;
 @RequestMapping(API_V1 + "/gyms")
 @RequiredArgsConstructor
 public class GymController {
-    private final GymService gymService;
+    private final GymServiceImpl gymService;
 
     @GetMapping
-    public List<Gym> findAll() {
+    public List<GymReadDto> findAll() {
         return gymService.findAll();
     }
 
@@ -46,7 +44,7 @@ public class GymController {
 
     @PutMapping("/{id}/open_hours")
     public Optional<GymReadDto> updateOpeningHours(@PathVariable Long id, @RequestBody GymHours openingHours) {
-        return gymService.updateOpeningHours(id,openingHours);
+        return gymService.updateWorkingHours(id,openingHours);
     }
 
     @DeleteMapping("/{id}")

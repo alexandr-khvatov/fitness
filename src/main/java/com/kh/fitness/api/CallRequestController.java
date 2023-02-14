@@ -1,6 +1,6 @@
 package com.kh.fitness.api;
 
-import com.kh.fitness.dto.CallRequestCreateDto;
+import com.kh.fitness.dto.callRequest.CallRequestCreateDto;
 import com.kh.fitness.entity.CallRequest;
 import com.kh.fitness.service.CallRequestService;
 import com.kh.fitness.api.util.PathUtils;

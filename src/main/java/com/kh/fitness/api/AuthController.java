@@ -1,7 +1,7 @@
 package com.kh.fitness.api;
 
-import com.kh.fitness.dto.LoginDto;
-import com.kh.fitness.dto.TokenDto;
+import com.kh.fitness.dto.account.LoginDto;
+import com.kh.fitness.dto.account.TokenDto;
 import com.kh.fitness.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

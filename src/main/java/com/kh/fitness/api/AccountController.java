@@ -1,12 +1,11 @@
 package com.kh.fitness.api;
 
 import com.kh.fitness.api.util.PathUtils;
-import com.kh.fitness.dto.LoginDto;
+import com.kh.fitness.dto.account.LoginDto;
 import com.kh.fitness.dto.account.AccountChangePasswordDto;
 import com.kh.fitness.dto.account.AccountCreatedAndTokenDto;
 import com.kh.fitness.dto.account.AccountEditDto;
 import com.kh.fitness.dto.account.AccountUpdatedAndTokenDto;
-import com.kh.fitness.dto.user.UserCreatedDto;
 import com.kh.fitness.dto.user.UserRegisterDto;
 import com.kh.fitness.exception.UserNotFoundException;
 import com.kh.fitness.mapper.account.AccountUpdatedAndTokenDtoMapper;
@@ -39,7 +38,9 @@ public class AccountController {
     public AccountCreatedAndTokenDto register(@RequestBody UserRegisterDto dto) {
         var createdUser = userService.register(dto);
         var token = tokenService.authentication(new LoginDto(dto.getPhone(), dto.getPassword()));
-        return setTokenForUser(createdUser, token.token());
+        var accountDto = userCreatedAndTokenDtoMapper.toDto(createdUser);
+        accountDto.setToken(token.token());
+        return accountDto;
     }
 
     @PutMapping
@@ -60,11 +61,5 @@ public class AccountController {
     @PutMapping("/change_password")
     public void changePassword(@RequestBody AccountChangePasswordDto dto) {
         userService.changePassword(dto);
-    }
-
-    private AccountCreatedAndTokenDto setTokenForUser(UserCreatedDto user, String token) {
-        var userWithoutToken = userCreatedAndTokenDtoMapper.toDto(user);
-        userWithoutToken.setToken(token);
-        return userWithoutToken;
     }
 }
