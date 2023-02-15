@@ -13,7 +13,6 @@ import com.kh.fitness.mapper.coach.CoachReadDtoMapper;
 import com.kh.fitness.repository.CoachRepository;
 import com.kh.fitness.validation.sequence.DefaultAndNotExistComplete;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +24,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -57,7 +55,7 @@ public class CoachService {
         return coachRepository.findById(id)
                 .map(Coach::getImage)
                 .filter(StringUtils::hasText)
-                .flatMap(imageService::getImage);
+                .flatMap(imageService::get);
     }
 
     @Transactional
@@ -65,7 +63,7 @@ public class CoachService {
     public CoachReadDto create(@Valid CoachCreateDto coach) {
         return Optional.of(coach)
                 .map(dto -> {
-                    var imageName = uploadImage(dto.getImage());
+                    var imageName = imageService.upload(dto.getImage());
                     Coach map = coachCreateMapper.toEntity(dto);
                     imageName.ifPresent(map::setImage);
                     return map;
@@ -108,7 +106,7 @@ public class CoachService {
     public CoachReadDto updateAvatar(Long id, MultipartFile image) {
         var entity = coachRepository.findById(id).orElseThrow();
         var imageForRemoval = entity.getImage();
-        var imageName = uploadImage(image);
+        var imageName = imageService.upload(image);
         imageName.ifPresent(entity::setImage);
         coachRepository.saveAndFlush(entity);
         removeImage(imageForRemoval);
@@ -139,17 +137,6 @@ public class CoachService {
         }
     }
 
-    @SneakyThrows
-    private Optional<String> uploadImage(MultipartFile image) {
-        if (image != null && !image.isEmpty()) {
-            // только для .fileExtension
-            final String IMAGE_NAME = UUID.randomUUID() + "." + StringUtils.getFilenameExtension(image.getOriginalFilename());
-            imageService.upload(IMAGE_NAME, image.getInputStream());
-            return Optional.of(IMAGE_NAME);
-        }
-        return Optional.empty();
-    }
-
     /**
      * Calls a method to remove an image
      *
@@ -159,7 +146,7 @@ public class CoachService {
      */
     private boolean removeImage(String imagePath) {
         if (imagePath != null && !imagePath.isEmpty()) {
-            return imageService.removeImage(imagePath);
+            return imageService.remove(imagePath);
         }
         return false;
     }

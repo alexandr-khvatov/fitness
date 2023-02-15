@@ -10,7 +10,6 @@ import com.kh.fitness.mapper.subTrainingProgram.SubProgramEditMapper;
 import com.kh.fitness.mapper.subTrainingProgram.SubProgramReadMapper;
 import com.kh.fitness.repository.SubProgramRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -20,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -53,14 +51,14 @@ public class SubProgramService {
         return subProgramRepository.findById(id)
                 .map(SubTrainingProgram::getImage)
                 .filter(StringUtils::hasText)
-                .flatMap(imageService::getImage);
+                .flatMap(imageService::get);
     }
 
     @Transactional
     public SubProgramReadDto create(@Valid SubProgramCreateDto subProgram) {
         return Optional.of(subProgram)
                 .map(dto -> {
-                    var imageName = imageService.uploadImage(dto.getImage());
+                    var imageName = imageService.upload(dto.getImage());
                     SubTrainingProgram map = subProgramCreateMapper.toEntity(dto);
                     imageName.ifPresent(map::setImage);
                     return map;
@@ -82,7 +80,7 @@ public class SubProgramService {
     public SubProgramReadDto updateAvatar(Long id, MultipartFile image) {
         var entity = subProgramRepository.findById(id).orElseThrow();
         var imageForRemoval = entity.getImage();
-        var imageName = imageService.uploadImage(image);
+        var imageName = imageService.upload(image);
         imageName.ifPresent(entity::setImage);
         subProgramRepository.saveAndFlush(entity);
         removeImage(imageForRemoval);
@@ -121,7 +119,7 @@ public class SubProgramService {
      */
     private boolean removeImage(String imagePath) {
         if (imagePath != null && !imagePath.isEmpty()) {
-            return imageService.removeImage(imagePath);
+            return imageService.remove(imagePath);
         }
         return false;
     }

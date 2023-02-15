@@ -22,8 +22,8 @@ public class ImageServiceImpl implements ImageService {
         this.bucket = bucket;
     }
 
-    @Override
-    public void upload(String imagePath, InputStream content) {
+
+    private void save(String imagePath, InputStream content) {
         Path fullPath = Path.of(bucket, imagePath);
         try {
             Files.createDirectories(fullPath.getParent());
@@ -34,18 +34,19 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @SneakyThrows
-    public Optional<String> uploadImage(MultipartFile image) {
+    @Override
+    public Optional<String> upload(MultipartFile image) {
         if (image != null && !image.isEmpty()) {
-            // только для .fileExtension
+            // only for .fileExtension
             final String IMAGE_NAME = UUID.randomUUID() + "." + StringUtils.getFilenameExtension(image.getOriginalFilename());
-            upload(IMAGE_NAME, image.getInputStream());
+            save(IMAGE_NAME, image.getInputStream());
             return Optional.of(IMAGE_NAME);
         }
         return Optional.empty();
     }
 
     @Override
-    public Optional<byte[]> getImage(String imagePath) {
+    public Optional<byte[]> get(String imagePath) {
         Path fullImagePath = Path.of(bucket, imagePath);
         try {
             return Files.exists(fullImagePath)
@@ -57,12 +58,12 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public boolean removeImage(String imagePath) {
+    public boolean remove(String imagePath) {
         Path fullImagePath = Path.of(bucket, imagePath);
         try {
             return Files.deleteIfExists(fullImagePath);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 }

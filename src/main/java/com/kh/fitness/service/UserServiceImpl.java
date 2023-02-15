@@ -196,7 +196,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findById(id)
                 .map(User::getImage)
                 .filter(StringUtils::hasText)
-                .flatMap(imageService::getImage);
+                .flatMap(imageService::get);
     }
 
     @Transactional

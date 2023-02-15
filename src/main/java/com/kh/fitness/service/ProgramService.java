@@ -11,7 +11,6 @@ import com.kh.fitness.mapper.trainingProgram.ProgramEditMapper;
 import com.kh.fitness.mapper.trainingProgram.ProgramReadMapper;
 import com.kh.fitness.repository.ProgramRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -21,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -49,14 +47,14 @@ public class ProgramService {
         return programRepository.findById(id)
                 .map(TrainingProgram::getImage)
                 .filter(StringUtils::hasText)
-                .flatMap(imageService::getImage);
+                .flatMap(imageService::get);
     }
 
     @Transactional
     public ProgramReadDto create(@Valid ProgramCreateDto program) {
         return Optional.of(program)
                 .map(dto -> {
-                    var imageName = uploadImage(dto.getImage());
+                    var imageName = imageService.upload(dto.getImage());
                     TrainingProgram map = programCreateMapper.toEntity(dto);
                     imageName.ifPresent(map::setImage);
                     return map;
@@ -81,7 +79,7 @@ public class ProgramService {
     public ProgramReadDto updateAvatar(Long id, MultipartFile image) {
         var entity = programRepository.findById(id).orElseThrow();
         var imageForRemoval = entity.getImage();
-        var imageName = uploadImage(image);
+        var imageName = imageService.upload(image);
         imageName.ifPresent(entity::setImage);
         programRepository.saveAndFlush(entity);
         removeImage(imageForRemoval);
@@ -111,17 +109,6 @@ public class ProgramService {
         }
     }
 
-    @SneakyThrows
-    private Optional<String> uploadImage(MultipartFile image) {
-        if (image != null && !image.isEmpty()) {
-            // только для .fileExtension
-            final String IMAGE_NAME = UUID.randomUUID() + "." + StringUtils.getFilenameExtension(image.getOriginalFilename());
-            imageService.upload(IMAGE_NAME, image.getInputStream());
-            return Optional.of(IMAGE_NAME);
-        }
-        return Optional.empty();
-    }
-
     /**
      * Calls a method to remove an image
      *
@@ -131,7 +118,7 @@ public class ProgramService {
      */
     private boolean removeImage(String imagePath) {
         if (imagePath != null && !imagePath.isEmpty()) {
-            return imageService.removeImage(imagePath);
+            return imageService.remove(imagePath);
         }
         return false;
     }
