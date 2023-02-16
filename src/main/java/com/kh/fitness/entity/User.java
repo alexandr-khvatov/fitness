@@ -56,6 +56,10 @@ public class User implements BaseEntity<Long>, UserDetails {
         return getEmail();
     }
 
+    public void setUsername(String username) {
+        this.setPhone(username);
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return false;
