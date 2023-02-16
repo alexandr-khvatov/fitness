@@ -18,7 +18,6 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class User implements BaseEntity<Long>, UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,15 +35,6 @@ public class User implements BaseEntity<Long>, UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-
-//    public void addRoles(Set<Role> roles) {
-//        this.roles = roles;
-//        roles.forEach(x -> x.getUsers().add(this));
-//    }
-
-    public boolean removeRole(Role role) {
-        return roles.remove(role);
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

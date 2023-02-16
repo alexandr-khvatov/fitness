@@ -20,7 +20,6 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendSimpleEmail(String toAddress, String subject, String message) {
-
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(toAddress);
         simpleMailMessage.setSubject(subject);
@@ -29,8 +28,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendEmailWithAttachment(String toAddress, String subject, String message, String attachment) throws FileNotFoundException, MessagingException {
-
+    public void sendEmailWithAttachment(String toAddress, String subject, String message, String attachment) throws MessagingException, FileNotFoundException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
         messageHelper.setTo(toAddress);
