@@ -6,5 +6,5 @@ import org.mapstruct.Mapper;
 
 @Mapper
 public interface RoomReadMapper {
-    RoomReadDto map(Room s);
+    RoomReadDto toDto(Room s);
 }
