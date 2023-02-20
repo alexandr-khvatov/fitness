@@ -1,7 +1,6 @@
 package com.kh.fitness.entity;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -11,6 +10,9 @@ import static javax.persistence.FetchType.LAZY;
 
 @ToString(exclude = {"trainings"})
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Coach implements BaseEntity<Long> {
     @Id
