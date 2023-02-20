@@ -30,7 +30,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Validated
-public class CoachService {
+public class CoachServiceImpl {
     private static final String EMAIL_ALREADY_EXIST_MESSAGE = "Тренер c id: {} c email: {} уже существует";
     private static final String PHONE_ALREADY_EXIST_MESSAGE = "Тренер c id: {} c телефоном: {} уже существует";
 

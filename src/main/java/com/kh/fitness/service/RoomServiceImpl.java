@@ -16,9 +16,10 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
-@Service
 @RequiredArgsConstructor
-public class RoomService {
+@Transactional(readOnly = true)
+@Service
+public class RoomServiceImpl {
     private final RoomRepository roomRepository;
     private final RoomReadMapper roomReadMapper;
     private final RoomCreateMapper roomCreateMapper;
@@ -26,20 +27,21 @@ public class RoomService {
 
     public Optional<RoomReadDto> findById(Long id) {
         return roomRepository.findById(id)
-                .map(roomReadMapper::map);
+                .map(roomReadMapper::toDto);
     }
 
     public List<RoomReadDto> findAllByGymId(Long gymId) {
         return roomRepository.findAllByGymId(gymId).stream()
-                .map(roomReadMapper::map)
+                .map(roomReadMapper::toDto)
                 .toList();
     }
 
+    @Transactional
     public RoomReadDto create(RoomCreateDto room) {
         return Optional.of(room)
                 .map(roomCreateMapper::toEntity)
                 .map(roomRepository::saveAndFlush)
-                .map(roomReadMapper::map)
+                .map(roomReadMapper::toDto)
                 .orElseThrow();
     }
 
@@ -48,9 +50,10 @@ public class RoomService {
         return roomRepository.findById(id)
                 .map(entity -> roomEditMapper.updateEntity(room, entity))
                 .map(roomRepository::saveAndFlush)
-                .map(roomReadMapper::map);
+                .map(roomReadMapper::toDto);
     }
 
+    @Transactional
     public Boolean delete(Long id) {
         try {
             return roomRepository.findById(id)
