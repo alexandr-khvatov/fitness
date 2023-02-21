@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class SubscriptionService {
+public class SubscriptionServiceImpl {
     private final SubscriptionRepository subscriptionRepository;
 
     public Optional<Subscription> findById(Long id) {
