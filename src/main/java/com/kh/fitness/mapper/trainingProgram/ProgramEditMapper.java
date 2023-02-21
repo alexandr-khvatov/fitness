@@ -18,5 +18,4 @@ public interface ProgramEditMapper {
 
     @InheritConfiguration
     TrainingProgram updateEntity(ProgramEditDto s, @MappingTarget TrainingProgram t);
-
 }
