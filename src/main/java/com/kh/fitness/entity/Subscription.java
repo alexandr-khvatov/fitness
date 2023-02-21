@@ -1,12 +1,18 @@
 package com.kh.fitness.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Subscription implements BaseEntity<Long> {
     @Id
@@ -24,9 +30,3 @@ public class Subscription implements BaseEntity<Long> {
     private Gym gym;
 }
 
-enum Period {
-    ONE_MONTH,
-    THREE_MONTH,
-    SIX_MONTH,
-    YEAR,
-}
