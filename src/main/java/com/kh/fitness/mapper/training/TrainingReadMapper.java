@@ -7,7 +7,6 @@ import org.mapstruct.Mapping;
 
 @Mapper
 public interface TrainingReadMapper {
-
     @Mapping(target = "title",ignore = true)
     @Mapping(target = "start",ignore = true)
     @Mapping(target = "end",ignore = true)

@@ -31,7 +31,6 @@ public interface TrainingEditMapper {
     @Mapping(target = "dayOfWeek", expression = "java(dayOfWeek(s.getDayOfWeek()))")
     Training toEntity(TrainingCreateDto s);
 
-
     @Mapping(target = "startTime", ignore = true)
     @Mapping(target = "endTime", ignore = true)
     @Mapping(target = "subTrainingProgram", source = "subProgramId")
