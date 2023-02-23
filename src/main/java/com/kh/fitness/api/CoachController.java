@@ -3,8 +3,7 @@ package com.kh.fitness.api;
 import com.kh.fitness.dto.coach.CoachCreateDto;
 import com.kh.fitness.dto.coach.CoachEditDto;
 import com.kh.fitness.dto.coach.CoachReadDto;
-import com.kh.fitness.entity.Coach;
-import com.kh.fitness.service.CoachService;
+import com.kh.fitness.service.CoachServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -25,21 +24,21 @@ import static org.springframework.http.ResponseEntity.notFound;
 @RequestMapping(API_V1 + "/coaches")
 @RequiredArgsConstructor
 public class CoachController {
-    private final CoachService coachService;
+    private final CoachServiceImpl coachServiceImpl;
 
     @GetMapping("/{id}")
     public Optional<CoachReadDto> findById(@PathVariable Long id) {
-        return coachService.findById(id);
+        return coachServiceImpl.findById(id);
     }
 
     @GetMapping
     public List<CoachReadDto> findAllByGymId(@RequestParam Long gymId) {
-        return coachService.findAllByGymId(gymId);
+        return coachServiceImpl.findAllByGymId(gymId);
     }
 
     @GetMapping(value = "/{id}/avatar")
     public ResponseEntity<byte[]> findAvatar(@PathVariable("id") Long id) {
-        return coachService.findAvatar(id)
+        return coachServiceImpl.findAvatar(id)
                 .map(content -> ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
                         .contentLength(content.length)
@@ -50,25 +49,25 @@ public class CoachController {
     @PostMapping(consumes = {MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(CREATED)
     public CoachReadDto create( CoachCreateDto coach) {
-        return coachService.create(coach);
+        return coachServiceImpl.create(coach);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(CREATED)
     public Optional<CoachReadDto> update(@PathVariable Long id, @RequestBody CoachEditDto coach) {
-        return coachService.update(id,coach);
+        return coachServiceImpl.update(id,coach);
     }
 
     @PutMapping("/{id}/avatar")
     @ResponseStatus(CREATED)
     public CoachReadDto updateAvatar(@PathVariable Long id, @RequestParam MultipartFile image) {
-        return coachService.updateAvatar(id,image);
+        return coachServiceImpl.updateAvatar(id,image);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        if (Boolean.FALSE.equals(coachService.delete(id))) {
+        if (Boolean.FALSE.equals(coachServiceImpl.delete(id))) {
             throw new ResponseStatusException(NOT_FOUND);
         }
     }
@@ -76,7 +75,7 @@ public class CoachController {
     @DeleteMapping("/{id}/avatar")
     @ResponseStatus(NO_CONTENT)
     public void deleteAvatar(@PathVariable Long id) {
-        if (Boolean.FALSE.equals(coachService.removeAvatar(id))) {
+        if (Boolean.FALSE.equals(coachServiceImpl.removeAvatar(id))) {
             throw new ResponseStatusException(NOT_FOUND);
         }
     }

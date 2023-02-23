@@ -24,21 +24,3 @@ public class AccountCreatedAndTokenDto {
     Set<Role> roles;
     String token;
 }
-
-// TODO Change Role view
-
-//  FROM:
-//  "roles": [
-//        {
-//            "id": 4,
-//            "name": "CUSTOMER",
-//            "authority": "CUSTOMER"
-//        }
-//    ],
-
-// //  TO :
-//  "roles": [
-//        {
-//            "name": "CUSTOMER",
-//        }
-//    ],

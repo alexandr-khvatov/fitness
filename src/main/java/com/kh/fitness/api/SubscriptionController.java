@@ -1,7 +1,7 @@
 package com.kh.fitness.api;
 
 import com.kh.fitness.entity.Subscription;
-import com.kh.fitness.service.SubscriptionService;
+import com.kh.fitness.service.SubscriptionServiceImpl;
 import com.kh.fitness.api.util.PathUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import java.util.Optional;
 @RequestMapping(PathUtils.API_V1 + "/subscription")
 @RequiredArgsConstructor
 public class SubscriptionController {
-    private final SubscriptionService coachService;
+    private final SubscriptionServiceImpl coachService;
 
     @GetMapping("/{id}")
     public Optional<Subscription> findById(@PathVariable Long id) {
