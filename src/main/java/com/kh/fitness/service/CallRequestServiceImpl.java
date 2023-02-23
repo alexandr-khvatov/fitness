@@ -6,12 +6,14 @@ import com.kh.fitness.mapper.CallRequestCreateDtoMapper;
 import com.kh.fitness.repository.CallRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CallRequestService {
+@Transactional(readOnly = true)
+public class CallRequestServiceImpl {
     private final CallRequestRepository callRequestRepository;
     private final CallRequestCreateDtoMapper callRequestCreateDtoMapper;
 
@@ -19,6 +21,7 @@ public class CallRequestService {
         return callRequestRepository.findById(id);
     }
 
+    @Transactional
     public CallRequest create(CallRequestCreateDto requestFreePass) {
         return Optional.of(requestFreePass)
                 .map(callRequestCreateDtoMapper::toEntity)
@@ -26,6 +29,7 @@ public class CallRequestService {
                 .orElseThrow();
     }
 
+    @Transactional
     public Boolean delete(Long id) {
         return callRequestRepository.findById(id)
                 .map(entity -> {

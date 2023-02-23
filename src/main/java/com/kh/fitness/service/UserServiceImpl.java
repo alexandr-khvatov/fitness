@@ -43,7 +43,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
-    private final RoleService roleService;
+    private final RoleServiceImpl roleService;
     private final ImageService imageService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;

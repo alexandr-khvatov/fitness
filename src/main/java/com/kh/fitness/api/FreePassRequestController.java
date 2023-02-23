@@ -4,8 +4,7 @@ import com.kh.fitness.api.util.PathUtils;
 import com.kh.fitness.dto.free_pass.FreePassEditTrainingDto;
 import com.kh.fitness.dto.free_pass.FreePassReadDto;
 import com.kh.fitness.dto.free_pass.FreePassCreateDto;
-import com.kh.fitness.entity.FreePass;
-import com.kh.fitness.service.FreePassService;
+import com.kh.fitness.service.FreePassServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,7 @@ import java.util.Optional;
 @RequestMapping(PathUtils.API_V1 + "/free-pass")
 @RequiredArgsConstructor
 public class FreePassRequestController {
-    private final FreePassService freePassRequestService;
+    private final FreePassServiceImpl freePassRequestService;
 
     @GetMapping("/{id}")
     public Optional<FreePassReadDto> findById(@PathVariable Long id) {

@@ -11,7 +11,6 @@ import com.kh.fitness.mapper.free_pass.FreePassCreateMapper;
 import com.kh.fitness.mapper.free_pass.FreePassEditTrainingMapper;
 import com.kh.fitness.mapper.free_pass.FreePassReadDtoMapper;
 import com.kh.fitness.repository.FreePassRepository;
-import com.kh.fitness.repository.GymRepository;
 import com.kh.fitness.repository.TrainingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,10 +25,9 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class FreePassService {
+public class FreePassServiceImpl {
     private final EmailService emailService;
-    private final TrainingService trainingService;
-    private final GymRepository gymRepository;
+    private final TrainingServiceImpl trainingServiceImpl;
     private final TrainingRepository trainingRepository;
     private final FreePassRepository freePassRepository;
     private final FreePassReadDtoMapper freePassReadDtoMapper;
@@ -51,7 +49,7 @@ public class FreePassService {
 
     @Transactional
     public FreePassReadDto create(FreePassCreateDto dto) {
-        var trainings = trainingService.findAllByGymId(dto.getGymId());
+        var trainings = trainingServiceImpl.findAllByGymId(dto.getGymId());
         DayOfWeek dayOfWeek = dto.getDate().getDayOfWeek();
         var training = trainings.stream()
                 .filter(t -> t.getDayOfWeek()
@@ -129,8 +127,7 @@ public class FreePassService {
                 .append(" Время: ")
                 .append(newTraining.getStartTime())
                 .append("-")
-                .append(newTraining.getEndTime())
-                .append(" " + dto.getDate());
+                .append(newTraining.getEndTime()).append(" ").append(dto.getDate());
         emailService.sendSimpleEmail(maybe.getEmail(), "ПРОБНОЕ ЗАНЯТИЕ ", message.toString());
         return Optional.ofNullable(maybe);
     }

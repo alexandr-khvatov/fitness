@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -25,6 +26,7 @@ import static java.util.stream.Collectors.joining;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Validated
 public class TokenServiceImpl implements TokenService {
     public static final String ISSUER = "self";
@@ -43,7 +45,7 @@ public class TokenServiceImpl implements TokenService {
         return generateToken(authentication);
     }
 
-    // TODO нужно сделать так, чтобы старые токены удалялись(стали невалидными)
+    @Transactional
     @Override
     public TokenDto updateToken(Long id) {
         var maybeUser = userRepository.findById(id);
@@ -63,7 +65,6 @@ public class TokenServiceImpl implements TokenService {
         }
     }
 
-    // TODO пофиксить баг к авторити добавляется префикс "ROLE_" несколько раз --->  "ROLE_ROLE_CUSTOMER"
     private TokenDto generateToken(Authentication authentication) {
         Instant now = Instant.now();
         String scope = authentication.getAuthorities().stream()
@@ -79,4 +80,3 @@ public class TokenServiceImpl implements TokenService {
         return new TokenDto(this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue());
     }
 }
-// TODO прикрутить userId к токену

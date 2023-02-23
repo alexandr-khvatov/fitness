@@ -4,13 +4,15 @@ import com.kh.fitness.entity.Role;
 import com.kh.fitness.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class RoleService {
+@Transactional(readOnly = true)
+public class RoleServiceImpl {
     private final RoleRepository roleRepository;
 
     public Optional<Role> findById(Long id) {

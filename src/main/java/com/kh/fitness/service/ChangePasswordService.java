@@ -16,6 +16,7 @@ public class ChangePasswordService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public void changePassword(String newRawPassword, String username) {
         var maybeUser = userRepository.findByEmailIgnoreCase(username)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Entity User with username %s not found", username)));

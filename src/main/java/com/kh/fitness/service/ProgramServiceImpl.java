@@ -25,7 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Validated
-public class ProgramService {
+public class ProgramServiceImpl {
     private final ImageService imageService;
 
     private final ProgramRepository programRepository;

@@ -23,8 +23,9 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Validated
-public class TrainingService {
+public class TrainingServiceImpl {
     private final TrainingRepository trainingRepository;
     private final TrainingReadMapper trainingReadMapper;
     private final TrainingCreateMapper trainingCreateMapper;
@@ -42,6 +43,7 @@ public class TrainingService {
                 .map(trainingReadMapper::toDto).toList();
     }
 
+    @Transactional
     public TrainingReadDto create(TrainingCreateDto training) {
         if (!training.getStart().isBefore(training.getEnd())) {
             throw new IncorrectRange("Неверный диапазон времени");
@@ -100,6 +102,7 @@ public class TrainingService {
                 .map(trainingReadMapper::toDto);
     }
 
+    @Transactional
     public Boolean delete(Long id) {
         var maybeTraining = trainingRepository.findById(id).orElseThrow();
         var freePass = freePassRepository.findAllByTrainingId(id).stream()

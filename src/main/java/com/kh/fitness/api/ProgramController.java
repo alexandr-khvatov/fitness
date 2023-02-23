@@ -4,7 +4,7 @@ import com.kh.fitness.dto.trainingProgram.ProgramCreateDto;
 import com.kh.fitness.dto.trainingProgram.ProgramEditDto;
 import com.kh.fitness.dto.trainingProgram.ProgramReadDto;
 import com.kh.fitness.dto.trainingProgram.ProgramReadWithSubProgramsDto;
-import com.kh.fitness.service.ProgramService;
+import com.kh.fitness.service.ProgramServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,41 +26,41 @@ import static org.springframework.http.ResponseEntity.notFound;
 @RequestMapping(API_V1 + "/programs")
 @RequiredArgsConstructor
 public class ProgramController {
-    private final ProgramService programService;
+    private final ProgramServiceImpl programServiceImpl;
 
     @GetMapping("/{id}")
     public Optional<ProgramReadWithSubProgramsDto> findById(@PathVariable Long id) {
-        return programService.findById(id);
+        return programServiceImpl.findById(id);
     }
 
     @GetMapping
     public List<ProgramReadWithSubProgramsDto> findAllByGymId(@RequestParam Long gymId) {
-        return programService.findAllByGymId(gymId);
+        return programServiceImpl.findAllByGymId(gymId);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(CREATED)
     public Optional<ProgramReadDto> update(@PathVariable Long id, @RequestBody ProgramEditDto program) {
-        return programService.update(id, program);
+        return programServiceImpl.update(id, program);
     }
 
     @PostMapping(consumes = {MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(CREATED)
     public ProgramReadDto create(ProgramCreateDto program) {
-        return programService.create(program);
+        return programServiceImpl.create(program);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        if (Boolean.FALSE.equals(programService.delete(id))) {
+        if (Boolean.FALSE.equals(programServiceImpl.delete(id))) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping(value = "/{id}/avatar")
     public ResponseEntity<byte[]> findAvatar(@PathVariable("id") Long id) {
-        return programService.findAvatar(id)
+        return programServiceImpl.findAvatar(id)
                 .map(content -> ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
                         .contentLength(content.length)
@@ -71,13 +71,13 @@ public class ProgramController {
     @PutMapping("/{id}/avatar")
     @ResponseStatus(CREATED)
     public ProgramReadDto updateAvatar(@PathVariable Long id, @RequestParam MultipartFile image) {
-        return programService.updateAvatar(id, image);
+        return programServiceImpl.updateAvatar(id, image);
     }
 
     @DeleteMapping("/{id}/avatar")
     @ResponseStatus(NO_CONTENT)
     public void deleteAvatar(@PathVariable Long id) {
-        if (Boolean.FALSE.equals(programService.removeAvatar(id))) {
+        if (Boolean.FALSE.equals(programServiceImpl.removeAvatar(id))) {
             throw new ResponseStatusException(NOT_FOUND);
         }
     }
