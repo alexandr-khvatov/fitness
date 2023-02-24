@@ -1,8 +1,9 @@
 --liquibase formatted sql
 
 --changeset kh:1
-INSERT INTO gym (name, address, email, phone, inst_link, tg_link, vk_link, min_start_time, max_end_time)
-VALUES ('СТАРТ.ПОЛИТЕХ',
+INSERT INTO gym (id,name, address, email, phone, inst_link, tg_link, vk_link, min_start_time, max_end_time)
+VALUES (1,
+        'СТАРТ.ПОЛИТЕХ',
         'Политехническая улица, 122А',
         'start@mail.ru',
         '+78452000000',
