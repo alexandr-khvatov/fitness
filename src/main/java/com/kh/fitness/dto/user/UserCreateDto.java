@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -21,9 +22,6 @@ import java.util.Set;
 @AllArgsConstructor
 public class UserCreateDto {
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDate birthDate;
-
     @NotBlank
     String firstname;
 
@@ -32,6 +30,9 @@ public class UserCreateDto {
 
     @NotBlank
     String lastname;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    LocalDate birthDate;
 
     @NotBlank
     @Password
@@ -45,8 +46,7 @@ public class UserCreateDto {
     @EmailNotExist(groups = CheckNotExistAfter.class)
     String email;
 
-//    MultipartFile image;
-
     @NotEmpty
+    @NotNull
     Set<Long> roles;
 }
