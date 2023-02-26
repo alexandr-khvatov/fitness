@@ -15,11 +15,11 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
-class RoleServiceTest {
+class RoleServiceImplTest {
     @Mock
     private RoleRepository roleRepository;
     @InjectMocks
-    private RoleService roleService;
+    private RoleServiceImpl roleService;
 
     @Test
     void findById_shouldFindRole_whenExist() {
