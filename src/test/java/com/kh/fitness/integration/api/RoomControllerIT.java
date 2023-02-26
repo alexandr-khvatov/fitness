@@ -1,6 +1,7 @@
 package com.kh.fitness.integration.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kh.fitness.api.RoomController;
 import com.kh.fitness.dto.room.RoomCreateDto;
 import com.kh.fitness.dto.room.RoomEditDto;
 import com.kh.fitness.dto.room.RoomReadDto;
@@ -15,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.nio.charset.StandardCharsets;
 
 import static com.kh.fitness.api.util.PathUtils.API_V1;
+import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -35,6 +37,8 @@ class RoomControllerIT extends IntegrationTestBase {
 
     public static final Long GYM_ID = 1L;
     public static final Long GYM_ID_NOT_EXIST = -128L;
+
+    public static final String ERROR_NOT_FOUND_MSG = RoomController.ERROR_NOT_FOUND_MSG;
 
     @Test
     void findById_shouldReturnRoom_whenSucceed() throws Exception {
@@ -138,7 +142,7 @@ class RoomControllerIT extends IntegrationTestBase {
                 .andExpect(status().isNotFound())
                 .andReturn();
         var actualResult = result.getResponse().getErrorMessage();
-        assertThat(actualResult).isEqualTo("Room with id " + ROOM_ID_NOT_EXIST + " not found");
+        assertThat(actualResult).isEqualTo(format(ERROR_NOT_FOUND_MSG, GYM_ID_NOT_EXIST));
     }
 
     private RoomCreateDto getRoomCreateDto() {
