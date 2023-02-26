@@ -10,4 +10,5 @@ import lombok.*;
 public class RoomReadDto {
     private Long id;
     private String name;
+    private Long gymId;
 }
