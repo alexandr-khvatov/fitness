@@ -10,43 +10,55 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.kh.fitness.api.util.PathUtils.API_V1;
+import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
-@RequestMapping(API_V1 + "/rooms")
+@RequestMapping(API_V1)
 @RequiredArgsConstructor
 public class RoomController {
+    private static final String ROOM_PREFIX = "/rooms";
     private final RoomServiceImpl roomServiceImpl;
 
-    @GetMapping("/{id}")
-    public Optional<RoomReadDto> findById(@PathVariable Long id) {
-        return roomServiceImpl.findById(id);
+    public static final String ERROR_NOT_FOUND_MSG = "Room with id  %s  not found";
+
+    @GetMapping(ROOM_PREFIX + "/{id}")
+    public RoomReadDto findById(@PathVariable Long id) {
+        return roomServiceImpl.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, format(ERROR_NOT_FOUND_MSG, id))
+        );
     }
 
+    @RequestMapping("/gyms/{gymId}/rooms")
     @GetMapping
-    public List<RoomReadDto> findAllByGymId(@RequestParam Long gymId) {
-        return roomServiceImpl.findAllByGymId(gymId);
+    public List<RoomReadDto> findAllByGymId(@PathVariable Long gymId) {
+        List<RoomReadDto> rooms = roomServiceImpl.findAllByGymId(gymId);
+        if (rooms.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Rooms with gymId " + gymId + " not found");
+        }
+        return rooms;
     }
 
-    @PostMapping
+    @PostMapping(ROOM_PREFIX)
     @ResponseStatus(CREATED)
     public RoomReadDto create(@RequestBody RoomCreateDto room) {
         return roomServiceImpl.create(room);
     }
 
-    @PutMapping("/{id}")
-    public Optional<RoomReadDto> update(@PathVariable Long id, @RequestBody RoomEditDto room) {
-        return roomServiceImpl.update(id, room);
+    @PutMapping(ROOM_PREFIX + "/{id}")
+    public RoomReadDto update(@PathVariable Long id, @RequestBody RoomEditDto room) {
+        return roomServiceImpl.update(id, room).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, format(ERROR_NOT_FOUND_MSG, id))
+        );
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(ROOM_PREFIX + "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         if (Boolean.FALSE.equals(roomServiceImpl.delete(id))) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format(ERROR_NOT_FOUND_MSG, id));
         }
     }
 }

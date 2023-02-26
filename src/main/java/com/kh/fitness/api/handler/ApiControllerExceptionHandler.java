@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
+import java.util.NoSuchElementException;
 
 import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -122,6 +123,20 @@ public class ApiControllerExceptionHandler extends ResponseEntityExceptionHandle
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFound(
             EntityNotFoundException e) {
+        ApiError apiError = new ApiError(NOT_FOUND);
+        apiError.setMessage(e.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    /**
+     * Handles NoSuchElementException. Created to encapsulate errors with more detail than java.util.NoSuchElementException.
+     *
+     * @param e the NoSuchElementException
+     * @return the ApiError object
+     */
+    @ExceptionHandler(NoSuchElementException.class)
+    protected ResponseEntity<Object> handleNoSuchElementException(
+            NoSuchElementException e) {
         ApiError apiError = new ApiError(NOT_FOUND);
         apiError.setMessage(e.getMessage());
         return buildResponseEntity(apiError);
