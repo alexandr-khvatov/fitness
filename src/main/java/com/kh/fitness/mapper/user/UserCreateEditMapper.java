@@ -24,7 +24,6 @@ public abstract class UserCreateEditMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "image", ignore = true)
-    @Mapping(target = "authorities", ignore = true)
     @Mapping(target = "roles", expression = "java(rolesResolver(s.getRoles()))")
     public abstract User toEntity(UserCreateDto s);
 

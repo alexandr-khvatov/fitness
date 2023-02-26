@@ -11,6 +11,5 @@ public interface UserRegisterMapper {
     @Mapping(target = "id",ignore = true)
     @Mapping(target = "image",ignore = true)
     @Mapping(target = "roles",ignore = true)
-    @Mapping(target = "authorities",ignore = true)
     User toEntity(UserRegisterDto s);
 }
