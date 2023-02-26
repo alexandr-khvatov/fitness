@@ -123,7 +123,6 @@ public class CoachServiceImpl {
 
     @Transactional
     public Boolean delete(Long id) {
-
         try {
             return coachRepository.findById(id)
                     .map(entity -> {

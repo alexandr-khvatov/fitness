@@ -7,6 +7,7 @@ import com.kh.fitness.dto.user.UserCreatedDto;
 import com.kh.fitness.dto.user.UserReadDto;
 import com.kh.fitness.dto.user.UserRegisterDto;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,19 +16,19 @@ public interface UserService {
 
     List<UserReadDto> findAll();
 
-    UserReadDto create(UserCreateDto userDto);
+    UserReadDto create(@Valid UserCreateDto userDto);
 
-    Optional<UserReadDto> updateAccount(AccountEditDto dto);
+    Optional<UserReadDto> updateAccount(@Valid AccountEditDto dto);
 
-    Optional<UserReadDto> updateWithoutPassword(Long id, AccountEditDto dto);
+    Optional<UserReadDto> updateWithoutPassword(Long id,@Valid AccountEditDto dto);
 
-    Optional<UserReadDto> update(Long id, AccountEditDto dto);
+    Optional<UserReadDto> update(Long id,@Valid AccountEditDto dto);
 
     boolean delete(Long id);
 
-    UserCreatedDto register(final UserRegisterDto userDto);
+    UserCreatedDto register(@Valid UserRegisterDto userDto);
 
-    void changePassword(final AccountChangePasswordDto dto);
+    void changePassword(@Valid AccountChangePasswordDto dto);
 
     List<UserReadDto> findAllWithRoleName(String name);
 
@@ -36,6 +37,5 @@ public interface UserService {
     boolean existsUserByPhone(String phone);
 
     boolean existsUserByEmail(String email);
-
 
 }

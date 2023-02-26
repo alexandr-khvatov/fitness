@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     @Validated(DefaultAndNotExistComplete.class)
-    public UserCreatedDto register(@Valid UserRegisterDto userDto) {
+    public UserCreatedDto register(@Valid final UserRegisterDto userDto) {
         return Optional.of(userDto)
                 .map(userRegisterMapper::toEntity)
                 .map(this::setDefaultRole)
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     @Validated(DefaultAndNotExistComplete.class)
-    public UserReadDto create(@Valid UserCreateDto userDto) {
+    public UserReadDto create(final UserCreateDto userDto) {
         return Optional.of(userDto)
                 .map(userCreateEditMapper::toEntity)
                 .map(this::setEncodedPassword)
@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     throw new PhoneAlreadyExistException(phone);
                 });
     }
-
+    @Override
     @Transactional
     public Optional<UserReadDto> updateWithoutPassword(Long id, AccountEditDto dto) {
         return userRepository.findById(id)
@@ -180,7 +180,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .map(userRepository::saveAndFlush)
                 .map(userReadMapper::toDto);
     }
-
+    @Override
     @Transactional
     public Optional<UserReadDto> update(Long id, AccountEditDto dto) {
         return userRepository.findById(id)
@@ -192,6 +192,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .map(userReadMapper::toDto);
     }
 
+
     public Optional<byte[]> findAvatar(Long id) {
         return userRepository.findById(id)
                 .map(User::getImage)
@@ -199,6 +200,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .flatMap(imageService::get);
     }
 
+    @Override
     @Transactional
     public boolean delete(Long id) {
         return userRepository.findById(id)
@@ -210,6 +212,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .orElse(false);
     }
 
+    @Override
     public List<UserReadDto> findAll() {
         return userRepository.findAll().stream()
                 .map(userReadMapper::toDto)
@@ -222,10 +225,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .toList();
     }
 
+    @Override
     public Optional<UserReadDto> findById(Long id) {
         return userRepository.findById(id).map(userReadMapper::toDto);
     }
 
+    @Override
     public Optional<UserReadDto> findByUsername(String username) {
         return userRepository.findByPhone(username).map(userReadMapper::toDto);
     }
