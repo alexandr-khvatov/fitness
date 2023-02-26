@@ -173,6 +173,3 @@ VALUES ('1 месяц', 1, '1 месяц', '3500'),
 
 INSERT INTO free_pass (gym_id, training_id, date, start_time, end_time, email, firstname, lastname, phone, is_done)
 VALUES (1, 1, '2022-12-13', '19:00:00', '20:00:00', 'test@gmail.com', 'Иван', 'Иванов', '+79990009999', FALSE);
-
-
-
