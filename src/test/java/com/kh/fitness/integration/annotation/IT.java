@@ -1,4 +1,4 @@
-package com.kh.fitness.annotation;
+package com.kh.fitness.integration.annotation;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
