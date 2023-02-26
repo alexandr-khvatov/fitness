@@ -1,8 +1,6 @@
 package com.kh.fitness.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -15,6 +13,9 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(of = "email")
 @ToString(exclude = "roles")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class User implements BaseEntity<Long>, UserDetails {
@@ -25,10 +26,10 @@ public class User implements BaseEntity<Long>, UserDetails {
     private String patronymic;
     private String lastname;
     private String email;
-    private String password;
     private String phone;
     private LocalDate birthDate;
     private String image;
+    private String password;
 
     @ManyToMany
     @JoinTable(name = "users_role",

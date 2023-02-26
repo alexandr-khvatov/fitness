@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import static javax.persistence.FetchType.LAZY;
@@ -34,5 +35,5 @@ public class Coach implements BaseEntity<Long> {
     private Gym gym;
 
     @OneToMany(mappedBy = "coach")
-    private Set<Training> trainings;
+    private Set<Training> trainings = new HashSet<>();
 }

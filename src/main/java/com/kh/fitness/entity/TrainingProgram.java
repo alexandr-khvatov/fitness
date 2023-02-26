@@ -1,10 +1,9 @@
 package com.kh.fitness.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 import static javax.persistence.CascadeType.ALL;
@@ -13,6 +12,9 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @ToString(exclude = {"subTrainingPrograms"})
 @EqualsAndHashCode(exclude = {"subTrainingPrograms"})
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Entity
 public class TrainingProgram implements BaseEntity<Long> {
@@ -27,8 +29,8 @@ public class TrainingProgram implements BaseEntity<Long> {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @OneToMany(mappedBy = "trainingProgram",cascade = ALL)
-    private Set<SubTrainingProgram> subTrainingPrograms;
+    @OneToMany(mappedBy = "trainingProgram", cascade = ALL)
+    private Set<SubTrainingProgram> subTrainingPrograms = new HashSet<>();
 
     @ManyToOne(optional = false, fetch = LAZY)
     private Gym gym;
