@@ -1,7 +1,6 @@
 package com.kh.fitness.integration.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kh.fitness.api.RoomController;
 import com.kh.fitness.dto.room.RoomCreateDto;
 import com.kh.fitness.dto.room.RoomEditDto;
 import com.kh.fitness.dto.room.RoomReadDto;
@@ -38,7 +37,7 @@ class RoomControllerIT extends IntegrationTestBase {
     public static final Long GYM_ID = 1L;
     public static final Long GYM_ID_NOT_EXIST = -128L;
 
-    public static final String ERROR_NOT_FOUND_MSG = RoomController.ERROR_NOT_FOUND_MSG;
+    public static final String ERROR_MSG_NOT_FOUND = "Room with id %s not found";
 
     @Test
     void findById_shouldReturnRoom_whenSucceed() throws Exception {
@@ -142,7 +141,7 @@ class RoomControllerIT extends IntegrationTestBase {
                 .andExpect(status().isNotFound())
                 .andReturn();
         var actualResult = result.getResponse().getErrorMessage();
-        assertThat(actualResult).isEqualTo(format(ERROR_NOT_FOUND_MSG, GYM_ID_NOT_EXIST));
+        assertThat(actualResult).isEqualTo(format(ERROR_MSG_NOT_FOUND, GYM_ID_NOT_EXIST));
     }
 
     private RoomCreateDto getRoomCreateDto() {
