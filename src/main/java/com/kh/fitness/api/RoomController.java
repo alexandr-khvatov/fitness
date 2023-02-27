@@ -22,12 +22,12 @@ public class RoomController {
     private static final String ROOM_PREFIX = "/rooms";
     private final RoomServiceImpl roomServiceImpl;
 
-    public static final String ERROR_NOT_FOUND_MSG = "Room with id  %s  not found";
+    public static final String ERROR_MSG_NOT_FOUND = "Room with id %s not found";
 
     @GetMapping(ROOM_PREFIX + "/{id}")
     public RoomReadDto findById(@PathVariable Long id) {
         return roomServiceImpl.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, format(ERROR_NOT_FOUND_MSG, id))
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, format(ERROR_MSG_NOT_FOUND, id))
         );
     }
 
@@ -50,7 +50,7 @@ public class RoomController {
     @PutMapping(ROOM_PREFIX + "/{id}")
     public RoomReadDto update(@PathVariable Long id, @RequestBody RoomEditDto room) {
         return roomServiceImpl.update(id, room).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, format(ERROR_NOT_FOUND_MSG, id))
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, format(ERROR_MSG_NOT_FOUND, id))
         );
     }
 
@@ -58,7 +58,7 @@ public class RoomController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         if (Boolean.FALSE.equals(roomServiceImpl.delete(id))) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format(ERROR_NOT_FOUND_MSG, id));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format(ERROR_MSG_NOT_FOUND, id));
         }
     }
 }
