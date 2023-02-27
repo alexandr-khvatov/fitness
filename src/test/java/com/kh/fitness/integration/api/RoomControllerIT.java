@@ -32,12 +32,14 @@ class RoomControllerIT extends IntegrationTestBase {
     public static final String ROOM_ID = Long.toString(1L);
     public static final Long ROOM_ID_FOR_DELETE = 3L;
     public static final String ROOM_ID_NOT_EXIST = Long.toString(-128L);
-    public static final String URL = "/api/v1/rooms";
+    public static final String URL = API_V1 + "/rooms";
+    public static final String URL_BY_GYM_ID = API_V1 + "/gyms/%s/rooms";
 
     public static final Long GYM_ID = 1L;
     public static final Long GYM_ID_NOT_EXIST = -128L;
 
     public static final String ERROR_MSG_NOT_FOUND = "Room with id %s not found";
+    public static final String ERROR_MSG_NOT_FOUND_BY_GYM_ID = "Rooms with gymId %s not found";
 
     @Test
     void findById_shouldReturnRoom_whenSucceed() throws Exception {
@@ -53,23 +55,22 @@ class RoomControllerIT extends IntegrationTestBase {
 
     @Test
     void findAllByGymId_shouldReturnRooms_whenSucceed() throws Exception {
-        this.mockMvc.perform(get(API_V1 + "/gyms/" + GYM_ID + "/rooms"))
+        this.mockMvc.perform(get(format(URL_BY_GYM_ID, GYM_ID)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(3)
-                );
+                .andExpect(jsonPath("$.length()").value(3));
     }
 
     @Test
     void findAllByGymId_should404_whenNotExist() throws Exception {
-        var result = this.mockMvc.perform(get(API_V1 + "/gyms/" + GYM_ID_NOT_EXIST + "/rooms")
+        var result = this.mockMvc.perform(get(format(URL_BY_GYM_ID, GYM_ID_NOT_EXIST))
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andReturn();
         assertThat(result).isNotNull();
         String roomJson = result.getResponse().getErrorMessage();
-        assertThat(roomJson).contains("Rooms with gymId " + GYM_ID_NOT_EXIST + " not found");
+        assertThat(roomJson).contains(format(ERROR_MSG_NOT_FOUND_BY_GYM_ID, GYM_ID_NOT_EXIST));
     }
 
     @Test
@@ -119,8 +120,7 @@ class RoomControllerIT extends IntegrationTestBase {
                 .andExpectAll(
                         jsonPath("$.id").value(ROOM_ID),
                         jsonPath("$.name").value(dto.getName()),
-                        jsonPath("$.gymId").value(dto.getGymId())
-                );
+                        jsonPath("$.gymId").value(dto.getGymId()));
     }
 
     @DisplayName("delete(id) -> should return status 204(no content) when deleted successfully")
