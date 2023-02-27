@@ -19,8 +19,7 @@ import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
 @RequiredArgsConstructor
@@ -57,6 +56,7 @@ class RoomControllerIT extends IntegrationTestBase {
     void findAllByGymId_shouldReturnRooms_whenSucceed() throws Exception {
         this.mockMvc.perform(get(format(URL_BY_GYM_ID, GYM_ID)))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(3));
     }
@@ -82,6 +82,7 @@ class RoomControllerIT extends IntegrationTestBase {
                         .content(dtoToJson.getBytes(StandardCharsets.UTF_8))
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isCreated())
+                .andExpect(content().contentType(APPLICATION_JSON))
                 .andReturn();
 
         assertThat(result).isNotNull();
@@ -104,6 +105,7 @@ class RoomControllerIT extends IntegrationTestBase {
                         .content(dtoToJson.getBytes(StandardCharsets.UTF_8))
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
+                .andExpect(content().contentType(APPLICATION_JSON))
                 .andReturn();
     }
 
