@@ -137,13 +137,16 @@ class RoomControllerIT extends IntegrationTestBase {
     @DisplayName("delete(id) -> should return status 404(Not Found) when not exist")
     @Test
     void delete_shouldReturn404_whenNotExist() throws Exception {
-        var result = this.mockMvc.perform(delete(URL + "/" + ROOM_ID_NOT_EXIST)
+        var delete_room_id_not_exist=ROOM_ID_NOT_EXIST;
+
+        var result = this.mockMvc.perform(delete(URL + "/" + delete_room_id_not_exist)
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andReturn();
+
         var actualResult = result.getResponse().getErrorMessage();
-        assertThat(actualResult).isEqualTo(format(ERROR_MSG_NOT_FOUND, GYM_ID_NOT_EXIST));
+        assertThat(actualResult).isEqualTo(format(ERROR_MSG_NOT_FOUND, delete_room_id_not_exist));
     }
 
     private RoomCreateDto getRoomCreateDto() {
