@@ -1,6 +1,6 @@
 package com.kh.fitness.api;
 
-import com.kh.fitness.service.EmailService;
+import com.kh.fitness.service.email.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -1,9 +1,9 @@
 package com.kh.fitness.api;
 
-import com.kh.fitness.dto.trainingProgram.ProgramCreateDto;
-import com.kh.fitness.dto.trainingProgram.ProgramEditDto;
-import com.kh.fitness.dto.trainingProgram.ProgramReadDto;
-import com.kh.fitness.dto.trainingProgram.ProgramReadWithSubProgramsDto;
+import com.kh.fitness.dto.training_program.ProgramCreateDto;
+import com.kh.fitness.dto.training_program.ProgramEditDto;
+import com.kh.fitness.dto.training_program.ProgramReadDto;
+import com.kh.fitness.dto.training_program.ProgramReadWithSubProgramsDto;
 import com.kh.fitness.service.ProgramServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

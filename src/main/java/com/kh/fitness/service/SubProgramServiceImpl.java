@@ -1,14 +1,15 @@
 package com.kh.fitness.service;
 
-import com.kh.fitness.dto.subTrainingProgram.SubProgramCreateDto;
-import com.kh.fitness.dto.subTrainingProgram.SubProgramEditDto;
-import com.kh.fitness.dto.subTrainingProgram.SubProgramReadDto;
+import com.kh.fitness.dto.subtraining_program.SubProgramCreateDto;
+import com.kh.fitness.dto.subtraining_program.SubProgramEditDto;
+import com.kh.fitness.dto.subtraining_program.SubProgramReadDto;
 import com.kh.fitness.entity.SubTrainingProgram;
 import com.kh.fitness.exception.UnableToDeleteObjectContainsNestedObjects;
-import com.kh.fitness.mapper.subTrainingProgram.SubProgramCreateMapper;
-import com.kh.fitness.mapper.subTrainingProgram.SubProgramEditMapper;
-import com.kh.fitness.mapper.subTrainingProgram.SubProgramReadMapper;
+import com.kh.fitness.mapper.subtraining_program.SubProgramCreateMapper;
+import com.kh.fitness.mapper.subtraining_program.SubProgramEditMapper;
+import com.kh.fitness.mapper.subtraining_program.SubProgramReadMapper;
 import com.kh.fitness.repository.SubProgramRepository;
+import com.kh.fitness.service.image.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,9 +60,9 @@ public class SubProgramServiceImpl {
         return Optional.of(subProgram)
                 .map(dto -> {
                     var imageName = imageService.upload(dto.getImage());
-                    SubTrainingProgram map = subProgramCreateMapper.toEntity(dto);
-                    imageName.ifPresent(map::setImage);
-                    return map;
+                    var entity = subProgramCreateMapper.toEntity(dto);
+                    entity.setImage(imageName);
+                    return entity;
                 })
                 .map(subProgramRepository::saveAndFlush)
                 .map(subProgramReadMapper::map)
@@ -81,7 +82,7 @@ public class SubProgramServiceImpl {
         var entity = subProgramRepository.findById(id).orElseThrow();
         var imageForRemoval = entity.getImage();
         var imageName = imageService.upload(image);
-        imageName.ifPresent(entity::setImage);
+        entity.setImage(imageName);
         subProgramRepository.saveAndFlush(entity);
         removeImage(imageForRemoval);
         return subProgramReadMapper.map(entity);

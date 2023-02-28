@@ -1,6 +1,6 @@
 package com.kh.fitness.validation.impl;
 
-import com.kh.fitness.service.UserService;
+import com.kh.fitness.service.user.UserService;
 import com.kh.fitness.validation.PhoneNotExist;
 import lombok.RequiredArgsConstructor;
 

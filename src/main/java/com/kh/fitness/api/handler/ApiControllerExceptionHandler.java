@@ -129,6 +129,20 @@ public class ApiControllerExceptionHandler extends ResponseEntityExceptionHandle
     }
 
     /**
+     * Handles IllegalArgumentException. Created to encapsulate errors with more detail than java.util.IllegalArgumentException.
+     *
+     * @param e the IllegalArgumentException
+     * @return the ApiError object
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity<Object> handleIllegalArgumentException(
+            IllegalArgumentException e) {
+        ApiError apiError = new ApiError(NOT_FOUND);
+        apiError.setMessage(e.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    /**
      * Handles NoSuchElementException. Created to encapsulate errors with more detail than java.util.NoSuchElementException.
      *
      * @param e the NoSuchElementException

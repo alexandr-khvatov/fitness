@@ -1,5 +1,6 @@
 package com.kh.fitness.entity;
 
+import com.kh.fitness.entity.gym.Gym;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class TrainingProgram implements BaseEntity<Long> {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Builder.Default
     @OneToMany(mappedBy = "trainingProgram", cascade = ALL)
     private Set<SubTrainingProgram> subTrainingPrograms = new HashSet<>();
 

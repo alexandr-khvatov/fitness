@@ -2,8 +2,8 @@ package com.kh.fitness.mapper.gym;
 
 import com.kh.fitness.dto.gym.GymOpeningHourInfoDto;
 import com.kh.fitness.dto.gym.GymReadDto;
-import com.kh.fitness.entity.Gym;
-import com.kh.fitness.entity.GymOpeningHourInfo;
+import com.kh.fitness.entity.gym.Gym;
+import com.kh.fitness.entity.gym.GymOpeningHourInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

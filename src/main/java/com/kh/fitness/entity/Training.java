@@ -1,5 +1,6 @@
 package com.kh.fitness.entity;
 
+import com.kh.fitness.entity.gym.Gym;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

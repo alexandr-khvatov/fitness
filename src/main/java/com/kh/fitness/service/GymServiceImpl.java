@@ -8,6 +8,7 @@ import com.kh.fitness.mapper.gym.GymCreateEditDtoMapper;
 import com.kh.fitness.mapper.gym.GymReadDtoMapper;
 import com.kh.fitness.repository.GymRepository;
 import com.kh.fitness.repository.TrainingRepository;
+import com.kh.fitness.service.working_hours.WorkingHoursService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;

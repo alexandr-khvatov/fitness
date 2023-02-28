@@ -1,15 +1,16 @@
 package com.kh.fitness.service;
 
-import com.kh.fitness.dto.trainingProgram.ProgramCreateDto;
-import com.kh.fitness.dto.trainingProgram.ProgramEditDto;
-import com.kh.fitness.dto.trainingProgram.ProgramReadDto;
-import com.kh.fitness.dto.trainingProgram.ProgramReadWithSubProgramsDto;
+import com.kh.fitness.dto.training_program.ProgramCreateDto;
+import com.kh.fitness.dto.training_program.ProgramEditDto;
+import com.kh.fitness.dto.training_program.ProgramReadDto;
+import com.kh.fitness.dto.training_program.ProgramReadWithSubProgramsDto;
 import com.kh.fitness.entity.TrainingProgram;
 import com.kh.fitness.exception.UnableToDeleteObjectContainsNestedObjects;
-import com.kh.fitness.mapper.trainingProgram.ProgramCreateMapper;
-import com.kh.fitness.mapper.trainingProgram.ProgramEditMapper;
-import com.kh.fitness.mapper.trainingProgram.ProgramReadMapper;
+import com.kh.fitness.mapper.training_program.ProgramCreateMapper;
+import com.kh.fitness.mapper.training_program.ProgramEditMapper;
+import com.kh.fitness.mapper.training_program.ProgramReadMapper;
 import com.kh.fitness.repository.ProgramRepository;
+import com.kh.fitness.service.image.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,9 +56,9 @@ public class ProgramServiceImpl {
         return Optional.of(program)
                 .map(dto -> {
                     var imageName = imageService.upload(dto.getImage());
-                    TrainingProgram map = programCreateMapper.toEntity(dto);
-                    imageName.ifPresent(map::setImage);
-                    return map;
+                    var entity = programCreateMapper.toEntity(dto);
+                    entity.setImage(imageName);
+                    return entity;
                 })
                 .map(programRepository::saveAndFlush)
                 .map(programReadMapper::toDto)
@@ -80,7 +81,7 @@ public class ProgramServiceImpl {
         var entity = programRepository.findById(id).orElseThrow();
         var imageForRemoval = entity.getImage();
         var imageName = imageService.upload(image);
-        imageName.ifPresent(entity::setImage);
+        entity.setImage(imageName);
         programRepository.saveAndFlush(entity);
         removeImage(imageForRemoval);
         return programReadMapper.toDto(entity);

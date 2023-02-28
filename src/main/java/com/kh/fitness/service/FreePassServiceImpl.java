@@ -12,6 +12,7 @@ import com.kh.fitness.mapper.free_pass.FreePassEditTrainingMapper;
 import com.kh.fitness.mapper.free_pass.FreePassReadDtoMapper;
 import com.kh.fitness.repository.FreePassRepository;
 import com.kh.fitness.repository.TrainingRepository;
+import com.kh.fitness.service.email.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -121,14 +122,13 @@ public class FreePassServiceImpl {
                 .map(entity -> freePassEditTrainingMapper.updateEntity(dto, entity))
                 .map(freePassRepository::saveAndFlush)
                 .map(freePassReadDtoMapper::toDto).orElseThrow();
-        StringBuilder message = new StringBuilder();
-        message.append("Ваше пробное занятие перенесено :")
-                .append(newTraining.getSubTrainingProgram().getName())
-                .append(" Время: ")
-                .append(newTraining.getStartTime())
-                .append("-")
-                .append(newTraining.getEndTime()).append(" ").append(dto.getDate());
-        emailService.sendSimpleEmail(maybe.getEmail(), "ПРОБНОЕ ЗАНЯТИЕ ", message.toString());
+        String message = "Ваше пробное занятие перенесено :" +
+                         newTraining.getSubTrainingProgram().getName() +
+                         " Время: " +
+                         newTraining.getStartTime() +
+                         "-" +
+                         newTraining.getEndTime() + " " + dto.getDate();
+        emailService.sendSimpleEmail(maybe.getEmail(), "ПРОБНОЕ ЗАНЯТИЕ ", message);
         return Optional.ofNullable(maybe);
     }
 

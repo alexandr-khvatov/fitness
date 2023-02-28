@@ -17,6 +17,7 @@ public class UserReadDto {
     String lastname;
     String email;
     String phone;
+    String username;
     LocalDate birthDate;
     Set<Long> roles;
 }

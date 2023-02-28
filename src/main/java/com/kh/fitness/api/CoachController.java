@@ -24,21 +24,21 @@ import static org.springframework.http.ResponseEntity.notFound;
 @RequestMapping(API_V1 + "/coaches")
 @RequiredArgsConstructor
 public class CoachController {
-    private final CoachServiceImpl coachServiceImpl;
+    private final CoachServiceImpl coachService;
 
     @GetMapping("/{id}")
     public Optional<CoachReadDto> findById(@PathVariable Long id) {
-        return coachServiceImpl.findById(id);
+        return coachService.findById(id);
     }
 
     @GetMapping
     public List<CoachReadDto> findAllByGymId(@RequestParam Long gymId) {
-        return coachServiceImpl.findAllByGymId(gymId);
+        return coachService.findAllByGymId(gymId);
     }
 
     @GetMapping(value = "/{id}/avatar")
     public ResponseEntity<byte[]> findAvatar(@PathVariable("id") Long id) {
-        return coachServiceImpl.findAvatar(id)
+        return coachService.findAvatar(id)
                 .map(content -> ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
                         .contentLength(content.length)
@@ -49,25 +49,25 @@ public class CoachController {
     @PostMapping(consumes = {MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(CREATED)
     public CoachReadDto create( CoachCreateDto coach) {
-        return coachServiceImpl.create(coach);
+        return coachService.create(coach);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(CREATED)
     public Optional<CoachReadDto> update(@PathVariable Long id, @RequestBody CoachEditDto coach) {
-        return coachServiceImpl.update(id,coach);
+        return coachService.update(id,coach);
     }
 
     @PutMapping("/{id}/avatar")
     @ResponseStatus(CREATED)
     public CoachReadDto updateAvatar(@PathVariable Long id, @RequestParam MultipartFile image) {
-        return coachServiceImpl.updateAvatar(id,image);
+        return coachService.updateAvatar(id,image);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        if (Boolean.FALSE.equals(coachServiceImpl.delete(id))) {
+        if (Boolean.FALSE.equals(coachService.delete(id))) {
             throw new ResponseStatusException(NOT_FOUND);
         }
     }
@@ -75,7 +75,7 @@ public class CoachController {
     @DeleteMapping("/{id}/avatar")
     @ResponseStatus(NO_CONTENT)
     public void deleteAvatar(@PathVariable Long id) {
-        if (Boolean.FALSE.equals(coachServiceImpl.removeAvatar(id))) {
+        if (Boolean.FALSE.equals(coachService.removeAvatar(id))) {
             throw new ResponseStatusException(NOT_FOUND);
         }
     }

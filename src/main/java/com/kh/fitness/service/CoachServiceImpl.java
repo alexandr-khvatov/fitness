@@ -11,6 +11,7 @@ import com.kh.fitness.mapper.coach.CoachCreateMapper;
 import com.kh.fitness.mapper.coach.CoachEditMapper;
 import com.kh.fitness.mapper.coach.CoachReadDtoMapper;
 import com.kh.fitness.repository.CoachRepository;
+import com.kh.fitness.service.image.ImageService;
 import com.kh.fitness.validation.sequence.DefaultAndNotExistComplete;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,9 +65,9 @@ public class CoachServiceImpl {
         return Optional.of(coach)
                 .map(dto -> {
                     var imageName = imageService.upload(dto.getImage());
-                    Coach map = coachCreateMapper.toEntity(dto);
-                    imageName.ifPresent(map::setImage);
-                    return map;
+                    Coach c = coachCreateMapper.toEntity(dto);
+                    c.setImage(imageName);
+                    return c;
                 })
                 .map(coachRepository::saveAndFlush)
                 .map(coachReadDtoMapper::toDto)
@@ -105,11 +106,13 @@ public class CoachServiceImpl {
     @Transactional
     public CoachReadDto updateAvatar(Long id, MultipartFile image) {
         var entity = coachRepository.findById(id).orElseThrow();
+
         var imageForRemoval = entity.getImage();
         var imageName = imageService.upload(image);
-        imageName.ifPresent(entity::setImage);
+        entity.setImage(imageName);
         coachRepository.saveAndFlush(entity);
-        removeImage(imageForRemoval);
+        imageService.remove(imageForRemoval);
+
         return coachReadDtoMapper.toDto(entity);
     }
 
@@ -118,7 +121,7 @@ public class CoachServiceImpl {
         var entity = coachRepository.findById(id).orElseThrow();
         entity.setImage(null);
         coachRepository.saveAndFlush(entity);
-        return removeImage(entity.getImage());
+        return imageService.remove(entity.getImage());
     }
 
     @Transactional
@@ -132,21 +135,7 @@ public class CoachServiceImpl {
                     })
                     .orElse(false);
         } catch (Exception e) {
-            throw new UnableToDeleteObjectContainsNestedObjects("Не возможно удалить, тренер закреплен за тренеровкой");
+            throw new UnableToDeleteObjectContainsNestedObjects("Unable to delete, trainer assigned to training");
         }
-    }
-
-    /**
-     * Calls a method to remove an image
-     *
-     * @param imagePath the path to the file to delete
-     * @return {@code true} if image deleted successfully; <br/>
-     * {@code false}  image {@code imagePath} is null or the file could not be deleted because it did not exist
-     */
-    private boolean removeImage(String imagePath) {
-        if (imagePath != null && !imagePath.isEmpty()) {
-            return imageService.remove(imagePath);
-        }
-        return false;
     }
 }

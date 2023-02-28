@@ -1,9 +1,9 @@
 package com.kh.fitness.mapper.gym;
 
 import com.kh.fitness.dto.gym.GymCreateEditDto;
-import com.kh.fitness.entity.Gym;
-import com.kh.fitness.entity.GymContacts;
-import com.kh.fitness.entity.GymSocialMedia;
+import com.kh.fitness.entity.gym.Gym;
+import com.kh.fitness.entity.gym.GymContacts;
+import com.kh.fitness.entity.gym.GymSocialMedia;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

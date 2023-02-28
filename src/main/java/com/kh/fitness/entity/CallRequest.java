@@ -1,5 +1,6 @@
 package com.kh.fitness.entity;
 
+import com.kh.fitness.entity.util.auditing.AuditingEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

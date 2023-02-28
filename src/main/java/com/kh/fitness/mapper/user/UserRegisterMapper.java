@@ -2,7 +2,7 @@ package com.kh.fitness.mapper.user;
 
 
 import com.kh.fitness.dto.user.UserRegisterDto;
-import com.kh.fitness.entity.User;
+import com.kh.fitness.entity.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

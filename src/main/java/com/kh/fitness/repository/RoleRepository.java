@@ -1,6 +1,6 @@
 package com.kh.fitness.repository;
 
-import com.kh.fitness.entity.Role;
+import com.kh.fitness.entity.user.Role;
 import org.springframework.data.repository.Repository;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.kh.fitness.repository;
 
-import com.kh.fitness.entity.Gym;
+import com.kh.fitness.entity.gym.Gym;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

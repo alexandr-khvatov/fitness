@@ -1,6 +1,6 @@
 package com.kh.fitness.dto.account;
 
-import com.kh.fitness.entity.Role;
+import com.kh.fitness.entity.user.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

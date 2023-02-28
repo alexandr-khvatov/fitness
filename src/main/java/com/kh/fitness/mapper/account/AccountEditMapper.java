@@ -1,7 +1,7 @@
 package com.kh.fitness.mapper.account;
 
 import com.kh.fitness.dto.account.AccountEditDto;
-import com.kh.fitness.entity.User;
+import com.kh.fitness.entity.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -12,6 +12,7 @@ public interface AccountEditMapper {
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "image", ignore = true)
     @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "username", ignore = true)
     @Mapping(target = "authorities", ignore = true)
-    User updateUser(AccountEditDto source, @MappingTarget User target);
+    User updateEntity(AccountEditDto source, @MappingTarget User target);
 }

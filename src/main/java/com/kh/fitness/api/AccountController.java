@@ -1,17 +1,17 @@
 package com.kh.fitness.api;
 
 import com.kh.fitness.api.util.PathUtils;
-import com.kh.fitness.dto.account.LoginDto;
 import com.kh.fitness.dto.account.AccountChangePasswordDto;
 import com.kh.fitness.dto.account.AccountCreatedAndTokenDto;
-import com.kh.fitness.dto.account.AccountEditDto;
 import com.kh.fitness.dto.account.AccountUpdatedAndTokenDto;
+import com.kh.fitness.dto.account.LoginDto;
+import com.kh.fitness.dto.user.UserEditDto;
 import com.kh.fitness.dto.user.UserRegisterDto;
 import com.kh.fitness.exception.UserNotFoundException;
 import com.kh.fitness.mapper.account.AccountUpdatedAndTokenDtoMapper;
 import com.kh.fitness.mapper.user.UserCreatedAndTokenDtoMapper;
-import com.kh.fitness.service.TokenService;
-import com.kh.fitness.service.UserService;
+import com.kh.fitness.service.token.TokenService;
+import com.kh.fitness.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -44,8 +44,8 @@ public class AccountController {
     }
 
     @PutMapping
-    public AccountUpdatedAndTokenDto update(@RequestBody AccountEditDto dto, Authentication authentication) {
-        return userService.updateAccount(dto)
+    public AccountUpdatedAndTokenDto update(Long id, @RequestBody UserEditDto dto, Authentication authentication) {
+        return userService.update(id, dto)
                 .map(updatedUser -> {
                     var userAndAccessToken = accountUpdatedAndTokenDtoMapper.toDto(updatedUser);
                     // create new token if change username(phone) and return

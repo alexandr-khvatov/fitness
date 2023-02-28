@@ -1,7 +1,7 @@
 package com.kh.fitness.mapper.gym;
 
 import com.kh.fitness.dto.gym.GymOpeningHourInfoDto;
-import com.kh.fitness.entity.GymOpeningHourInfo;
+import com.kh.fitness.entity.gym.GymOpeningHourInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

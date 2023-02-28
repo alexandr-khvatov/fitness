@@ -1,5 +1,6 @@
 package com.kh.fitness.entity;
 
+import com.kh.fitness.entity.gym.Gym;
 import lombok.*;
 
 import javax.persistence.*;
@@ -34,6 +35,7 @@ public class Coach implements BaseEntity<Long> {
     @ManyToOne(optional = false, fetch = LAZY)
     private Gym gym;
 
+    @Builder.Default
     @OneToMany(mappedBy = "coach")
     private Set<Training> trainings = new HashSet<>();
 }

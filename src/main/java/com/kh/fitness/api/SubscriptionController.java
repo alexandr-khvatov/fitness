@@ -1,6 +1,6 @@
 package com.kh.fitness.api;
 
-import com.kh.fitness.entity.Subscription;
+import com.kh.fitness.entity.subscription.Subscription;
 import com.kh.fitness.service.SubscriptionServiceImpl;
 import com.kh.fitness.api.util.PathUtils;
 import lombok.RequiredArgsConstructor;

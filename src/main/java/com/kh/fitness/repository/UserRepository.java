@@ -1,6 +1,6 @@
 package com.kh.fitness.repository;
 
-import com.kh.fitness.entity.User;
+import com.kh.fitness.entity.user.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

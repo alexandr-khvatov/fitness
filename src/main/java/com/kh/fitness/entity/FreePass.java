@@ -1,5 +1,7 @@
 package com.kh.fitness.entity;
 
+import com.kh.fitness.entity.gym.Gym;
+import com.kh.fitness.entity.util.auditing.AuditingEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -43,7 +45,6 @@ public class FreePass extends AuditingEntity<Long> {
     private String trainingName;
 
     @ManyToOne(optional = false, fetch = LAZY)
-    @JoinColumn(name = "gym_id")
     private Gym gym;
 
     @ManyToOne(fetch = LAZY)

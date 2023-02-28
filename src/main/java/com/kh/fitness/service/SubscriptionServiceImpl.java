@@ -1,6 +1,6 @@
 package com.kh.fitness.service;
 
-import com.kh.fitness.entity.Subscription;
+import com.kh.fitness.entity.subscription.Subscription;
 import com.kh.fitness.repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
