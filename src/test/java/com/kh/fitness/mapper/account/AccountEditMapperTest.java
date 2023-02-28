@@ -1,7 +1,7 @@
 package com.kh.fitness.mapper.account;
 
 import com.kh.fitness.dto.account.AccountEditDto;
-import com.kh.fitness.entity.User;
+import com.kh.fitness.entity.user.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ class AccountEditMapperTest {
         dto.setEmail(email);
         dto.setBirthDate(birthDate);
 
-        var actualResultUserUpdated = accountEditMapper.updateUser(dto, new User());
+        var actualResultUserUpdated = accountEditMapper.updateEntity(dto, new User());
 
         var expectedResult = new User();
         expectedResult.setFirstname(firstName);

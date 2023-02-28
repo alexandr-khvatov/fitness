@@ -1,6 +1,6 @@
 package com.kh.fitness.mapper;
 
-import com.kh.fitness.dto.callRequest.CallRequestCreateDto;
+import com.kh.fitness.dto.call_request.CallRequestCreateDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
