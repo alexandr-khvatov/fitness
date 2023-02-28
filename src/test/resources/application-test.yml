@@ -1,3 +1,7 @@
+app:
+  image:
+    bucket: test22
+
 spring:
   datasource:
     username: test
@@ -7,3 +11,8 @@ spring:
       show_sql: true
       format_sql: true
       hbm2ddl.auto: validate
+  mail:
+    host: localhost
+    username: testuser@greenmail.com
+    password: testPasswordGreenMail
+    port: '3025'
