@@ -1,13 +1,15 @@
-package com.kh.fitness.service;
+package com.kh.fitness.integration.service;
 
+import com.kh.fitness.integration.IntegrationTestBase;
+import com.kh.fitness.service.image.ImageServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -17,18 +19,28 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@ExtendWith(MockitoExtension.class)
-class ImageServiceImplTest {
-    private final String DIR = "test";
+@RequiredArgsConstructor
+class ImageServiceImplIT extends IntegrationTestBase {
 
-    private final ImageServiceImpl imageService = new ImageServiceImpl(DIR);
+    private final ImageServiceImpl imageService;
+
+    private final Environment env;
+
+    private Path path;
 
     @TempDir
-    Path tempDir;
+    static Path sharedTempDir;
+
+    @Test
+    void checkProperty() {
+        assertThat(env.getProperty("app.image.bucket")).isNotNull().isNotEmpty();
+    }
 
     @Test
     void upload_shouldReturnFileName_whenSuccess() {
+         path = sharedTempDir.resolve(env.getProperty("app.image.bucket"));
         var image = new MockMultipartFile(
                 "image",
                 "image.png",
@@ -38,12 +50,15 @@ class ImageServiceImplTest {
 
         var actualResult = imageService.upload(image);
 
-        assertThat(actualResult).isPresent();
-        assertThat(actualResult.get()).contains(".png");
+        assertThat(actualResult)
+                .isNotNull()
+                .isNotEmpty()
+                .contains(".png");
     }
 
     @Test
     void get_shouldReturnEmptyOpt_whenFileNotExist() throws IOException {
+         path = sharedTempDir.resolve(env.getProperty("app.image.bucket"));
         var imagePath = "test.img";
 
         var actualResult = imageService.get(imagePath);
@@ -55,11 +70,17 @@ class ImageServiceImplTest {
     @NullSource
     @MethodSource("getArguments")
     void upload_shouldReturnEmptyOpt_whenMultipartFileIsEmptyOrNull(InputStream inputStream) throws IOException {
+        var path = sharedTempDir.resolve(env.getProperty("app.image.bucket"));
         var image = new MockMultipartFile("image", "image.png", MediaType.TEXT_PLAIN_VALUE, inputStream);
 
-        var actualResult = imageService.upload(image);
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> {
+            imageService.upload(image);
+        });
 
-        assertThat(actualResult).isEmpty();
+        String expectedMessage = "Image is empty";
+        String actualMessage = exception.getMessage();
+
+        assertThat(actualMessage).contains(expectedMessage);
     }
 
     public static Stream<Arguments> getArguments() {
