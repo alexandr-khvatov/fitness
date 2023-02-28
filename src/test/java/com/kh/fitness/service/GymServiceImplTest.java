@@ -3,7 +3,7 @@ package com.kh.fitness.service;
 import com.kh.fitness.dto.gym.GymCreateEditDto;
 import com.kh.fitness.dto.gym.GymOpeningHourInfoDto;
 import com.kh.fitness.dto.gym.GymReadDto;
-import com.kh.fitness.entity.Gym;
+import com.kh.fitness.entity.gym.Gym;
 import com.kh.fitness.mapper.gym.GymCreateEditDtoMapper;
 import com.kh.fitness.mapper.gym.GymReadDtoMapper;
 import com.kh.fitness.repository.GymRepository;

@@ -1,7 +1,7 @@
 package com.kh.fitness.service;
 
-import com.kh.fitness.entity.Period;
-import com.kh.fitness.entity.Subscription;
+import com.kh.fitness.entity.subscription.Period;
+import com.kh.fitness.entity.subscription.Subscription;
 import com.kh.fitness.repository.SubscriptionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

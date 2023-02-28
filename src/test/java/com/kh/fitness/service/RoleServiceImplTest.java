@@ -1,6 +1,6 @@
 package com.kh.fitness.service;
 
-import com.kh.fitness.entity.Role;
+import com.kh.fitness.entity.user.Role;
 import com.kh.fitness.repository.RoleRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

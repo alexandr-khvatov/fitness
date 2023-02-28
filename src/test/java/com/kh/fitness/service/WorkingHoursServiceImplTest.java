@@ -2,8 +2,9 @@ package com.kh.fitness.service;
 
 import com.kh.fitness.dto.gym.GymHours;
 import com.kh.fitness.dto.gym.GymOpeningHourInfoDto;
-import com.kh.fitness.entity.GymOpeningHourInfo;
+import com.kh.fitness.entity.gym.GymOpeningHourInfo;
 import com.kh.fitness.mapper.gym.GymOpeningHourInfoDtoMapper;
+import com.kh.fitness.service.working_hours.WorkingHoursServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -3,6 +3,7 @@ package com.kh.fitness.service;
 import com.kh.fitness.dto.account.LoginDto;
 import com.kh.fitness.dto.account.TokenDto;
 import com.kh.fitness.repository.UserRepository;
+import com.kh.fitness.service.token.TokenServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -54,7 +55,7 @@ class TokenServiceImplTest {
     @Test
     void authenticationFail() {
         doThrow(BadCredentialsException.class).when(authenticationManager).authenticate(any());
-        assertThrows(BadCredentialsException.class, () -> tokenService.authentication(any()));
+        assertThrows(BadCredentialsException.class, () -> tokenService.authentication(new LoginDto("dummy", "dummy")));
         verifyNoInteractions(encoder);
     }
 }

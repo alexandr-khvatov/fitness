@@ -1,5 +1,6 @@
 package com.kh.fitness.service;
 
+import com.kh.fitness.service.email.EmailServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
