@@ -51,6 +51,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation "org.testcontainers:postgresql:${versions.testcontainers}"
     testImplementation 'com.h2database:h2'
+    testImplementation "com.icegreen:greenmail-junit5:${versions.greenmail}"
 
     testCompileOnly 'org.projectlombok:lombok'
 

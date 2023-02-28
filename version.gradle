@@ -2,6 +2,7 @@ ext {
     versions = [
             'testcontainers': '1.17.6',
             'springdoc'     : '1.6.14',
-            'mapstruct'     : '1.5.3.Final'
+            'mapstruct'     : '1.5.3.Final',
+            'greenmail'     : '1.6.14'
     ]
 }
