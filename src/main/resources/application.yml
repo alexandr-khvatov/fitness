@@ -14,8 +14,8 @@ spring:
     properties.hibernate:
       show_sql: true
       format_sql: true
-      hbm2ddl.auto: validate
-  #      validate update
+      hbm2ddl.auto: validate  #  validate update
+    open-in-view: false
   mvc:
     view:
       prefix: /WEB-INF/jsp/
@@ -55,16 +55,16 @@ app:
     bucket: /files/image
 logging:
   level:
-    root: WARN
-    org:
-      springframework:
-        jdbc:
-          core: DEBUG
-        web:
-          filter:
-            CommonsRequestLoggingFilter: TRACE
-        security:
-          oauth2: TRACE
+    root: ERROR
+#    org:
+#      springframework:
+#        jdbc:
+#          core: DEBUG
+#        web:
+#          filter:
+#            CommonsRequestLoggingFilter: TRACE
+#        security:
+#          oauth2: TRACE
 
 springdoc:
   swagger-ui:
