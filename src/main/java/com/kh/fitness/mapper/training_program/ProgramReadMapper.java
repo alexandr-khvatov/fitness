@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(uses = {SubProgramReadMapper.class})
 public interface ProgramReadMapper {
+    @Mapping(target = "gymId", source = "gym.id")
     @Mapping(target = "image", expression = "java(imageUrl(s))")
     ProgramReadDto toDto(TrainingProgram s);
 
