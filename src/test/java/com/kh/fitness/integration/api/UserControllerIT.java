@@ -169,7 +169,7 @@ class UserControllerIT extends IntegrationTestBase {
 
     @ParameterizedTest(name = "#{index} - update user: with a different number of roles in the set {0} ")
     @MethodSource("getArgumentsRoles")
-    void update_shouldReturnRoomUpdated_whenUpdatedSuccessfully(Set<Long> roles) throws Exception {
+    void update_shouldReturnUserUpdated_whenUpdatedSuccessfully(Set<Long> roles) throws Exception {
         var dto = getUserEditDto();
         dto.setFirstname("update_firstname" + roles.size());
         dto.setRoles(roles);
