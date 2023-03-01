@@ -20,13 +20,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+
+import static java.lang.String.format;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Validated
-public class ProgramServiceImpl {
+public class ProgramServiceImpl implements AvatarService {
     private final ImageService imageService;
 
     private final ProgramRepository programRepository;
@@ -35,6 +38,8 @@ public class ProgramServiceImpl {
     private final ProgramCreateMapper programCreateMapper;
     private final ProgramReadMapper programReadMapper;
 
+    public static final String EXC_MSG_NOT_FOUND = "Program with id %s not found";
+
     public Optional<ProgramReadWithSubProgramsDto> findById(Long id) {
         return programRepository.findById(id).map(programReadMapper::toDtoWithSubPrograms);
     }
@@ -42,13 +47,6 @@ public class ProgramServiceImpl {
     public List<ProgramReadWithSubProgramsDto> findAllByGymId(Long gymId) {
         return programRepository.findAllByGymId(gymId).stream()
                 .map(programReadMapper::toDtoWithSubPrograms).toList();
-    }
-
-    public Optional<byte[]> findAvatar(Long id) {
-        return programRepository.findById(id)
-                .map(TrainingProgram::getImage)
-                .filter(StringUtils::hasText)
-                .flatMap(imageService::get);
     }
 
     @Transactional
@@ -68,31 +66,9 @@ public class ProgramServiceImpl {
     @Transactional
     public Optional<ProgramReadDto> update(Long id, @Valid ProgramEditDto program) {
         return programRepository.findById(id)
-                .map(entity -> {
-
-                    return programEditMapper.updateEntity(program, entity);
-                })
+                .map(entity -> programEditMapper.updateEntity(program, entity))
                 .map(programRepository::saveAndFlush)
                 .map(programReadMapper::toDto);
-    }
-
-    @Transactional
-    public ProgramReadDto updateAvatar(Long id, MultipartFile image) {
-        var entity = programRepository.findById(id).orElseThrow();
-        var imageForRemoval = entity.getImage();
-        var imageName = imageService.upload(image);
-        entity.setImage(imageName);
-        programRepository.saveAndFlush(entity);
-        removeImage(imageForRemoval);
-        return programReadMapper.toDto(entity);
-    }
-
-    @Transactional
-    public boolean removeAvatar(Long id) {
-        var entity = programRepository.findById(id).orElseThrow();
-        entity.setImage(null);
-        programRepository.saveAndFlush(entity);
-        return removeImage(entity.getImage());
     }
 
     @Transactional
@@ -110,17 +86,38 @@ public class ProgramServiceImpl {
         }
     }
 
-    /**
-     * Calls a method to remove an image
-     *
-     * @param imagePath the path to the file to delete
-     * @return {@code true} if image deleted successfully; <br/>
-     * {@code false}  image {@code imagePath} is null or the file could not be deleted because it did not exist
-     */
-    private boolean removeImage(String imagePath) {
-        if (imagePath != null && !imagePath.isEmpty()) {
-            return imageService.remove(imagePath);
+    @Override
+    public Optional<byte[]> findAvatar(Long id) {
+        return programRepository.findById(id)
+                .map(TrainingProgram::getImage)
+                .filter(StringUtils::hasText)
+                .flatMap(imageService::get);
+    }
+
+    @Override
+    @Transactional
+    public String updateAvatar(Long id, MultipartFile image) {
+        var entity = programRepository.findById(id).orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
+
+        var imageForRemoval = entity.getImage();
+        var imageName = imageService.upload(image);
+        entity.setImage(imageName);
+        programRepository.saveAndFlush(entity);
+        imageService.remove(imageForRemoval);
+
+        return imageName;
+    }
+
+    @Override
+    @Transactional
+    public boolean removeAvatar(Long id) {
+        var entity = programRepository.findById(id).orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
+        var removeAvatar = entity.getImage();
+        if (removeAvatar == null || removeAvatar.isEmpty()) {
+            return true;
         }
-        return false;
+        entity.setImage(null);
+        programRepository.saveAndFlush(entity);
+        return imageService.remove(removeAvatar);
     }
 }
