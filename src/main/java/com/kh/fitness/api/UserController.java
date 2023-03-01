@@ -30,7 +30,7 @@ public class UserController {
 
     private final UserService userService;
 
-    public static final String ERROR_MSG_NOT_FOUND = "User with id %s not found";
+    private static final String ERROR_MSG_NOT_FOUND = "User with id %s not found";
 
     @GetMapping("/username/{username}")
     public UserReadDto findByUsername(@PathVariable String username) {
@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserReadDto getById(@PathVariable Long id) {
+    public UserReadDto findById(@PathVariable Long id) {
         return userService.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, format(ERROR_MSG_NOT_FOUND, id))
         );
