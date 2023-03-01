@@ -1,6 +1,6 @@
 app:
   image:
-    bucket: test22
+    bucket: testDirClearAuto
 
 spring:
   datasource:
