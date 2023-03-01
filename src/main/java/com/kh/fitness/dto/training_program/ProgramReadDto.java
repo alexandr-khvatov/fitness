@@ -13,4 +13,5 @@ public class ProgramReadDto {
     private String overview;
     private String image;
     private String description;
+    private Long gymId;
 }
