@@ -166,14 +166,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<byte[]> findAvatar(Long id) {
-        return userRepository.findById(id)
-                .map(User::getImage)
-                .filter(StringUtils::hasText)
-                .flatMap(imageService::get);
-    }
-
-    @Override
     @Transactional
     public boolean delete(Long id) {
         return userRepository.findById(id)
@@ -221,6 +213,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     log.error(LOG_MSG_NOT_FOUND_BY_USERNAME, username);
                     throw new NoSuchElementException(format(EXC_MSG_NOT_FOUND_BY_USERNAME, username));
                 });
+    }
+
+    @Override
+    public Optional<byte[]> findAvatar(Long id) {
+        return userRepository.findById(id)
+                .map(User::getImage)
+                .filter(StringUtils::hasText)
+                .flatMap(imageService::get);
     }
 
     @Override
