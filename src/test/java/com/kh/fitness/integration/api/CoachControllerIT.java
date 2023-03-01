@@ -11,10 +11,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,8 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.Set;
-import java.util.stream.Stream;
 
 import static com.kh.fitness.api.util.PathUtils.API_V1;
 import static java.lang.String.format;
@@ -36,7 +31,6 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@AutoConfigureMockMvc(printOnlyOnFailure = false)
 @RequiredArgsConstructor
 class CoachControllerIT extends IntegrationTestBase {
 
@@ -85,8 +79,8 @@ class CoachControllerIT extends IntegrationTestBase {
                 .andReturn();
 
         assertThat(result).isNotNull();
-        String userJson = result.getResponse().getContentAsString();
-        var actualDto = mapper.readValue(userJson, CoachReadDto.class);
+        String coachJson = result.getResponse().getContentAsString();
+        var actualDto = mapper.readValue(coachJson, CoachReadDto.class);
         assertThat(actualDto.getId()).isNotNull();
         Assertions.assertAll(
                 () -> assertThat(actualDto.getFirstname()).isEqualTo(dto.getFirstname()),
@@ -117,11 +111,10 @@ class CoachControllerIT extends IntegrationTestBase {
                 .andReturn();
     }
 
-    @ParameterizedTest(name = "#{index} - update user: with a different number of roles in the set {0} ")
-    @MethodSource("getArgumentsRoles")
-    void update_shouldReturnRoomUpdated_whenUpdatedSuccessfully(Set<Long> roles) throws Exception {
+    @Test
+    void update_shouldReturnCoachUpdated_whenUpdatedSuccessfully() throws Exception {
         var dto = getCoachEditDto();
-        dto.setFirstname("update_firstname" + roles.size());
+        dto.setFirstname("update_firstname");
         var dtoToJson = mapper.writeValueAsString(dto);
 
         this.mockMvc.perform(put(URL + "/" + COACH_ID)
@@ -133,14 +126,6 @@ class CoachControllerIT extends IntegrationTestBase {
                         jsonPath("$.id").value(COACH_ID),
                         jsonPath("$.firstname", equalTo(dto.getFirstname()))
                 );
-    }
-
-    static Stream<Arguments> getArgumentsRoles() {
-        return Stream.of(
-                Arguments.of(Set.of(1L)),
-                Arguments.of(Set.of(1L, 2L)),
-                Arguments.of(Set.of(1L, 2L, 3L))
-        );
     }
 
     @DisplayName("delete(id) -> should return status 204(no content) when deleted successfully")
@@ -166,7 +151,7 @@ class CoachControllerIT extends IntegrationTestBase {
         assertThat(actualResult).isEqualTo(format(ERROR_MSG_NOT_FOUND, deleteId));
     }
 
-    @DisplayName("deleteAvatar(id) -> should return status code 404 when user with id not exist")
+    @DisplayName("deleteAvatar(id) -> should return status code 404 when coach with id not exist")
     @ParameterizedTest
     @ValueSource(longs = {-128, -1})
     void deleteAvatar_shouldReturn404_whenCoachWithIdNotFound(Long deleteAvatarForCoachWithId) throws Exception {
@@ -182,7 +167,7 @@ class CoachControllerIT extends IntegrationTestBase {
     @DisplayName("deleteAvatar(id) -> should return status code 404 when Avatar not exist in file storage) ")
     @ParameterizedTest
     @ValueSource(longs = {1})
-    void deleteAvatar_shouldReturn404_whenUserAvatarInFileStorageIsNullOrEmpty(Long deleteAvatarForCoachWithId) throws Exception {
+    void deleteAvatar_shouldReturn404_whenProgramAvatarInFileStorageIsNullOrEmpty(Long deleteAvatarForCoachWithId) throws Exception {
         var result = this.mockMvc.perform(delete(URL + "/" + deleteAvatarForCoachWithId + "/avatar")
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON))
@@ -193,7 +178,7 @@ class CoachControllerIT extends IntegrationTestBase {
         assertThat(actualResult).isEqualTo("File not exist");
     }
 
-    @DisplayName("updateAvatar(id) -> should return status code 404 when user with id not exist) ")
+    @DisplayName("updateAvatar(id) -> should return status code 404 when coach with id not exist) ")
     @ParameterizedTest
     @ValueSource(longs = {-128, -1})
     void updateAvatar_shouldReturn404_whenCoachWithIdNotFound(Long deleteAvatarForCoachWithId) throws Exception {
@@ -208,7 +193,7 @@ class CoachControllerIT extends IntegrationTestBase {
                 );
     }
 
-    @DisplayName("updateAvatar(id) -> should return status code 404 when user.image is null or empty) ")
+    @DisplayName("updateAvatar(id) -> should return status code 404 when coach.image is null or empty) ")
     @ParameterizedTest
     @ValueSource(longs = {1})
     void updateAvatar_shouldReturn404_whenEmptyFile(Long deleteAvatarForCoachWithId) throws Exception {
