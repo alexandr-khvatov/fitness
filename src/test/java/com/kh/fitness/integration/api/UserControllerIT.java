@@ -230,10 +230,10 @@ class UserControllerIT extends IntegrationTestBase {
                 );
     }
 
-    @DisplayName("deleteAvatar(id) -> should return status code 404 when user.image is null or empty) ")
+    @DisplayName("deleteAvatar(id) -> should return status code 404 when Avatar not exist in file storage) ")
     @ParameterizedTest
     @ValueSource(longs = {1})
-    void deleteAvatar_shouldReturn404_whenUserAvatarIsNullOrEmpty(Long deleteAvatarForUserWithId) throws Exception {
+    void deleteAvatar_shouldReturn404_whenUserAvatarInFileStorageIsNullOrEmpty(Long deleteAvatarForUserWithId) throws Exception {
         var result = this.mockMvc.perform(delete(URL + "/" + deleteAvatarForUserWithId + "/avatar")
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON))
