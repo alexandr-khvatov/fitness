@@ -20,4 +20,5 @@ public class CoachReadDto {
     private String specialization;
     private String image;
     private String description;
+    private Long gymId;
 }

@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
@@ -21,12 +22,15 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class CoachCreateDto {
     @NotBlank
+    @NotNull
     private String firstname;
 
     @NotBlank
+    @NotNull
     private String patronymic;
 
     @NotBlank
+    @NotNull
     private String lastname;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -41,11 +45,13 @@ public class CoachCreateDto {
     private String email;
 
     @NotBlank
+    @NotNull
     private String specialization;
 
     private String description;
 
+    @NotNull
     private Long gymId;
 
-    MultipartFile image;
+    private MultipartFile image;
 }
