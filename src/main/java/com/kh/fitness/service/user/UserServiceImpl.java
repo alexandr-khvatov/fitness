@@ -7,7 +7,6 @@ import com.kh.fitness.entity.user.User;
 import com.kh.fitness.exception.PasswordMatchException;
 import com.kh.fitness.exception.PhoneAlreadyExistException;
 import com.kh.fitness.exception.UserNotFoundException;
-import com.kh.fitness.mapper.account.AccountEditMapper;
 import com.kh.fitness.mapper.user.*;
 import com.kh.fitness.repository.UserRepository;
 import com.kh.fitness.service.RoleServiceImpl;
@@ -47,7 +46,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRegisterMapper userRegisterMapper;
     private final UserCreateMapper userCreateMapper;
     private final UserCreatedDtoMapper userCreatedDtoMapper;
-    private final AccountEditMapper accountEditMapper;
     private final UserEditMapper userEditMapper;
 
     public static final String EXC_MSG_NOT_FOUND = "User with id %s not found";
@@ -177,33 +175,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public String updateAvatar(Long id, MultipartFile image) {
-        var entity = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
-
-        var imageForRemoval = entity.getImage();
-        var imageName = imageService.upload(image);
-        entity.setImage(imageName);
-        userRepository.saveAndFlush(entity);
-        imageService.remove(imageForRemoval);
-
-        return imageName;
-    }
-
-    @Override
-    @Transactional
-    public boolean removeAvatar(Long id) {
-        var entity = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
-        var removeAvatar = entity.getImage();
-        if (removeAvatar == null || removeAvatar.isEmpty()) {
-            return true;
-        }
-        entity.setImage(null);
-        userRepository.saveAndFlush(entity);
-        return imageService.remove(removeAvatar);
-    }
-
-    @Override
-    @Transactional
     public boolean delete(Long id) {
         return userRepository.findById(id)
                 .map(entity -> {
@@ -250,5 +221,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     log.error(LOG_MSG_NOT_FOUND_BY_USERNAME, username);
                     throw new NoSuchElementException(format(EXC_MSG_NOT_FOUND_BY_USERNAME, username));
                 });
+    }
+
+    @Override
+    @Transactional
+    public String updateAvatar(Long id, MultipartFile image) {
+        var entity = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
+
+        var imageForRemoval = entity.getImage();
+        var imageName = imageService.upload(image);
+        entity.setImage(imageName);
+        userRepository.saveAndFlush(entity);
+        imageService.remove(imageForRemoval);
+
+        return imageName;
+    }
+
+    @Override
+    @Transactional
+    public boolean removeAvatar(Long id) {
+        var entity = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
+        var removeAvatar = entity.getImage();
+        if (removeAvatar == null || removeAvatar.isEmpty()) {
+            return true;
+        }
+        entity.setImage(null);
+        userRepository.saveAndFlush(entity);
+        return imageService.remove(removeAvatar);
     }
 }
