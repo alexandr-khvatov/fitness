@@ -1,6 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '2.7.4'
     id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
     id 'java'
 }
 
@@ -18,10 +19,12 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
+sourceSets {
+    main.java.srcDirs += "$buildDir/generated/sources/annotationProcessor/java/main"
+}
+
 configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
+    querydsl.extendsFrom annotationProcessor, implementation, compilyOnly, runtimeOnly
 }
 
 repositories {
@@ -38,6 +41,7 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-ui:${versions.springdoc}"
     implementation "org.springdoc:springdoc-openapi-security:${versions.springdoc}"
     implementation 'org.postgresql:postgresql'
+    implementation 'com.querydsl:querydsl-jpa'
     implementation 'org.liquibase:liquibase-core'
     implementation "org.mapstruct:mapstruct:${versions.mapstruct}"
 
@@ -45,6 +49,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
 
     annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'com.querydsl:querydsl-apt'
     annotationProcessor "org.mapstruct:mapstruct-processor:${versions.mapstruct}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -59,6 +64,17 @@ dependencies {
     testAnnotationProcessor "org.mapstruct:mapstruct-processor:${versions.mapstruct}"
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+}
+
+querydsl {
+    jpa = true
+    library = "com.querydsl:querydsl-apt:${versions.querydsl}"
+    querydslSourcesDir = "$buildDir/generated/sources/annotationProcessor/java/main"
+}
+initQuerydslSourcesDir.dependsOn clean
+
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
 }
 
 compileJava.options.encoding = 'UTF-8'
