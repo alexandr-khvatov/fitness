@@ -1,10 +1,13 @@
 package com.kh.fitness.api;
 
+import com.kh.fitness.dto.PageResponse;
 import com.kh.fitness.dto.user.UserCreateDto;
 import com.kh.fitness.dto.user.UserEditDto;
+import com.kh.fitness.dto.user.UserFilter;
 import com.kh.fitness.dto.user.UserReadDto;
 import com.kh.fitness.service.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,8 +16,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 import static com.kh.fitness.api.util.PathUtils.API_V1;
 import static java.lang.String.format;
@@ -47,17 +48,8 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserReadDto> getAll() {
-        var users = userService.findAll();
-        if (users.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Rooms not found");
-        }
-        return users;
-    }
-
-    @GetMapping("/roles")
-    public List<UserReadDto> findAllWithRoleName(@RequestParam String name) {
-        return userService.findAllWithRoleName(name);
+    public PageResponse<UserReadDto> findAllByFilter(UserFilter filter, Pageable pageable) {
+        return PageResponse.of(userService.findAllByFilter(filter, pageable));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
