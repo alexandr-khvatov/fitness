@@ -38,7 +38,6 @@ class RoomControllerIT extends IntegrationTestBase {
     public static final Long GYM_ID_NOT_EXIST = -128L;
 
     public static final String ERROR_MSG_NOT_FOUND = "Room with id %s not found";
-    public static final String ERROR_MSG_NOT_FOUND_BY_GYM_ID = "Rooms with gymId %s not found";
 
     @Test
     void findById_shouldReturnRoom_whenSucceed() throws Exception {
@@ -62,15 +61,14 @@ class RoomControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void findAllByGymId_should404_whenNotExist() throws Exception {
-        var result = this.mockMvc.perform(get(format(URL_BY_GYM_ID, GYM_ID_NOT_EXIST))
+    void findAllByGymId_should200_whenNotExist() throws Exception {
+        this.mockMvc.perform(get(format(URL_BY_GYM_ID, GYM_ID_NOT_EXIST))
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andReturn();
-        assertThat(result).isNotNull();
-        String roomJson = result.getResponse().getErrorMessage();
-        assertThat(roomJson).contains(format(ERROR_MSG_NOT_FOUND_BY_GYM_ID, GYM_ID_NOT_EXIST));
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").isEmpty()
+                );
     }
 
     @Test
@@ -137,7 +135,7 @@ class RoomControllerIT extends IntegrationTestBase {
     @DisplayName("delete(id) -> should return status 404(Not Found) when not exist")
     @Test
     void delete_shouldReturn404_whenNotExist() throws Exception {
-        var delete_room_id_not_exist=ROOM_ID_NOT_EXIST;
+        var delete_room_id_not_exist = ROOM_ID_NOT_EXIST;
 
         var result = this.mockMvc.perform(delete(URL + "/" + delete_room_id_not_exist)
                         .contentType(APPLICATION_JSON)

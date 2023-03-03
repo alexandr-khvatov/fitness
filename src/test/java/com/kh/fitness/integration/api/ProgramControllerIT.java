@@ -1,4 +1,4 @@
-package com.kh.fitness.api;
+package com.kh.fitness.integration.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kh.fitness.dto.training_program.ProgramCreateDto;
