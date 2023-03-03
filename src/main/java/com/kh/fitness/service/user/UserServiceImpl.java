@@ -8,12 +8,15 @@ import com.kh.fitness.exception.PasswordMatchException;
 import com.kh.fitness.exception.PhoneAlreadyExistException;
 import com.kh.fitness.exception.UserNotFoundException;
 import com.kh.fitness.mapper.user.*;
-import com.kh.fitness.repository.UserRepository;
+import com.kh.fitness.querydsl.QPredicates;
+import com.kh.fitness.repository.user.UserRepository;
 import com.kh.fitness.service.RoleServiceImpl;
 import com.kh.fitness.service.image.ImageService;
 import com.kh.fitness.validation.sequence.DefaultAndNotExistComplete;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,6 +32,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
+import static com.kh.fitness.entity.user.QUser.user;
 import static java.lang.String.format;
 
 @Slf4j
@@ -178,16 +182,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<UserReadDto> findAll() {
-        return userRepository.findAll().stream()
-                .map(userReadMapper::toDto)
-                .toList();
-    }
+    public Page<UserReadDto> findAllByFilter(UserFilter filter, Pageable pageable) {
+        var predicate = QPredicates.builder()
+                .add(filter.firstname(), user.firstname::containsIgnoreCase)
+                .add(filter.patronymic(), user.patronymic::containsIgnoreCase)
+                .add(filter.lastname(), user.lastname::containsIgnoreCase)
+                .add(filter.phone(), user.phone::containsIgnoreCase)
+                .add(filter.email(), user.email::containsIgnoreCase)
+                .add(filter.role(), user.roles.any().name::containsIgnoreCase)
+                .add(filter.birthDate(), user.birthDate::before)
+                .build();
 
-    public List<UserReadDto> findAllWithRoleName(String name) {
-        return userRepository.findAllWithRoleName(name).stream()
-                .map(userReadMapper::toDto)
-                .toList();
+        return userRepository.findAll(predicate, pageable)
+                .map(userReadMapper::toDto);
     }
 
     @Override

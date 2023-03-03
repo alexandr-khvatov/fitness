@@ -4,15 +4,16 @@ import com.kh.fitness.dto.account.AccountChangePasswordDto;
 import com.kh.fitness.dto.user.*;
 import com.kh.fitness.service.AvatarService;
 import com.kh.fitness.validation.Phone;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 public interface UserService extends AvatarService {
     Optional<UserReadDto> findById(Long id);
 
-    List<UserReadDto> findAll();
+    Page<UserReadDto> findAllByFilter(UserFilter filter, Pageable pageable);
 
     UserReadDto create(@Valid UserCreateDto userDto);
 
@@ -23,8 +24,6 @@ public interface UserService extends AvatarService {
     UserCreatedDto register(@Valid UserRegisterDto userDto);
 
     void changePassword(@Valid AccountChangePasswordDto dto);
-
-    List<UserReadDto> findAllWithRoleName(String name);
 
     Optional<UserReadDto> findByUsername(@Phone String username);
 
