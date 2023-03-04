@@ -11,9 +11,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,7 +34,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@AutoConfigureMockMvc(printOnlyOnFailure = false)
 @RequiredArgsConstructor
 class UserControllerIT extends IntegrationTestBase {
 
@@ -42,13 +41,14 @@ class UserControllerIT extends IntegrationTestBase {
     private final ObjectMapper mapper;
 
     public static final String USER_ID = Long.toString(1L);
+    public static final Long GYM_ID_EXIST = 1L;
     public static final String USERNAME = "+70000000001";
     public static final String USERNAME_NOT_EXIST = "88005553535";
     public static final String USER_ID_NOT_EXIST = Long.toString(-128L);
     public static final String URL = API_V1 + "/users";
     public static final String URL_WITH_ID = URL + "/%s";
 
-    public static final Integer SIZE_RETURN_COLLECTION = 3;
+    public static final Integer SIZE_RETURN_COLLECTION = 5;
     public static final String ERROR_MSG_NOT_FOUND = "User with id %s not found";
 
     @Test
@@ -61,8 +61,110 @@ class UserControllerIT extends IntegrationTestBase {
                 );
     }
 
+    @DisplayName("Check default params value Pageable")
+    @Test
+    void findAllByFilter_checkDefaultValuePageable_should200andContentWithDefaultParams_whenPageableParamsMissing() throws Exception {
+        this.mockMvc.perform(get(URL)
+                        .contentType(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON))
+                .andExpectAll(
+                        status().isOk(),
+                        content().contentType(APPLICATION_JSON),
+                        // default page = 0
+                        jsonPath("$.metadata.page").value(0),
+                        // default size = 10
+                        jsonPath("$.metadata.size").value(10),
+                        // total elements in test-data = 5
+                        jsonPath("$.metadata.totalElements").value(SIZE_RETURN_COLLECTION)
+                );
+    }
+
+    @DisplayName("Check boundary params value Pageable")
+    @Test
+    void findAllByFilter_checkBoundaryValuePageable_should200andContentWithDefaultMaxMinParams_whenPageableParamsOverBoundary() throws Exception {
+        this.mockMvc.perform(get(URL)
+                        .param("size", "101")  // max size = 100
+                        .contentType(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON))
+                .andExpectAll(
+                        status().isOk(),
+                        content().contentType(APPLICATION_JSON),
+                        // default page = 0
+                        jsonPath("$.metadata.page").value(0),
+                        // default size = 10, max size = 100
+                        jsonPath("$.metadata.size").value(100),
+                        // total elements in test-data = 5
+                        jsonPath("$.metadata.totalElements").value(SIZE_RETURN_COLLECTION)
+                );
+    }
+
+    @DisplayName("Check user filter")
+    @Test
+    void findAllByFilter_checkUserFilter_shouldReturnUsersContainsPassedParam_whenFirstnameContainsIgnoreCasePassedParam() throws Exception {
+        this.mockMvc.perform(get(URL)
+                        .param("firstname", "searchTag")  // max size = 100
+                        .contentType(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON))
+                .andExpectAll(
+                        status().isOk(),
+                        content().contentType(APPLICATION_JSON),
+                        // default page = 0
+                        jsonPath("$.metadata.page").value(0),
+                        // default size = 10
+                        jsonPath("$.metadata.size").value(10),
+                        jsonPath("$.metadata.totalElements").value(3)
+                );
+    }
+
+    @DisplayName("Get users by gymId")
+    @ParameterizedTest
+    @CsvSource({
+            "2, 2",
+            "1, 1",
+    })
+    void findAllByGymIdAndFilter_shouldReturnUsersByGymIdAndFilter_whenGymIdEqPassedParamAndFilteredByFirstname(Long gymId, Long expected) throws Exception {
+        this.mockMvc.perform(get(API_V1 + "/gyms/" + gymId + "/users")
+                        .param("firstname", "searchTag")  // max size = 100
+                        .contentType(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON))
+                .andExpectAll(
+                        status().isOk(),
+                        content().contentType(APPLICATION_JSON),
+                        // default page = 0
+                        jsonPath("$.metadata.page").value(0),
+                        // default size = 10
+                        jsonPath("$.metadata.size").value(10),
+                        jsonPath("$.metadata.totalElements").value(expected)
+                );
+    }
+
+    @DisplayName("Check success passed params value Pageable")
+    @Test
+    void findAllByFilter_checkValuePageable_should200andContentWithPassParams_whenPassPageableParams() throws Exception {
+        this.mockMvc.perform(get(URL)
+                        .param("size", "2")
+                        .contentType(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON))
+                .andExpectAll(
+                        status().isOk(),
+                        content().contentType(APPLICATION_JSON),
+                        // default page = 0
+                        jsonPath("$.metadata.page").value(0),
+                        // default size = 10
+                        jsonPath("$.metadata.size").value(2),
+                        // total elements in test-data = 5
+                        jsonPath("$.metadata.totalElements").value(SIZE_RETURN_COLLECTION)
+                );
+    }
+
     @Test
     void findById_shouldReturn404_whenNotExist() throws Exception {
+        this.mockMvc.perform(get(URL + "/" + USER_ID_NOT_EXIST))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void findByAllByFilter_shouldReturn404_whenNotExist() throws Exception {
         this.mockMvc.perform(get(URL + "/" + USER_ID_NOT_EXIST))
                 .andExpect(status().isNotFound());
     }
@@ -104,8 +206,8 @@ class UserControllerIT extends IntegrationTestBase {
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(APPLICATION_JSON),
-                        jsonPath("$").isArray(),
-                        jsonPath("$.length()").value(SIZE_RETURN_COLLECTION)
+                        jsonPath("$.content").isArray(),
+                        jsonPath("$.content.length()").value(SIZE_RETURN_COLLECTION)
                 );
     }
 
@@ -284,6 +386,7 @@ class UserControllerIT extends IntegrationTestBase {
                 .phone("88005553535")
                 .email("test@yandex.ru")
                 .roles(Set.of(1L, 2L, 3L))
+                .gymId(GYM_ID_EXIST)
                 .build();
     }
 
@@ -297,6 +400,7 @@ class UserControllerIT extends IntegrationTestBase {
                 .phone("88005553535")
                 .email("test@yandex.ru")
                 .roles(Set.of(1L, 2L, 3L, 4L))
+                .gymId(GYM_ID_EXIST)
                 .build();
     }
 
@@ -310,6 +414,7 @@ class UserControllerIT extends IntegrationTestBase {
                 .phone("88005553535")
                 .email("test@yandex.ru")
                 .roles(Set.of(4L))
+                .gymId(GYM_ID_EXIST)
                 .build();
     }
 
@@ -322,6 +427,7 @@ class UserControllerIT extends IntegrationTestBase {
                 .phone(USERNAME)
                 .email("test@yandex.ru")
                 .roles(Set.of(1L, 2L, 3L))
+                .gymId(GYM_ID_EXIST)
                 .build();
     }
 }

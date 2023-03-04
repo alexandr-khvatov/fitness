@@ -1,6 +1,7 @@
 package com.kh.fitness.entity.user;
 
 import com.kh.fitness.entity.BaseEntity;
+import com.kh.fitness.entity.gym.Gym;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +11,10 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.FetchType.LAZY;
 
 @Data
 @EqualsAndHashCode(of = "email")
@@ -33,15 +38,22 @@ public class User implements BaseEntity<Long>, UserDetails {
     private String password;
 
     @Builder.Default
-    @ManyToMany
+    @ManyToMany(cascade = {PERSIST, MERGE})
     @JoinTable(name = "users_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    @ManyToOne(fetch = LAZY, optional = false)
+    private Gym gym;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
+    }
+
+    public void addRole(Role role) {
+        roles.add(role);
     }
 
     @Override

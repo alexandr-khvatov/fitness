@@ -8,12 +8,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 public interface UserService extends AvatarService {
     Optional<UserReadDto> findById(Long id);
 
     Page<UserReadDto> findAllByFilter(UserFilter filter, Pageable pageable);
+
+    Page<UserReadDto> findAllByGymIdAndFilter(@NotNull Long gymId, UserFilter filter, Pageable pageable);
 
     UserReadDto create(@Valid UserCreateDto userDto);
 

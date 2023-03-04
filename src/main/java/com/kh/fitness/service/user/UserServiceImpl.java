@@ -30,7 +30,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.Collections;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 
 import static com.kh.fitness.entity.user.QUser.user;
 import static java.lang.String.format;
@@ -62,7 +65,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     private User setDefaultRole(User user) {
-        return roleService.findByName(Roles.CUSTOMER.name())
+        return roleService.findByName(Roles.CUSTOMER)
                 .map(roles -> {
                     user.setRoles(Collections.singleton(roles));
                     return user;
@@ -189,7 +192,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .add(filter.lastname(), user.lastname::containsIgnoreCase)
                 .add(filter.phone(), user.phone::containsIgnoreCase)
                 .add(filter.email(), user.email::containsIgnoreCase)
-                .add(filter.role(), user.roles.any().name::containsIgnoreCase)
+                .add(filter.role(), user.roles.any().id::eq)
+                .add(filter.birthDate(), user.birthDate::before)
+                .build();
+
+        return userRepository.findAll(predicate, pageable)
+                .map(userReadMapper::toDto);
+    }
+
+    @Override
+    public Page<UserReadDto> findAllByGymIdAndFilter(Long gymId, UserFilter filter, Pageable pageable) {
+        var predicate = QPredicates.builder()
+                .add(gymId, user.gym.id::eq)
+                .add(filter.firstname(), user.firstname::containsIgnoreCase)
+                .add(filter.patronymic(), user.patronymic::containsIgnoreCase)
+                .add(filter.lastname(), user.lastname::containsIgnoreCase)
+                .add(filter.phone(), user.phone::containsIgnoreCase)
+                .add(filter.email(), user.email::containsIgnoreCase)
+                .add(filter.role(), user.roles.any().id::eq)
                 .add(filter.birthDate(), user.birthDate::before)
                 .build();
 

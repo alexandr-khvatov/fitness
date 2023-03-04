@@ -12,6 +12,7 @@ import static java.util.stream.Collectors.toSet;
 
 @Mapper
 public interface UserReadMapper {
+    @Mapping(target = "gymId", source = "gym.id")
     @Mapping(target = "roles", expression = "java(roles(s.getRoles()))")
     @Mapping(target = "username", source = "phone")
     UserReadDto toDto(User s);

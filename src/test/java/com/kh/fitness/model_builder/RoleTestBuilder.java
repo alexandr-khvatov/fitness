@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class RoleTestBuilder {
     private static final Long id = 1L;
-    private static final String name = Roles.ADMIN.name();
+    private static final Roles name = Roles.ADMIN;
 
     public static Role getRole() {
         return Role.builder()
@@ -28,11 +28,11 @@ public class RoleTestBuilder {
                 getRole(),
                 Role.builder()
                         .id(2L)
-                        .name(Roles.MANAGER.name())
+                        .name(Roles.MANAGER)
                         .build(),
                 Role.builder()
                         .id(3L)
-                        .name(Roles.CUSTOMER.name())
+                        .name(Roles.CUSTOMER)
                         .build());
     }
 }
