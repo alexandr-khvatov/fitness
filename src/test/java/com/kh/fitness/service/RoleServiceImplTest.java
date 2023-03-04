@@ -1,6 +1,7 @@
 package com.kh.fitness.service;
 
 import com.kh.fitness.entity.user.Role;
+import com.kh.fitness.entity.user.Roles;
 import com.kh.fitness.repository.RoleRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +27,7 @@ class RoleServiceImplTest {
         var roleId = 1L;
         var role = Role.builder()
                 .id(roleId)
-                .name("ADMIN")
+                .name(Roles.ADMIN)
                 .build();
 
         doReturn(Optional.of(role)).when(roleRepository).findById(roleId);

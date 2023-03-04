@@ -1,5 +1,6 @@
 package com.kh.fitness.dto.role;
 
+import com.kh.fitness.entity.user.Roles;
 import lombok.*;
 
 
@@ -10,5 +11,5 @@ import lombok.*;
 @Builder
 public class RoleReadDto {
     private Long id;
-    private String name;
+    private Roles name;
 }

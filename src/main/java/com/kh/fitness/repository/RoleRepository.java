@@ -1,6 +1,7 @@
 package com.kh.fitness.repository;
 
 import com.kh.fitness.entity.user.Role;
+import com.kh.fitness.entity.user.Roles;
 import org.springframework.data.repository.Repository;
 
 import java.util.List;
@@ -12,5 +13,5 @@ public interface RoleRepository extends Repository<Role, Long> {
 
     Optional<Role> findById(Long id);
 
-    Optional<Role> findByName(String name);
+    Optional<Role> findByName(Roles name);
 }

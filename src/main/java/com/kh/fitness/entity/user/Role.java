@@ -7,10 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+
+import static javax.persistence.EnumType.*;
 
 @Data
 @Builder
@@ -21,11 +20,12 @@ public class Role implements GrantedAuthority, BaseEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    @Enumerated(STRING)
+    private Roles name;
 
     @Override
     public String getAuthority() {
-        return getName();
+        return getName().name();
     }
 }
 
