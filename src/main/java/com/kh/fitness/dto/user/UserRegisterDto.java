@@ -5,12 +5,13 @@ import com.kh.fitness.validation.Password;
 import com.kh.fitness.validation.Phone;
 import com.kh.fitness.validation.PhoneNotExist;
 import com.kh.fitness.validation.group.CheckNotExistAfter;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Getter
@@ -39,4 +40,7 @@ public class UserRegisterDto {
     @Email
     @EmailNotExist(groups = CheckNotExistAfter.class)
     String email;
+
+    @NotNull
+    Long gymId;
 }

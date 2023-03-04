@@ -46,6 +46,9 @@ public class UserCreateDto {
     @EmailNotExist(groups = CheckNotExistAfter.class)
     String email;
 
+    @NotNull
+    Long gymId;
+
     @NotEmpty
     @NotNull
     Set<Long> roles;
