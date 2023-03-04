@@ -25,7 +25,6 @@ import static org.springframework.http.ResponseEntity.notFound;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(API_V1 + "/users")
 @Validated
 public class UserController {
 
@@ -33,32 +32,41 @@ public class UserController {
 
     private static final String ERROR_MSG_NOT_FOUND = "User with id %s not found";
 
-    @GetMapping("/username/{username}")
+    @GetMapping(API_V1 + "/users/username/{username}")
     public UserReadDto findByUsername(@PathVariable String username) {
         return userService.findByUsername(username).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, format("User with username %s not found", username))
         );
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(API_V1 + "/users/{id}")
     public UserReadDto findById(@PathVariable Long id) {
         return userService.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, format(ERROR_MSG_NOT_FOUND, id))
         );
     }
 
-    @GetMapping
+    @GetMapping(API_V1 + "/gyms/{gymId}/users")
+    public PageResponse<UserReadDto> findAllByGymIdAndFilter(
+            @PathVariable Long gymId,
+            UserFilter filter,
+            Pageable pageable
+    ) {
+        return PageResponse.of(userService.findAllByGymIdAndFilter(gymId, filter, pageable));
+    }
+
+    @GetMapping(API_V1 + "/users")
     public PageResponse<UserReadDto> findAllByFilter(UserFilter filter, Pageable pageable) {
         return PageResponse.of(userService.findAllByFilter(filter, pageable));
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = API_V1 + "/users", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public UserReadDto create(@RequestBody UserCreateDto user) {
         return userService.create(user);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(API_V1 + "/users/{id}")
     public UserReadDto update(@PathVariable("id") Long id,
                               @RequestBody UserEditDto user) {
         return userService.update(id, user).orElseThrow(
@@ -66,7 +74,7 @@ public class UserController {
         );
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(API_V1 + "/users/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") Long id) {
         if (Boolean.FALSE.equals(userService.delete(id))) {
@@ -74,7 +82,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/{id}/avatar")
+    @GetMapping(value = API_V1 + "/users/{id}/avatar")
     public ResponseEntity<byte[]> findAvatar(@PathVariable("id") Long id) {
         return userService.findAvatar(id)
                 .map(content -> ResponseEntity.ok()
@@ -84,12 +92,12 @@ public class UserController {
                 .orElseGet(notFound()::build);
     }
 
-    @PutMapping("/{id}/avatar")
+    @PutMapping(API_V1 + "/users/{id}/avatar")
     public String updateAvatar(@PathVariable Long id, @RequestParam MultipartFile image) {
         return userService.updateAvatar(id, image);
     }
 
-    @DeleteMapping("/{id}/avatar")
+    @DeleteMapping(API_V1 + "/users/{id}/avatar")
     @ResponseStatus(NO_CONTENT)
     public void deleteAvatar(@PathVariable Long id) {
         if (Boolean.FALSE.equals(userService.removeAvatar(id))) {

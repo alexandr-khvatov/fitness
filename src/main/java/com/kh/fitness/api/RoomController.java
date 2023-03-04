@@ -34,11 +34,7 @@ public class RoomController {
     @RequestMapping("/gyms/{gymId}/rooms")
     @GetMapping
     public List<RoomReadDto> findAllByGymId(@PathVariable Long gymId) {
-        List<RoomReadDto> rooms = roomServiceImpl.findAllByGymId(gymId);
-        if (rooms.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Rooms with gymId " + gymId + " not found");
-        }
-        return rooms;
+        return roomServiceImpl.findAllByGymId(gymId);
     }
 
     @PostMapping(ROOM_PREFIX)
