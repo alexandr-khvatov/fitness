@@ -2,7 +2,7 @@ package com.kh.fitness.service;
 
 import com.kh.fitness.dto.account.LoginDto;
 import com.kh.fitness.dto.account.TokenDto;
-import com.kh.fitness.repository.UserRepository;
+import com.kh.fitness.repository.user.UserRepository;
 import com.kh.fitness.service.token.TokenServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

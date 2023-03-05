@@ -1,7 +1,7 @@
 package com.kh.fitness.service;
 
 import com.kh.fitness.entity.user.User;
-import com.kh.fitness.repository.UserRepository;
+import com.kh.fitness.repository.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
