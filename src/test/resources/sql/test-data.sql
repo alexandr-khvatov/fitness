@@ -8,6 +8,16 @@ VALUES (1,
         'https://tg.com/start',
         'https://vk.com/start',
         '8:00:00',
+        '21:00:00'),
+       (2,
+        'СТАРТ.ПОЛИТЕХ2',
+        'Политехническая улица, 122А',
+        'start@mail.ru',
+        '+78452000000',
+        'https://instagram.com/start',
+        'https://tg.com/start',
+        'https://vk.com/start',
+        '8:00:00',
         '21:00:00');
 SELECT SETVAL('gym_id_seq', (SELECT MAX(id) FROM gym));
 
@@ -26,12 +36,18 @@ VALUES (1, UPPER('ADMIN')),
        (3, UPPER('CUSTOMER'));
 SELECT SETVAL('role_id_seq', (SELECT MAX(id) FROM role));
 
-INSERT INTO users (id, firstname, patronymic, lastname, email, password, phone, birth_date, image)
-VALUES (1, 'Иван', 'Бунин', 'Иванов', 'admin@gmail.com', '{noop}6%J#Z%u4GgiTv5BE4', '+70000000001',
+INSERT INTO users (id, gym_id, firstname, patronymic, lastname, email, password, phone, birth_date, image)
+VALUES (1, 1, 'Иван', 'Алексеевич', 'Бунин', 'admin@gmail.com', '{noop}6%J#Z%u4GgiTv5BE4', '+70000000001',
         '01.01.1991', 'image.png'),
-       (2, 'Анна', 'Ахматова', 'Еськина', 'manager@gmail.com', '{noop}6%J#Z%u4GgiTv5BE4', '+70000000002',
+       (2, 1, 'Анна', 'Ахматова', 'Еськина', 'manager@gmail.com', '{noop}6%J#Z%u4GgiTv5BE4', '+70000000002',
         '01.01.1991', 'image.png'),
-       (3, 'Федор', 'Достоевский', 'Тютчев', 'customer@gmail.com', '{noop}6%J#Z%u4GgiTv5BE4', '+70000000004',
+       (3, 1, 'АркадийSearchTag', 'Иванович', 'Тютчев', 'customer@gmail.com', '{noop}6%J#Z%u4GgiTv5BE4', '+70000000004',
+        '01.01.1991', 'image.png'),
+       (4, 2, 'ФедорSearchTag', 'Игоревич', 'Пантелеев', 'customer2@gmail.com', '{noop}6%J#Z%u4GgiTv5BE4',
+        '+72000000004',
+        '01.01.1991', 'image.png'),
+       (5, 2, 'ВладимирSearchTag', 'Александрович', 'Тютчев', 'customer21@gmail.com', '{noop}6%J#Z%u4GgiTv5BE4',
+        '+72000000004',
         '01.01.1991', 'image.png');
 SELECT SETVAL('users_id_seq', (SELECT MAX(id) FROM users));
 
@@ -157,12 +173,12 @@ SELECT SETVAL('room_id_seq', (SELECT MAX(id) FROM room));
 INSERT INTO training (id, gym_id, coach_id, room_id, sub_training_program_id, name, start_time, end_time, day_of_week,
                       total_seats, taken_seats)
 VALUES (1, 1, 7, '1', '13', 'Yoga', '09:00:00', '10:00:00', '1', '25', '0'),
-       (2, 1, 7, '1', '13', 'Tabata', '10:00:00', '11:10:00', '2', '25', '0'),
-       (3, 1, 7, '1', '13', 'Stretch', '11:00:00', '12:10:00', '3', '25', '0'),
-       (4, 1, 7, '2', '13', 'Yoga', '12:00:00', '13:10:00', '4', '25', '0'),
-       (5, 1, 7, '2', '13', 'Body Sculpt', '13:00:00', '14:10:00', '5', '25', '0'),
-       (6, 1, 7, '2', '13', 'Belly Dance', '14:00:00', '15:10:00', '6', '25', '0'),
-       (7, 1, 7, '2', '13', 'Pilates', '15:00:00', '16:10:00', '0', '25', '0');
+       (2, 1, 7, '1', '13', 'Tabata', '09:00:00', '10:00:00', '2', '25', '0'),
+       (3, 1, 7, '1', '13', 'Stretch', '09:00:00', '10:00:00', '3', '25', '0'),
+       (4, 1, 7, '2', '13', 'Yoga', '09:00:00', '10:00:00', '4', '25', '0'),
+       (5, 1, 7, '2', '13', 'Body Sculpt', '09:00:00', '10:00:00', '5', '25', '0'),
+       (6, 1, 7, '2', '13', 'Belly Dance', '09:00:00', '10:00:00', '6', '25', '0'),
+       (7, 1, 7, '2', '13', 'Pilates', '09:00:00', '10:00:00', '0', '25', '0');
 SELECT SETVAL('training_id_seq', (SELECT MAX(id) FROM training));
 
 INSERT INTO subscription (id, name, gym_id, period, price)
@@ -173,5 +189,7 @@ VALUES (1, '1 месяц', 1, '1 месяц', '3500'),
 SELECT SETVAL('subscription_id_seq', (SELECT MAX(id) FROM subscription));
 
 INSERT INTO free_pass (id, gym_id, training_id, date, start_time, end_time, email, firstname, lastname, phone, is_done)
-VALUES (1, 1, 1, '2022-12-13', '19:00:00', '20:00:00', 'test@gmail.com', 'Иван', 'Иванов', '+79990009999', FALSE);
+VALUES (1, 1, 1, '2022-12-13', '19:00:00', '20:00:00', 'test@gmail.com', 'Иван', 'Иванов', '+79990009999', FALSE),
+       (2, 1, 1, '2022-12-13', '19:00:00', '20:00:00', 'test@gmail.com', 'Иван', 'Иванов', '+79990009999', FALSE),
+       (3, 1, 1, '2022-12-13', '19:00:00', '20:00:00', 'test@gmail.com', 'Иван', 'Иванов', '+79990009999', FALSE);
 SELECT SETVAL('free_pass_id_seq', (SELECT MAX(id) FROM free_pass));
