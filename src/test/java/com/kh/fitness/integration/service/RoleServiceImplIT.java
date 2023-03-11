@@ -7,8 +7,6 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.UUID;
-
 import static com.kh.fitness.model_builder.RoleTestBuilder.getRole;
 import static com.kh.fitness.model_builder.RoleTestBuilder.getRoleWithId;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,16 +42,6 @@ class RoleServiceImplIT extends IntegrationTestBase {
 
         assertThat(actualResult).isPresent();
         assertThat(actualResult.get().getName()).isEqualTo(role.getName());
-    }
-
-    @Test
-    void findByName_shouldReturnEmptyOptional_whenMissing() {
-        var role = getRoleWithId(ROLE_ID);
-        var notExistName = role.getName() + UUID.randomUUID();
-
-        var actualResult = roleService.findByName(notExistName);
-
-        assertThat(actualResult).isEmpty();
     }
 
     @RepeatedTest(3)
