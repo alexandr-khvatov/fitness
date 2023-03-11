@@ -12,7 +12,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,28 +24,28 @@ import static org.springframework.http.ResponseEntity.notFound;
 
 @RestController
 @RequiredArgsConstructor
-@Validated
+@RequestMapping(API_V1)
 public class UserController {
 
     private final UserService userService;
 
     private static final String ERROR_MSG_NOT_FOUND = "User with id %s not found";
 
-    @GetMapping(API_V1 + "/users/username/{username}")
+    @GetMapping("/users/username/{username}")
     public UserReadDto findByUsername(@PathVariable String username) {
         return userService.findByUsername(username).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, format("User with username %s not found", username))
         );
     }
 
-    @GetMapping(API_V1 + "/users/{id}")
+    @GetMapping("/users/{id}")
     public UserReadDto findById(@PathVariable Long id) {
         return userService.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, format(ERROR_MSG_NOT_FOUND, id))
         );
     }
 
-    @GetMapping(API_V1 + "/gyms/{gymId}/users")
+    @GetMapping("/gyms/{gymId}/users")
     public PageResponse<UserReadDto> findAllByGymIdAndFilter(
             @PathVariable Long gymId,
             UserFilter filter,
@@ -55,18 +54,18 @@ public class UserController {
         return PageResponse.of(userService.findAllByGymIdAndFilter(gymId, filter, pageable));
     }
 
-    @GetMapping(API_V1 + "/users")
+    @GetMapping("/users")
     public PageResponse<UserReadDto> findAllByFilter(UserFilter filter, Pageable pageable) {
         return PageResponse.of(userService.findAllByFilter(filter, pageable));
     }
 
-    @PostMapping(path = API_V1 + "/users", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/users", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public UserReadDto create(@RequestBody UserCreateDto user) {
         return userService.create(user);
     }
 
-    @PutMapping(API_V1 + "/users/{id}")
+    @PutMapping("/users/{id}")
     public UserReadDto update(@PathVariable("id") Long id,
                               @RequestBody UserEditDto user) {
         return userService.update(id, user).orElseThrow(
@@ -74,7 +73,7 @@ public class UserController {
         );
     }
 
-    @DeleteMapping(API_V1 + "/users/{id}")
+    @DeleteMapping("/users/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") Long id) {
         if (Boolean.FALSE.equals(userService.delete(id))) {
@@ -82,7 +81,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = API_V1 + "/users/{id}/avatar")
+    @GetMapping(value = "/users/{id}/avatar")
     public ResponseEntity<byte[]> findAvatar(@PathVariable("id") Long id) {
         return userService.findAvatar(id)
                 .map(content -> ResponseEntity.ok()
@@ -92,12 +91,12 @@ public class UserController {
                 .orElseGet(notFound()::build);
     }
 
-    @PutMapping(API_V1 + "/users/{id}/avatar")
+    @PutMapping("/users/{id}/avatar")
     public String updateAvatar(@PathVariable Long id, @RequestParam MultipartFile image) {
         return userService.updateAvatar(id, image);
     }
 
-    @DeleteMapping(API_V1 + "/users/{id}/avatar")
+    @DeleteMapping("/users/{id}/avatar")
     @ResponseStatus(NO_CONTENT)
     public void deleteAvatar(@PathVariable Long id) {
         if (Boolean.FALSE.equals(userService.removeAvatar(id))) {
