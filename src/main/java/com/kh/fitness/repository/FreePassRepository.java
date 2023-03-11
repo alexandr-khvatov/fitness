@@ -8,7 +8,7 @@ import java.util.List;
 public interface FreePassRepository extends JpaRepository<FreePass, Long> {
   List<FreePass> findAllByGymIdOrderByIsDone(Long gymId);
   List<FreePass> findAllByTrainingId(Long trainingId);
-  boolean existsUserByEmail(String email);
+  boolean existsFreePassByEmail(String email);
 
-  boolean existsUserByPhone(String phone);
+  boolean existsFreePassByPhone(String phone);
 }

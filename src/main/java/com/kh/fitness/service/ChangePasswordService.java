@@ -1,6 +1,6 @@
 package com.kh.fitness.service;
 
-import com.kh.fitness.repository.UserRepository;
+import com.kh.fitness.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

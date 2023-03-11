@@ -7,9 +7,10 @@ import org.mapstruct.Mapping;
 
 @Mapper
 public interface TrainingReadMapper {
-    @Mapping(target = "title",ignore = true)
-    @Mapping(target = "start",ignore = true)
-    @Mapping(target = "end",ignore = true)
+
+    @Mapping(target = "start", source = "startTime")
+    @Mapping(target = "end", source = "endTime")
+    @Mapping(target = "title", source = "subTrainingProgram.name")
     @Mapping(target = "dayOfWeek", expression = "java(s.getDayOfWeek().getValue())")
     @Mapping(target = "coachId", source = "coach.id")
     @Mapping(target = "coach", source = "coach.firstname")

@@ -10,10 +10,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(uses = {GymMapperResolver.class, TrainingMapperResolver.class})
 public interface FreePassCreateMapper {
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "modifiedAt", ignore = true)
-    @Mapping(target = "createdBy", ignore = true)
-    @Mapping(target = "modifiedBy", ignore = true)
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "firstname", ignore = true)
     @Mapping(target = "lastname", ignore = true)

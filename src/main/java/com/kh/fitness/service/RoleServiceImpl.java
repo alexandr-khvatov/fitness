@@ -1,6 +1,7 @@
 package com.kh.fitness.service;
 
 import com.kh.fitness.entity.user.Role;
+import com.kh.fitness.entity.user.Roles;
 import com.kh.fitness.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class RoleServiceImpl {
         return roleRepository.findById(id);
     }
 
-    public Optional<Role> findByName(String name) {
+    public Optional<Role> findByName(Roles name) {
         return roleRepository.findByName(name);
     }
 

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static javax.persistence.EnumType.ORDINAL;
@@ -34,7 +34,7 @@ public class Training implements BaseEntity<Long> {
     @Enumerated(value = ORDINAL)
     private DayOfWeek dayOfWeek;
 
-    private LocalDateTime date;
+    private LocalDate date;
 
     private Integer takenSeats;
     private Integer totalSeats;
@@ -51,4 +51,3 @@ public class Training implements BaseEntity<Long> {
     @ManyToOne(fetch = LAZY)
     private SubTrainingProgram subTrainingProgram;
 }
-

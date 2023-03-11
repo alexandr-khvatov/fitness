@@ -2,10 +2,7 @@ package com.kh.fitness.entity;
 
 import com.kh.fitness.entity.gym.Gym;
 import com.kh.fitness.entity.util.auditing.AuditingEntity;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -14,10 +11,11 @@ import java.time.LocalTime;
 import static javax.persistence.FetchType.LAZY;
 
 @Data
-@Entity
 @EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class FreePass extends AuditingEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
