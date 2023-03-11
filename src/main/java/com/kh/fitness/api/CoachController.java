@@ -41,7 +41,8 @@ public class CoachController {
     public PageResponse<CoachReadDto> findAllByGymIdAndFilter(
             @PathVariable Long gymId,
             CoachFilter filter,
-            Pageable pageable) {
+            Pageable pageable
+    ) {
         return PageResponse.of(coachService.findAllByGymIdAndFilter(gymId, filter, pageable));
     }
 
