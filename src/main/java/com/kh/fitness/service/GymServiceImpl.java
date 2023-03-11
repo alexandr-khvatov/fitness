@@ -28,12 +28,12 @@ import static java.util.stream.Collectors.joining;
 @Transactional(readOnly = true)
 @Validated
 public class GymServiceImpl {
+
     private final GymRepository gymRepository;
     private final TrainingRepository trainingRepository;
     private final WorkingHoursService workingHoursService;
-
-    private final GymCreateEditDtoMapper gymCreateEditDtoMapper;
     private final GymReadDtoMapper gymReadDtoMapper;
+    private final GymCreateEditDtoMapper gymCreateEditDtoMapper;
 
     private static final Map<Integer, String> DAY_OF_WEEK_RUSSIAN = Map.of(
             1, "Понедельник",
@@ -54,6 +54,7 @@ public class GymServiceImpl {
         var predicate = QPredicates.builder()
                 .add(filter.name(), gym.name::containsIgnoreCase)
                 .build();
+
         return gymRepository.findAll(predicate, pageable)
                 .map(gymReadDtoMapper::toDto);
     }

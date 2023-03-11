@@ -1,12 +1,12 @@
 package com.kh.fitness.api;
 
+import com.kh.fitness.dto.PageResponse;
 import com.kh.fitness.dto.gym.GymCreateEditDto;
 import com.kh.fitness.dto.gym.GymFilter;
 import com.kh.fitness.dto.gym.GymHours;
 import com.kh.fitness.dto.gym.GymReadDto;
 import com.kh.fitness.service.GymServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +24,8 @@ public class GymController {
     private final GymServiceImpl gymService;
 
     @GetMapping
-    public Page<GymReadDto> findAllByFilter(GymFilter filter, Pageable pageable) {
-        return gymService.findAllByFilter(filter, pageable);
+    public PageResponse<GymReadDto> findAllByFilter(GymFilter filter, Pageable pageable) {
+        return PageResponse.of(gymService.findAllByFilter(filter, pageable));
     }
 
     @GetMapping("/{id}")
