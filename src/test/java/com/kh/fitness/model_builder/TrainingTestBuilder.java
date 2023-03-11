@@ -1,10 +1,13 @@
 package com.kh.fitness.model_builder;
 
-import com.kh.fitness.entity.*;
+import com.kh.fitness.entity.Coach;
+import com.kh.fitness.entity.Room;
+import com.kh.fitness.entity.SubTrainingProgram;
+import com.kh.fitness.entity.Training;
 import com.kh.fitness.entity.gym.Gym;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
 
@@ -14,7 +17,7 @@ public class TrainingTestBuilder {
     private static final LocalTime startTime = LocalTime.now();
     private static final LocalTime endTime = LocalTime.now();
     private static final DayOfWeek dayOfWeek = DayOfWeek.FRIDAY;
-    private static final LocalDateTime date = LocalDateTime.now();
+    private static final LocalDate date = LocalDate.now();
     private static final Integer takenSeats = 15;
     private static final Integer totalSeats = 20;
     private static final Coach coach = new Coach();
