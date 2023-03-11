@@ -1,5 +1,6 @@
 package com.kh.fitness.api;
 
+import com.kh.fitness.dto.PageResponse;
 import com.kh.fitness.dto.coach.CoachCreateDto;
 import com.kh.fitness.dto.coach.CoachEditDto;
 import com.kh.fitness.dto.coach.CoachFilter;
@@ -14,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 import static com.kh.fitness.api.util.PathUtils.API_V1;
 import static java.lang.String.format;
@@ -39,16 +38,16 @@ public class CoachController {
     }
 
     @GetMapping("/gyms/{gymId}/coaches")
-    public List<CoachReadDto> findAllByGymIdAndFilter(
+    public PageResponse<CoachReadDto> findAllByGymIdAndFilter(
             @PathVariable Long gymId,
             CoachFilter filter,
             Pageable pageable) {
-        return coachService.findAllByGymIdAndFilter(gymId, filter, pageable);
+        return PageResponse.of(coachService.findAllByGymIdAndFilter(gymId, filter, pageable));
     }
 
     @GetMapping("/coaches")
-    public List<CoachReadDto> findAllByFilter(CoachFilter filter, Pageable pageable) {
-        return coachService.findAllByFilter(filter, pageable);
+    public PageResponse<CoachReadDto> findAllByFilter(CoachFilter filter, Pageable pageable) {
+        return PageResponse.of(coachService.findAllByFilter(filter, pageable));
     }
 
     @PostMapping(consumes = {MULTIPART_FORM_DATA_VALUE})

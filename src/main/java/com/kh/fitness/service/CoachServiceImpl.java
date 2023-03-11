@@ -16,6 +16,7 @@ import com.kh.fitness.service.image.ImageService;
 import com.kh.fitness.validation.sequence.DefaultAndNotExistComplete;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -51,7 +51,7 @@ public class CoachServiceImpl implements AvatarService {
         return coachRepository.findById(id).map(coachReadDtoMapper::toDto);
     }
 
-    public List<CoachReadDto> findAllByFilter(CoachFilter filter, Pageable pageable) {
+    public Page<CoachReadDto> findAllByFilter(CoachFilter filter, Pageable pageable) {
         var predicate = QPredicates.builder()
                 .add(filter.firstname(), coach.firstname::containsIgnoreCase)
                 .add(filter.patronymic(), coach.patronymic::containsIgnoreCase)
@@ -61,12 +61,11 @@ public class CoachServiceImpl implements AvatarService {
                 .add(filter.birthDate(), coach.birthDate::before)
                 .build();
 
-        return coachRepository.findAll(predicate, pageable).stream()
-                .map(coachReadDtoMapper::toDto)
-                .toList();
+        return coachRepository.findAll(predicate, pageable)
+                .map(coachReadDtoMapper::toDto);
     }
 
-    public List<CoachReadDto> findAllByGymIdAndFilter(Long gymId, CoachFilter filter, Pageable pageable) {
+    public Page<CoachReadDto> findAllByGymIdAndFilter(Long gymId, CoachFilter filter, Pageable pageable) {
         var predicate = QPredicates.builder()
                 .add(gymId, coach.gym.id::eq)
                 .add(filter.firstname(), coach.firstname::containsIgnoreCase)
@@ -77,9 +76,8 @@ public class CoachServiceImpl implements AvatarService {
                 .add(filter.birthDate(), coach.birthDate::before)
                 .build();
 
-        return coachRepository.findAll(predicate, pageable).stream()
-                .map(coachReadDtoMapper::toDto)
-                .toList();
+        return coachRepository.findAll(predicate, pageable)
+                .map(coachReadDtoMapper::toDto);
     }
 
     @Transactional
