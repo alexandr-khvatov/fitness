@@ -1,17 +1,17 @@
 package com.kh.fitness.service;
 
-import com.kh.fitness.dto.training_program.ProgramCreateDto;
-import com.kh.fitness.dto.training_program.ProgramEditDto;
-import com.kh.fitness.dto.training_program.ProgramReadDto;
-import com.kh.fitness.dto.training_program.ProgramReadWithSubProgramsDto;
+import com.kh.fitness.dto.training_program.*;
 import com.kh.fitness.entity.TrainingProgram;
 import com.kh.fitness.exception.UnableToDeleteObjectContainsNestedObjects;
 import com.kh.fitness.mapper.training_program.ProgramCreateMapper;
 import com.kh.fitness.mapper.training_program.ProgramEditMapper;
 import com.kh.fitness.mapper.training_program.ProgramReadMapper;
+import com.kh.fitness.querydsl.QPredicates;
 import com.kh.fitness.repository.ProgramRepository;
 import com.kh.fitness.service.image.ImageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -19,10 +19,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static com.kh.fitness.entity.QTrainingProgram.trainingProgram;
 import static java.lang.String.format;
 
 @Service
@@ -30,10 +30,9 @@ import static java.lang.String.format;
 @Transactional(readOnly = true)
 @Validated
 public class ProgramServiceImpl implements AvatarService {
+
     private final ImageService imageService;
-
     private final ProgramRepository programRepository;
-
     private final ProgramEditMapper programEditMapper;
     private final ProgramCreateMapper programCreateMapper;
     private final ProgramReadMapper programReadMapper;
@@ -44,9 +43,20 @@ public class ProgramServiceImpl implements AvatarService {
         return programRepository.findById(id).map(programReadMapper::toDtoWithSubPrograms);
     }
 
-    public List<ProgramReadWithSubProgramsDto> findAllByGymId(Long gymId) {
-        return programRepository.findAllByGymId(gymId).stream()
-                .map(programReadMapper::toDtoWithSubPrograms).toList();
+    private TrainingProgram getTraining(Long id) {
+        return programRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
+    }
+
+    public Page<ProgramReadWithSubProgramsDto> findAllByGymIdAndFilter(Long gymId, ProgramFilter filter, Pageable pageable) {
+        var predicate = QPredicates.builder()
+                .add(gymId, trainingProgram.gym.id::eq)
+                .add(filter.name(), trainingProgram.name::containsIgnoreCase)
+                .add(filter.description(), trainingProgram.description::containsIgnoreCase)
+                .build();
+
+        return programRepository.findAll(predicate, pageable)
+                .map(programReadMapper::toDtoWithSubPrograms);
     }
 
     @Transactional
@@ -97,7 +107,7 @@ public class ProgramServiceImpl implements AvatarService {
     @Override
     @Transactional
     public String updateAvatar(Long id, MultipartFile image) {
-        var entity = programRepository.findById(id).orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
+        var entity = getTraining(id);
 
         var imageForRemoval = entity.getImage();
         var imageName = imageService.upload(image);
@@ -111,13 +121,15 @@ public class ProgramServiceImpl implements AvatarService {
     @Override
     @Transactional
     public boolean removeAvatar(Long id) {
-        var entity = programRepository.findById(id).orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
+        var entity = getTraining(id);
+
         var removeAvatar = entity.getImage();
         if (removeAvatar == null || removeAvatar.isEmpty()) {
             return true;
         }
         entity.setImage(null);
         programRepository.saveAndFlush(entity);
+
         return imageService.remove(removeAvatar);
     }
 }

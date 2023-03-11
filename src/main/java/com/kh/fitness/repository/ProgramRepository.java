@@ -1,10 +1,16 @@
 package com.kh.fitness.repository;
 
 import com.kh.fitness.entity.TrainingProgram;
+import com.querydsl.core.types.Predicate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
-import java.util.List;
+public interface ProgramRepository extends
+        JpaRepository<TrainingProgram, Long>,
+        QuerydslPredicateExecutor<TrainingProgram> {
 
-public interface ProgramRepository extends JpaRepository<TrainingProgram, Long> {
-    List<TrainingProgram> findAllByGymId(Long gymId);
+    @Override
+    Page<TrainingProgram> findAll(Predicate predicate, Pageable pageable);
 }
