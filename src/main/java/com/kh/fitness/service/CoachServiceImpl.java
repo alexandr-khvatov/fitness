@@ -2,6 +2,7 @@ package com.kh.fitness.service;
 
 import com.kh.fitness.dto.coach.CoachCreateDto;
 import com.kh.fitness.dto.coach.CoachEditDto;
+import com.kh.fitness.dto.coach.CoachFilter;
 import com.kh.fitness.dto.coach.CoachReadDto;
 import com.kh.fitness.entity.Coach;
 import com.kh.fitness.exception.PhoneAlreadyExistException;
@@ -9,11 +10,13 @@ import com.kh.fitness.exception.UnableToDeleteObjectContainsNestedObjects;
 import com.kh.fitness.mapper.coach.CoachCreateMapper;
 import com.kh.fitness.mapper.coach.CoachEditMapper;
 import com.kh.fitness.mapper.coach.CoachReadDtoMapper;
+import com.kh.fitness.querydsl.QPredicates;
 import com.kh.fitness.repository.CoachRepository;
 import com.kh.fitness.service.image.ImageService;
 import com.kh.fitness.validation.sequence.DefaultAndNotExistComplete;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -26,6 +29,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.kh.fitness.entity.QCoach.coach;
 import static java.lang.String.format;
 
 @Slf4j
@@ -34,8 +38,8 @@ import static java.lang.String.format;
 @Transactional(readOnly = true)
 @Validated
 public class CoachServiceImpl implements AvatarService {
-    private final ImageService imageService;
 
+    private final ImageService imageService;
     private final CoachRepository coachRepository;
     private final CoachEditMapper coachEditMapper;
     private final CoachCreateMapper coachCreateMapper;
@@ -47,8 +51,33 @@ public class CoachServiceImpl implements AvatarService {
         return coachRepository.findById(id).map(coachReadDtoMapper::toDto);
     }
 
-    public List<CoachReadDto> findAllByGymId(Long gymId) {
-        return coachRepository.findAllByGymId(gymId).stream()
+    public List<CoachReadDto> findAllByFilter(CoachFilter filter, Pageable pageable) {
+        var predicate = QPredicates.builder()
+                .add(filter.firstname(), coach.firstname::containsIgnoreCase)
+                .add(filter.patronymic(), coach.patronymic::containsIgnoreCase)
+                .add(filter.lastname(), coach.lastname::containsIgnoreCase)
+                .add(filter.phone(), coach.phone::containsIgnoreCase)
+                .add(filter.email(), coach.email::containsIgnoreCase)
+                .add(filter.birthDate(), coach.birthDate::before)
+                .build();
+
+        return coachRepository.findAll(predicate, pageable).stream()
+                .map(coachReadDtoMapper::toDto)
+                .toList();
+    }
+
+    public List<CoachReadDto> findAllByGymIdAndFilter(Long gymId, CoachFilter filter, Pageable pageable) {
+        var predicate = QPredicates.builder()
+                .add(gymId, coach.gym.id::eq)
+                .add(filter.firstname(), coach.firstname::containsIgnoreCase)
+                .add(filter.patronymic(), coach.patronymic::containsIgnoreCase)
+                .add(filter.lastname(), coach.lastname::containsIgnoreCase)
+                .add(filter.phone(), coach.phone::containsIgnoreCase)
+                .add(filter.email(), coach.email::containsIgnoreCase)
+                .add(filter.birthDate(), coach.birthDate::before)
+                .build();
+
+        return coachRepository.findAll(predicate, pageable).stream()
                 .map(coachReadDtoMapper::toDto)
                 .toList();
     }
@@ -128,7 +157,8 @@ public class CoachServiceImpl implements AvatarService {
     @Override
     @Transactional
     public String updateAvatar(Long id, MultipartFile image) {
-        var entity = coachRepository.findById(id).orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
+        var entity = coachRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
 
         var imageForRemoval = entity.getImage();
         var imageName = imageService.upload(image);
@@ -142,7 +172,8 @@ public class CoachServiceImpl implements AvatarService {
     @Override
     @Transactional
     public boolean removeAvatar(Long id) {
-        var entity = coachRepository.findById(id).orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
+        var entity = coachRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
         var removeAvatar = entity.getImage();
         if (removeAvatar == null || removeAvatar.isEmpty()) {
             return true;

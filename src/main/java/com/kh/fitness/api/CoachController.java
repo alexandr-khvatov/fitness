@@ -2,9 +2,11 @@ package com.kh.fitness.api;
 
 import com.kh.fitness.dto.coach.CoachCreateDto;
 import com.kh.fitness.dto.coach.CoachEditDto;
+import com.kh.fitness.dto.coach.CoachFilter;
 import com.kh.fitness.dto.coach.CoachReadDto;
 import com.kh.fitness.service.CoachServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,23 +24,31 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.http.ResponseEntity.notFound;
 
 @RestController
-@RequestMapping(API_V1 + "/coaches")
+@RequestMapping(API_V1)
 @RequiredArgsConstructor
 public class CoachController {
     private final CoachServiceImpl coachService;
 
     private static final String ERROR_MSG_NOT_FOUND = "Coach with id %s not found";
 
-    @GetMapping("/{id}")
+    @GetMapping("/coaches/{id}")
     public CoachReadDto findById(@PathVariable Long id) {
         return coachService.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, format(ERROR_MSG_NOT_FOUND, id))
         );
     }
 
-    @GetMapping
-    public List<CoachReadDto> findAllByGymId(@RequestParam Long gymId) {
-        return coachService.findAllByGymId(gymId);
+    @GetMapping("/gyms/{gymId}/coaches")
+    public List<CoachReadDto> findAllByGymIdAndFilter(
+            @PathVariable Long gymId,
+            CoachFilter filter,
+            Pageable pageable) {
+        return coachService.findAllByGymIdAndFilter(gymId, filter, pageable);
+    }
+
+    @GetMapping("/coaches")
+    public List<CoachReadDto> findAllByFilter(CoachFilter filter, Pageable pageable) {
+        return coachService.findAllByFilter(filter, pageable);
     }
 
     @PostMapping(consumes = {MULTIPART_FORM_DATA_VALUE})
@@ -47,14 +57,14 @@ public class CoachController {
         return coachService.create(coach);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/coaches/{id}")
     public CoachReadDto update(@PathVariable Long id, @RequestBody CoachEditDto coach) {
         return coachService.update(id, coach).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, format(ERROR_MSG_NOT_FOUND, id))
         );
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/coaches/{id}")
     @ResponseStatus(NO_CONTENT)
     public void delete(@PathVariable Long id) {
         if (Boolean.FALSE.equals(coachService.delete(id))) {
@@ -62,7 +72,7 @@ public class CoachController {
         }
     }
 
-    @GetMapping(value = "/{id}/avatar")
+    @GetMapping(value = "/coaches/{id}/avatar")
     public ResponseEntity<byte[]> findAvatar(@PathVariable("id") Long id) {
         return coachService.findAvatar(id)
                 .map(content -> ResponseEntity.ok()
@@ -72,12 +82,12 @@ public class CoachController {
                 .orElseGet(notFound()::build);
     }
 
-    @PutMapping("/{id}/avatar")
+    @PutMapping("/coaches/{id}/avatar")
     public String updateAvatar(@PathVariable Long id, @RequestParam MultipartFile image) {
         return coachService.updateAvatar(id, image);
     }
 
-    @DeleteMapping("/{id}/avatar")
+    @DeleteMapping("/coaches/{id}/avatar")
     @ResponseStatus(NO_CONTENT)
     public void deleteAvatar(@PathVariable Long id) {
         if (Boolean.FALSE.equals(coachService.removeAvatar(id))) {
