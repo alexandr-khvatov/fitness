@@ -222,6 +222,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findById(id).map(userReadMapper::toDto);
     }
 
+    private User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
+    }
+
     @Override
     public Optional<UserReadDto> findByUsername(String username) {
         return userRepository.findByPhone(username).map(userReadMapper::toDto);
@@ -253,7 +258,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public String updateAvatar(Long id, MultipartFile image) {
-        var entity = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
+        var entity = getUserById(id);
 
         var imageForRemoval = entity.getImage();
         var imageName = imageService.upload(image);
@@ -267,13 +272,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public boolean removeAvatar(Long id) {
-        var entity = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
+        var entity = getUserById(id);
+
         var removeAvatar = entity.getImage();
         if (removeAvatar == null || removeAvatar.isEmpty()) {
             return true;
         }
         entity.setImage(null);
         userRepository.saveAndFlush(entity);
+
         return imageService.remove(removeAvatar);
     }
 }
