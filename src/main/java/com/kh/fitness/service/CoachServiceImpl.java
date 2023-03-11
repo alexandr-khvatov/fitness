@@ -51,6 +51,11 @@ public class CoachServiceImpl implements AvatarService {
         return coachRepository.findById(id).map(coachReadDtoMapper::toDto);
     }
 
+    private Coach getCoachById(Long id) {
+        return coachRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
+    }
+
     public Page<CoachReadDto> findAllByFilter(CoachFilter filter, Pageable pageable) {
         var predicate = QPredicates.builder()
                 .add(filter.firstname(), coach.firstname::containsIgnoreCase)
@@ -155,8 +160,7 @@ public class CoachServiceImpl implements AvatarService {
     @Override
     @Transactional
     public String updateAvatar(Long id, MultipartFile image) {
-        var entity = coachRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
+        var entity = getCoachById(id);
 
         var imageForRemoval = entity.getImage();
         var imageName = imageService.upload(image);
@@ -170,14 +174,15 @@ public class CoachServiceImpl implements AvatarService {
     @Override
     @Transactional
     public boolean removeAvatar(Long id) {
-        var entity = coachRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(format(EXC_MSG_NOT_FOUND, id)));
+        var entity = getCoachById(id);
+
         var removeAvatar = entity.getImage();
         if (removeAvatar == null || removeAvatar.isEmpty()) {
             return true;
         }
         entity.setImage(null);
         coachRepository.saveAndFlush(entity);
+
         return imageService.remove(removeAvatar);
     }
 }
