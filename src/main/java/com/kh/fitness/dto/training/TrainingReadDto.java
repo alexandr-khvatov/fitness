@@ -2,7 +2,7 @@ package com.kh.fitness.dto.training;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Getter
@@ -16,7 +16,7 @@ public class TrainingReadDto {
     private LocalTime start;
     private LocalTime end;
     private Integer dayOfWeek;
-    private LocalDateTime date;
+    private LocalDate date;
     private Integer takenSeats;
     private Integer totalSeats;
     private Long coachId;
