@@ -1,15 +1,15 @@
 package com.kh.fitness.service;
 
-import com.kh.fitness.dto.gym.GymHours;
-import com.kh.fitness.dto.gym.GymCreateEditDto;
-import com.kh.fitness.dto.gym.GymOpeningHourInfoDto;
-import com.kh.fitness.dto.gym.GymReadDto;
+import com.kh.fitness.dto.gym.*;
 import com.kh.fitness.mapper.gym.GymCreateEditDtoMapper;
 import com.kh.fitness.mapper.gym.GymReadDtoMapper;
+import com.kh.fitness.querydsl.QPredicates;
 import com.kh.fitness.repository.GymRepository;
 import com.kh.fitness.repository.TrainingRepository;
 import com.kh.fitness.service.working_hours.WorkingHoursService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,10 +17,10 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.kh.fitness.entity.gym.QGym.gym;
 import static java.util.stream.Collectors.joining;
 
 @Service
@@ -50,10 +50,12 @@ public class GymServiceImpl {
                 .map(gymReadDtoMapper::toDto);
     }
 
-    public List<GymReadDto> findAll() {
-        return gymRepository.findAll().stream()
-                .map(gymReadDtoMapper::toDto)
-                .toList();
+    public Page<GymReadDto> findAllByFilter(GymFilter filter, Pageable pageable) {
+        var predicate = QPredicates.builder()
+                .add(filter.name(), gym.name::containsIgnoreCase)
+                .build();
+        return gymRepository.findAll(predicate, pageable)
+                .map(gymReadDtoMapper::toDto);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
@@ -80,7 +82,7 @@ public class GymServiceImpl {
 
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     @Transactional
-    public Optional<GymReadDto> update(Long id, GymCreateEditDto updateGym) {
+    public Optional<GymReadDto> update(Long id, @Valid GymCreateEditDto updateGym) {
         return gymRepository.findById(id)
                 .map(entity -> gymCreateEditDtoMapper.updateGym(updateGym, entity))
                 .map(gymRepository::saveAndFlush)
@@ -107,7 +109,7 @@ public class GymServiceImpl {
         return Optional.of(gymReadDtoMapper.toDto(persistedGym));
     }
 
-    private void checkDateRangeOrElseThrow(GymHours openingHours) {
+    private void checkDateRangeOrElseThrow(@Valid GymHours openingHours) {
         for (var openHour : openingHours.getOpeningHours()) {
             if (openHour.getStartTime() == null || openHour.getEndTime() == null) {
                 throw new IllegalArgumentException("Date not found");
@@ -118,7 +120,7 @@ public class GymServiceImpl {
         }
     }
 
-    private void checkWorkingDayOrElseThrow(GymHours openingHours) {
+    private void checkWorkingDayOrElseThrow(@Valid GymHours openingHours) {
         var nonWorkingDays = openingHours.getOpeningHours().stream()
                 .filter(GymOpeningHourInfoDto::getIsOpen)
                 .map(GymOpeningHourInfoDto::getDayOfWeek)

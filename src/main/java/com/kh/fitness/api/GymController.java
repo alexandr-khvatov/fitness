@@ -1,16 +1,17 @@
 package com.kh.fitness.api;
 
-import com.kh.fitness.dto.gym.GymHours;
 import com.kh.fitness.dto.gym.GymCreateEditDto;
+import com.kh.fitness.dto.gym.GymFilter;
+import com.kh.fitness.dto.gym.GymHours;
 import com.kh.fitness.dto.gym.GymReadDto;
 import com.kh.fitness.service.GymServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
 
 import static com.kh.fitness.api.util.PathUtils.API_V1;
@@ -19,11 +20,12 @@ import static com.kh.fitness.api.util.PathUtils.API_V1;
 @RequestMapping(API_V1 + "/gyms")
 @RequiredArgsConstructor
 public class GymController {
+
     private final GymServiceImpl gymService;
 
     @GetMapping
-    public List<GymReadDto> findAll() {
-        return gymService.findAll();
+    public Page<GymReadDto> findAllByFilter(GymFilter filter, Pageable pageable) {
+        return gymService.findAllByFilter(filter, pageable);
     }
 
     @GetMapping("/{id}")
@@ -33,7 +35,7 @@ public class GymController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public GymReadDto create(@RequestBody GymCreateEditDto gym, Authentication authentication) {
+    public GymReadDto create(@RequestBody GymCreateEditDto gym) {
         return gymService.create(gym);
     }
 
@@ -42,9 +44,9 @@ public class GymController {
         return gymService.update(id, gym);
     }
 
-    @PutMapping("/{id}/open_hours")
+    @PutMapping("/{id}/hours")
     public Optional<GymReadDto> updateOpeningHours(@PathVariable Long id, @RequestBody GymHours openingHours) {
-        return gymService.updateWorkingHours(id,openingHours);
+        return gymService.updateWorkingHours(id, openingHours);
     }
 
     @DeleteMapping("/{id}")
